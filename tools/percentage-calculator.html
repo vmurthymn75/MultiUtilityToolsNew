@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Percentage Calculator - Multi Utility Tools</title>
+    <meta name="description" content="Calculate percentages quickly and easily. Free online percentage calculator for any calculation needs.">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../assets/css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <style>
+        .calculator-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 20px 0;
+            color: white;
+            text-align: center;
+        }
+        
+        .calc-input {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            color: white;
+            padding: 15px;
+            font-size: 18px;
+            text-align: center;
+            margin: 10px 0;
+        }
+        
+        .calc-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .calc-input:focus {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+            color: white;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+        }
+        
+        .calc-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin: 5px;
+            min-width: 120px;
+        }
+        
+        .calc-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        
+        .result-display {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .result-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #ffd700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .calculation-type {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 15px 0;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .type-btn {
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+        
+        .type-btn.active {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.6);
+            transform: scale(1.05);
+        }
+        
+        .type-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-1px);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header will be loaded here -->
+    <div id="site-header"></div>
+
+    <div class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="text-center mb-4">
+                    <h1 class="display-4 fw-bold text-primary">
+                        <i class="bi bi-percent"></i> Percentage Calculator
+                    </h1>
+                    <p class="lead text-muted">Calculate percentages quickly and easily for any calculation needs</p>
+                </div>
+
+                <div class="calculator-section">
+                    <h3 class="mb-4">Choose Calculation Type</h3>
+                    <div class="calculation-type">
+                        <button class="type-btn active" data-type="basic">Basic Percentage</button>
+                        <button class="type-btn" data-type="increase">Percentage Increase</button>
+                        <button class="type-btn" data-type="decrease">Percentage Decrease</button>
+                        <button class="type-btn" data-type="of">Percentage Of</button>
+                        <button class="type-btn" data-type="difference">Percentage Difference</button>
+                    </div>
+
+                    <!-- Basic Percentage -->
+                    <div id="basic-calc" class="calc-form">
+                        <h4 class="mb-3">Calculate Basic Percentage</h4>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <input type="number" id="basic-value" class="form-control calc-input" placeholder="Enter value">
+                            </div>
+                            <div class="col-md-6">
+                                <input type="number" id="basic-total" class="form-control calc-input" placeholder="Enter total">
+                            </div>
+                        </div>
+                        <button class="calc-btn mt-3" onclick="calculateBasic()">Calculate</button>
+                    </div>
+
+                    <!-- Percentage Increase -->
+                    <div id="increase-calc" class="calc-form" style="display: none;">
+                        <h4 class="mb-3">Calculate Percentage Increase</h4>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <input type="number" id="increase-original" class="form-control calc-input" placeholder="Original value">
+                            </div>
+                            <div class="col-md-6">
+                                <input type="number" id="increase-new" class="form-control calc-input" placeholder="New value">
+                            </div>
+                        </div>
+                        <button class="calc-btn mt-3" onclick="calculateIncrease()">Calculate</button>
+                    </div>
+
+                    <!-- Percentage Decrease -->
+                    <div id="decrease-calc" class="calc-form" style="display: none;">
+                        <h4 class="mb-3">Calculate Percentage Decrease</h4>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <input type="number" id="decrease-original" class="form-control calc-input" placeholder="Original value">
+                            </div>
+                            <div class="col-md-6">
+                                <input type="number" id="decrease-new" class="form-control calc-input" placeholder="New value">
+                            </div>
+                        </div>
+                        <button class="calc-btn mt-3" onclick="calculateDecrease()">Calculate</button>
+                    </div>
+
+                    <!-- Percentage Of -->
+                    <div id="of-calc" class="calc-form" style="display: none;">
+                        <h4 class="mb-3">Calculate Percentage Of</h4>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <input type="number" id="of-percentage" class="form-control calc-input" placeholder="Percentage (%)">
+                            </div>
+                            <div class="col-md-6">
+                                <input type="number" id="of-value" class="form-control calc-input" placeholder="Value">
+                            </div>
+                        </div>
+                        <button class="calc-btn mt-3" onclick="calculateOf()">Calculate</button>
+                    </div>
+
+                    <!-- Percentage Difference -->
+                    <div id="difference-calc" class="calc-form" style="display: none;">
+                        <h4 class="mb-3">Calculate Percentage Difference</h4>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <input type="number" id="diff-value1" class="form-control calc-input" placeholder="First value">
+                            </div>
+                            <div class="col-md-6">
+                                <input type="number" id="diff-value2" class="form-control calc-input" placeholder="Second value">
+                            </div>
+                        </div>
+                        <button class="calc-btn mt-3" onclick="calculateDifference()">Calculate</button>
+                    </div>
+
+                    <div id="result" class="result-display" style="display: none;">
+                        <h4 class="mb-2">Result</h4>
+                        <div class="result-value" id="result-value">0%</div>
+                        <p class="mb-0" id="result-explanation"></p>
+                    </div>
+                </div>
+
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="bi bi-info-circle"></i> How to Use</h5>
+                        <ul class="list-unstyled">
+                            <li><strong>Basic Percentage:</strong> Calculate what percentage one number is of another</li>
+                            <li><strong>Percentage Increase:</strong> Find the percentage increase from one value to another</li>
+                            <li><strong>Percentage Decrease:</strong> Find the percentage decrease from one value to another</li>
+                            <li><strong>Percentage Of:</strong> Calculate what a certain percentage of a value is</li>
+                            <li><strong>Percentage Difference:</strong> Find the percentage difference between two values</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer will be loaded here -->
+    <div id="site-footer"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets/js/header-footer.js"></script>
+    <script src="../assets/js/tools.js"></script>
+    
+    <script>
+        // Calculation type switching
+        document.querySelectorAll('.type-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Remove active class from all buttons
+                document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+                // Add active class to clicked button
+                this.classList.add('active');
+                
+                // Hide all calc forms
+                document.querySelectorAll('.calc-form').forEach(form => form.style.display = 'none');
+                
+                // Show the corresponding calc form
+                const type = this.dataset.type;
+                document.getElementById(type + '-calc').style.display = 'block';
+                
+                // Hide result
+                document.getElementById('result').style.display = 'none';
+            });
+        });
+
+        function calculateBasic() {
+            const value = parseFloat(document.getElementById('basic-value').value);
+            const total = parseFloat(document.getElementById('basic-total').value);
+            
+            if (isNaN(value) || isNaN(total) || total === 0) {
+                alert('Please enter valid numbers');
+                return;
+            }
+            
+            const percentage = (value / total) * 100;
+            showResult(percentage.toFixed(2) + '%', 
+                      `${value} is ${percentage.toFixed(2)}% of ${total}`);
+        }
+
+        function calculateIncrease() {
+            const original = parseFloat(document.getElementById('increase-original').value);
+            const newValue = parseFloat(document.getElementById('increase-new').value);
+            
+            if (isNaN(original) || isNaN(newValue)) {
+                alert('Please enter valid numbers');
+                return;
+            }
+            
+            const increase = ((newValue - original) / original) * 100;
+            showResult(increase.toFixed(2) + '%', 
+                      `Increase from ${original} to ${newValue} is ${increase.toFixed(2)}%`);
+        }
+
+        function calculateDecrease() {
+            const original = parseFloat(document.getElementById('decrease-original').value);
+            const newValue = parseFloat(document.getElementById('decrease-new').value);
+            
+            if (isNaN(original) || isNaN(newValue)) {
+                alert('Please enter valid numbers');
+                return;
+            }
+            
+            const decrease = ((original - newValue) / original) * 100;
+            showResult(decrease.toFixed(2) + '%', 
+                      `Decrease from ${original} to ${newValue} is ${decrease.toFixed(2)}%`);
+        }
+
+        function calculateOf() {
+            const percentage = parseFloat(document.getElementById('of-percentage').value);
+            const value = parseFloat(document.getElementById('of-value').value);
+            
+            if (isNaN(percentage) || isNaN(value)) {
+                alert('Please enter valid numbers');
+                return;
+            }
+            
+            const result = (percentage / 100) * value;
+            showResult(result.toFixed(2), 
+                      `${percentage}% of ${value} is ${result.toFixed(2)}`);
+        }
+
+        function calculateDifference() {
+            const value1 = parseFloat(document.getElementById('diff-value1').value);
+            const value2 = parseFloat(document.getElementById('diff-value2').value);
+            
+            if (isNaN(value1) || isNaN(value2)) {
+                alert('Please enter valid numbers');
+                return;
+            }
+            
+            const difference = Math.abs(((value2 - value1) / value1) * 100);
+            showResult(difference.toFixed(2) + '%', 
+                      `Percentage difference between ${value1} and ${value2} is ${difference.toFixed(2)}%`);
+        }
+
+        function showResult(value, explanation) {
+            document.getElementById('result-value').textContent = value;
+            document.getElementById('result-explanation').textContent = explanation;
+            document.getElementById('result').style.display = 'block';
+        }
+    </script>
+</body>
+</html> 

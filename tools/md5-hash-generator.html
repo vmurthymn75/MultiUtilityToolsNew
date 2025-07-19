@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MD5 Hash Generator - Multi Utility Tools</title>
+    <meta name="description" content="Generate MD5 hashes for your data. Free online MD5 hash generator.">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../assets/css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <style>
+        .hash-generator {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 20px 0;
+            color: white;
+            text-align: center;
+        }
+        
+        .hash-input {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            color: white;
+            padding: 15px;
+            font-size: 16px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .hash-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .hash-input:focus {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+            color: white;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+        }
+        
+        .generate-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin: 15px 0;
+        }
+        
+        .generate-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        
+        .hash-result {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .hash-value {
+            font-family: 'Courier New', monospace;
+            font-size: 1.1em;
+            color: #ffd700;
+            word-break: break-all;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+        }
+        
+        .copy-btn {
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+        
+        .copy-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-1px);
+            color: white;
+        }
+        
+        .input-type {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 15px 0;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .type-btn {
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+        
+        .type-btn.active {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.6);
+            transform: scale(1.05);
+        }
+        
+        .type-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-1px);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header will be loaded here -->
+    <div id="site-header"></div>
+
+    <div class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="text-center mb-4">
+                    <h1 class="display-4 fw-bold text-primary">
+                        <i class="bi bi-hash"></i> MD5 Hash Generator
+                    </h1>
+                    <p class="lead text-muted">Generate MD5 hashes for your data securely</p>
+                </div>
+
+                <div class="hash-generator">
+                    <h3 class="mb-4">Generate MD5 Hash</h3>
+                    
+                    <div class="input-type">
+                        <button class="type-btn active" data-type="text">Text Input</button>
+                        <button class="type-btn" data-type="file">File Upload</button>
+                    </div>
+                    
+                    <div id="text-input-section">
+                        <textarea id="text-input" class="form-control hash-input" rows="5" placeholder="Enter text to generate MD5 hash..."></textarea>
+                    </div>
+                    
+                    <div id="file-input-section" style="display: none;">
+                        <div class="upload-area" style="border: 2px dashed rgba(255,255,255,0.3); border-radius: 15px; padding: 30px; margin: 20px 0;">
+                            <input type="file" id="file-input" class="file-input" style="display: none;">
+                            <div class="text-center">
+                                <i class="bi bi-cloud-upload" style="font-size: 3em; margin-bottom: 15px;"></i>
+                                <p>Click to select a file or drag and drop</p>
+                                <button class="copy-btn" onclick="document.getElementById('file-input').click()">Choose File</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="generate-btn" onclick="generateHash()">
+                        <i class="bi bi-hash"></i> Generate MD5 Hash
+                    </button>
+
+                    <div id="hash-result" class="hash-result" style="display: none;">
+                        <h4 class="mb-3">MD5 Hash Result</h4>
+                        <div class="hash-value" id="hash-display"></div>
+                        <button class="copy-btn" onclick="copyHash()">
+                            <i class="bi bi-clipboard"></i> Copy Hash
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="bi bi-info-circle"></i> About MD5</h5>
+                        <ul class="list-unstyled">
+                            <li><strong>MD5 (Message Digest Algorithm 5)</strong> is a cryptographic hash function</li>
+                            <li><strong>Produces a 128-bit (16-byte) hash value</strong> typically expressed as a 32-character hexadecimal number</li>
+                            <li><strong>Used for data integrity verification</strong> and digital signatures</li>
+                            <li><strong>Note:</strong> MD5 is not considered cryptographically secure for password storage</li>
+                            <li><strong>Common uses:</strong> File integrity checks, checksums, data verification</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer will be loaded here -->
+    <div id="site-footer"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets/js/header-footer.js"></script>
+    <script src="../assets/js/tools.js"></script>
+    
+    <script>
+        let currentInputType = 'text';
+
+        // Input type toggle
+        document.querySelectorAll('.type-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                currentInputType = this.dataset.type;
+                
+                if (currentInputType === 'text') {
+                    document.getElementById('text-input-section').style.display = 'block';
+                    document.getElementById('file-input-section').style.display = 'none';
+                } else {
+                    document.getElementById('text-input-section').style.display = 'none';
+                    document.getElementById('file-input-section').style.display = 'block';
+                }
+                
+                // Hide result when switching types
+                document.getElementById('hash-result').style.display = 'none';
+            });
+        });
+
+        function generateHash() {
+            let input;
+            
+            if (currentInputType === 'text') {
+                input = document.getElementById('text-input').value;
+                if (!input.trim()) {
+                    alert('Please enter some text');
+                    return;
+                }
+                const hash = CryptoJS.MD5(input).toString();
+                displayHash(hash);
+            } else {
+                const fileInput = document.getElementById('file-input');
+                if (!fileInput.files[0]) {
+                    alert('Please select a file');
+                    return;
+                }
+                
+                const file = fileInput.files[0];
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const arrayBuffer = e.target.result;
+                    const wordArray = CryptoJS.lib.WordArray.create(arrayBuffer);
+                    const hash = CryptoJS.MD5(wordArray).toString();
+                    displayHash(hash);
+                };
+                reader.readAsArrayBuffer(file);
+            }
+        }
+
+        function displayHash(hash) {
+            document.getElementById('hash-display').textContent = hash;
+            document.getElementById('hash-result').style.display = 'block';
+        }
+
+        function copyHash() {
+            const hash = document.getElementById('hash-display').textContent;
+            navigator.clipboard.writeText(hash).then(() => {
+                const btn = document.querySelector('.copy-btn');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<i class="bi bi-check"></i> Copied!';
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                }, 2000);
+            });
+        }
+
+        // Auto-generate on text input
+        document.getElementById('text-input').addEventListener('input', function() {
+            if (this.value.trim()) {
+                generateHash();
+            } else {
+                document.getElementById('hash-result').style.display = 'none';
+            }
+        });
+
+        // File input change
+        document.getElementById('file-input').addEventListener('change', function() {
+            if (this.files[0]) {
+                generateHash();
+            }
+        });
+    </script>
+</body>
+</html> 

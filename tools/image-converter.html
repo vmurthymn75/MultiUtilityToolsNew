@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Converter - Convert Images Online | Multi Utility Tools</title>
+  <meta name="description" content="Free online image converter tool. Convert images between PNG, JPG, GIF, WebP formats with drag-and-drop support. Fast, secure, and easy to use.">
+  <meta name="keywords" content="image converter, convert image, PNG to JPG, JPG to PNG, WebP converter, image format converter, online image converter">
+  <meta name="author" content="Multi Utility Tools">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://yourdomain.com/tools/image-converter.html">
+  
+  <!-- Open Graph Meta Tags -->
+  <meta property="og:title" content="Image Converter - Convert Images Online">
+  <meta property="og:description" content="Free online image converter tool. Convert images between PNG, JPG, GIF, WebP formats with drag-and-drop support.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://yourdomain.com/tools/image-converter.html">
+  
+  <!-- Twitter Card Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Image Converter - Convert Images Online">
+  <meta name="twitter:description" content="Free online image converter tool. Convert images between PNG, JPG, GIF, WebP formats with drag-and-drop support.">
+  
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="../assets/css/tools.css">
+  <link rel="icon" href="../assets/images/favicon.ico">
+</head>
+<body>
+  <!-- Header -->
+  <div id="header"></div>
+  
+  <!-- Main Content -->
+  <main class="tool-main container" tabindex="-1">
+    <!-- Breadcrumb Navigation -->
+    <nav aria-label="Breadcrumb" class="breadcrumb-nav">
+      <a href="../index.html" class="back-link" aria-label="Back to Home">
+        <i class="bi bi-arrow-left"></i> Back to Home
+      </a>
+    </nav>
+    
+    <!-- Tool Header -->
+    <header class="tool-header">
+      <h1><i class="bi bi-arrow-repeat"></i> Image Converter</h1>
+      <p class="tool-desc">Convert images between different formats easily. Supports PNG, JPG, GIF, and WebP formats with quality control options.</p>
+    </header>
+    
+    <!-- Tool UI -->
+    <section class="tool-ui" aria-labelledby="converter-form-label">
+      <!-- Upload Form -->
+      <div class="tool-form">
+        <h2 id="converter-form-label" class="h4 mb-4">Upload & Convert</h2>
+        
+        <form id="converter-form" class="converter-form" autocomplete="off">
+          <!-- File Upload Area -->
+          <div class="form-group">
+            <label for="image-upload" class="form-label">Upload Image</label>
+            <div class="upload-area" tabindex="0" role="button" aria-label="Upload image by clicking or dragging and dropping">
+              <i class="bi bi-cloud-upload upload-icon"></i>
+              <div class="upload-text">Click to upload or drag and drop</div>
+              <div class="upload-hint">Supports JPG, PNG, GIF, WebP (Max 10MB)</div>
+              <input type="file" id="image-upload" name="image-upload" class="file-input" accept="image/*" required aria-required="true">
+            </div>
+          </div>
+          
+          <!-- Progress Bar -->
+          <div class="progress-container" style="display: none;">
+            <div class="progress-bar">
+              <div class="progress-fill"></div>
+            </div>
+          </div>
+          
+          <!-- Conversion Options -->
+          <div class="form-group">
+            <label for="format" class="form-label">Convert to Format</label>
+            <select id="format" name="format" class="form-input" required aria-required="true">
+              <option value="">Select format...</option>
+              <option value="png">PNG (Lossless, good for graphics)</option>
+              <option value="jpg">JPG (Lossy, good for photos)</option>
+              <option value="webp">WebP (Modern, good compression)</option>
+              <option value="gif">GIF (Animated images)</option>
+            </select>
+          </div>
+          
+          <!-- Quality Settings -->
+          <div class="form-group">
+            <label for="quality" class="form-label">Quality</label>
+            <div class="d-flex align-items-center gap-2">
+              <input type="range" id="quality" name="quality" class="form-range" min="1" max="100" value="90" aria-describedby="quality-value">
+              <span id="quality-value" class="badge bg-primary">90%</span>
+            </div>
+            <div class="form-text">Higher quality = larger file size</div>
+          </div>
+          
+          <!-- Advanced Options -->
+          <div class="form-group">
+            <label class="form-label">Advanced Options</label>
+            <div class="options-grid">
+              <div class="form-check">
+                <input type="checkbox" id="preserve-metadata" name="preserve-metadata" class="form-check-input">
+                <label for="preserve-metadata" class="form-check-label">Preserve metadata</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" id="optimize" name="optimize" class="form-check-input" checked>
+                <label for="optimize" class="form-check-label">Optimize for web</label>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Action Buttons -->
+          <div class="d-flex gap-2 flex-wrap">
+            <button type="submit" class="btn btn-primary" data-original-text="Convert Image">
+              <i class="bi bi-arrow-repeat"></i> Convert Image
+            </button>
+            <button type="button" class="btn btn-secondary btn-reset">
+              <i class="bi bi-arrow-clockwise"></i> Reset
+            </button>
+          </div>
+        </form>
+      </div>
+      
+      <!-- Result Area -->
+      <div class="result-area">
+        <div class="result-placeholder">
+          <i class="bi bi-image"></i>
+          <p>Converted image will appear here</p>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Ad Section -->
+    <aside class="ad-placeholder" aria-label="Advertisement">
+      <div class="ad-box">Ad space</div>
+    </aside>
+  </main>
+  
+  <!-- Footer -->
+  <div id="footer"></div>
+  
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/js/header-footer.js" defer></script>
+  <script src="../assets/js/tools.js" defer></script>
+  <script>
+    // Tool-specific functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      // Quality slider
+      const qualitySlider = document.getElementById('quality');
+      const qualityValue = document.getElementById('quality-value');
+      
+      qualitySlider.addEventListener('input', function() {
+        qualityValue.textContent = this.value + '%';
+      });
+      
+      // Format-specific quality presets
+      const formatSelect = document.getElementById('format');
+      formatSelect.addEventListener('change', function() {
+        const format = this.value;
+        const qualitySlider = document.getElementById('quality');
+        
+        switch(format) {
+          case 'png':
+            qualitySlider.value = 100;
+            qualitySlider.disabled = true;
+            break;
+          case 'gif':
+            qualitySlider.value = 100;
+            qualitySlider.disabled = true;
+            break;
+          case 'jpg':
+            qualitySlider.value = 90;
+            qualitySlider.disabled = false;
+            break;
+          case 'webp':
+            qualitySlider.value = 85;
+            qualitySlider.disabled = false;
+            break;
+          default:
+            qualitySlider.value = 90;
+            qualitySlider.disabled = false;
+        }
+        
+        qualityValue.textContent = qualitySlider.value + '%';
+      });
+      
+      // Show format info with tooltip
+      const formatInfo = {
+        'png': 'Lossless format, good for graphics and images with transparency',
+        'jpg': 'Lossy format, good for photographs and web images',
+        'webp': 'Modern format with excellent compression, good for web',
+        'gif': 'Supports animation and transparency, limited colors'
+      };
+      
+      formatSelect.addEventListener('change', function() {
+        const info = formatInfo[this.value];
+        if (info) {
+          // Create or update info tooltip
+          let tooltip = document.getElementById('format-tooltip');
+          if (!tooltip) {
+            tooltip = document.createElement('div');
+            tooltip.id = 'format-tooltip';
+            tooltip.className = 'alert alert-info mt-2';
+            formatSelect.parentNode.appendChild(tooltip);
+          }
+          tooltip.innerHTML = `<i class="bi bi-info-circle"></i> ${info}`;
+        }
+      });
+    });
+  </script>
+</body>
+</html> 

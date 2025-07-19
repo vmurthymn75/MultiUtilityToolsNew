@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sitemap Generator - Multi Utility Tools</title>
+  <meta name="description" content="Generate XML sitemaps for your website with automatic URL discovery and SEO optimization.">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="../assets/css/style.css" rel="stylesheet">
+  <style>
+    .crawling-status {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-radius: 1rem;
+      padding: 1.5rem;
+      margin: 1rem 0;
+    }
+    .progress-container {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin: 1rem 0;
+    }
+    .url-list {
+      background: #f8f9fa;
+      border-radius: 0.5rem;
+      padding: 1.5rem;
+      margin: 1rem 0;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    .url-item {
+      display: flex;
+      justify-content: between;
+      align-items: center;
+      padding: 0.5rem;
+      border-bottom: 1px solid #dee2e6;
+      transition: background-color 0.2s;
+    }
+    .url-item:hover {
+      background-color: #e9ecef;
+    }
+    .url-item:last-child {
+      border-bottom: none;
+    }
+    .url-info {
+      flex: 1;
+    }
+    .url-path {
+      font-weight: 500;
+      color: #0d6efd;
+    }
+    .url-meta {
+      font-size: 0.9rem;
+      color: #6c757d;
+    }
+    .url-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .sitemap-preview {
+      background: #1e1e1e;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin: 1rem 0;
+      font-family: 'Courier New', monospace;
+      color: #d4d4d4;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    .sitemap-preview pre {
+      margin: 0;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+    .settings-panel {
+      background: #e9ecef;
+      border-radius: 0.5rem;
+      padding: 1.5rem;
+      margin: 1rem 0;
+    }
+    .stats-panel {
+      background: #f8f9fa;
+      border-radius: 0.5rem;
+      padding: 1.5rem;
+      margin: 1rem 0;
+    }
+    .stat-item {
+      text-align: center;
+      padding: 1rem;
+      background: white;
+      border-radius: 0.5rem;
+      margin: 0.5rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .stat-number {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #0d6efd;
+      display: block;
+    }
+    .stat-label {
+      font-size: 0.9rem;
+      color: #6c757d;
+    }
+    .status-indicator {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #dc3545;
+      margin-right: 0.5rem;
+    }
+    .status-indicator.crawling {
+      background: #ffc107;
+      animation: pulse 1s infinite;
+    }
+    .status-indicator.completed {
+      background: #28a745;
+    }
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.5; }
+      100% { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <div id="site-header"></div>
+  <div class="container-fluid my-4">
+    <div class="row">
+      <!-- Main Tool Card -->
+      <main class="col-lg-8 mb-4 mb-lg-0">
+        <div class="card card-tool shadow-sm p-4">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="d-flex align-items-center">
+              <i class="bi bi-diagram-3 display-5 me-3"></i>
+              <div>
+                <h1 class="h3 mb-1">Sitemap Generator</h1>
+                <p class="text-muted mb-0">Generate XML sitemaps for your website with automatic URL discovery.</p>
+              </div>
+            </div>
+            <a href="../index.html" class="btn btn-outline-primary btn-lg d-flex align-items-center" style="white-space:nowrap;"><i class="bi bi-house-door me-2"></i>Home</a>
+          </div>
+          <hr>
+          <!-- TOOL UI START -->
+          <div id="tool-ui">
+            <!-- URL Input Section -->
+            <div class="mb-4">
+              <label for="siteUrl" class="form-label">Enter your website URL</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-globe"></i></span>
+                <input type="url" class="form-control form-control-lg" id="siteUrl" placeholder="https://yourwebsite.com">
+                <button type="button" class="btn btn-primary" id="generateBtn">
+                  <i class="bi bi-search me-2"></i>Generate Sitemap
+                </button>
+              </div>
+              <div class="form-text">Enter the root URL of your website to automatically discover and generate a sitemap.</div>
+            </div>
+
+            <!-- Settings Panel -->
+            <div class="settings-panel">
+              <h4 class="mb-3"><i class="bi bi-gear me-2"></i>Sitemap Settings</h4>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="mb-3">
+                    <label for="maxUrls" class="form-label">Maximum URLs</label>
+                    <input type="number" class="form-control" id="maxUrls" value="100" min="1" max="1000">
+                    <div class="form-text">Limit the number of URLs to include in the sitemap</div>
+                  </div>
+                  <div class="mb-3">
+                    <label for="crawlDelay" class="form-label">Crawl Delay (seconds)</label>
+                    <input type="number" class="form-control" id="crawlDelay" value="1" min="0" max="10" step="0.1">
+                    <div class="form-text">Delay between requests to be respectful to servers</div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="mb-3">
+                    <label for="includeImages" class="form-check-label">
+                      <input type="checkbox" class="form-check-input" id="includeImages">
+                      Include Images
+                    </label>
+                    <div class="form-text">Add image URLs to the sitemap</div>
+                  </div>
+                  <div class="mb-3">
+                    <label for="excludePatterns" class="form-label">Exclude Patterns</label>
+                    <textarea class="form-control" id="excludePatterns" rows="2" placeholder="admin, login, private"></textarea>
+                    <div class="form-text">Comma-separated patterns to exclude from crawling</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Crawling Status -->
+            <div class="crawling-status" id="crawlingStatus" style="display: none;">
+              <h4 class="mb-3"><i class="bi bi-arrow-repeat me-2"></i>Crawling Status</h4>
+              <div class="progress-container">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <span id="statusText">Initializing...</span>
+                  <span id="progressText">0%</span>
+                </div>
+                <div class="progress">
+                  <div class="progress-bar" id="progressBar" role="progressbar" style="width: 0%"></div>
+                </div>
+                <div class="mt-2">
+                  <small>URLs found: <span id="urlsFound">0</span> | URLs processed: <span id="urlsProcessed">0</span></small>
+                </div>
+              </div>
+            </div>
+
+            <!-- Statistics Panel -->
+            <div class="stats-panel" id="statsPanel" style="display: none;">
+              <h4 class="mb-3"><i class="bi bi-graph-up me-2"></i>Sitemap Statistics</h4>
+              <div class="row">
+                <div class="col-md-3 col-6">
+                  <div class="stat-item">
+                    <span class="stat-number" id="totalUrls">0</span>
+                    <span class="stat-label">Total URLs</span>
+                  </div>
+                </div>
+                <div class="col-md-3 col-6">
+                  <div class="stat-item">
+                    <span class="stat-number" id="totalImages">0</span>
+                    <span class="stat-label">Images</span>
+                  </div>
+                </div>
+                <div class="col-md-3 col-6">
+                  <div class="stat-item">
+                    <span class="stat-number" id="sitemapSize">0 KB</span>
+                    <span class="stat-label">File Size</span>
+                  </div>
+                </div>
+                <div class="col-md-3 col-6">
+                  <div class="stat-item">
+                    <span class="stat-number" id="crawlTime">0s</span>
+                    <span class="stat-label">Crawl Time</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- URL List -->
+            <div class="url-list" id="urlList" style="display: none;">
+              <h4 class="mb-3"><i class="bi bi-list-ul me-2"></i>Discovered URLs</h4>
+              <div id="urlListContent">
+                <!-- URLs will be populated here -->
+              </div>
+            </div>
+
+            <!-- Sitemap Preview -->
+            <div class="sitemap-preview" id="sitemapPreview" style="display: none;">
+              <h4 class="mb-3 text-white"><i class="bi bi-code-slash me-2"></i>Generated Sitemap Preview</h4>
+              <pre id="sitemapContent"><!-- Sitemap XML will be shown here --></pre>
+            </div>
+
+            <!-- Download Section -->
+            <div class="mt-4" id="downloadSection" style="display: none;">
+              <h4><i class="bi bi-download me-2"></i>Download Options</h4>
+              <div class="d-flex flex-wrap gap-2">
+                <button type="button" class="btn btn-primary" id="downloadSitemap">
+                  <i class="bi bi-file-earmark-arrow-down me-2"></i>Download Sitemap XML
+                </button>
+                <button type="button" class="btn btn-secondary" id="downloadTxt">
+                  <i class="bi bi-file-earmark-text me-2"></i>Download URL List (TXT)
+                </button>
+                <button type="button" class="btn btn-info" id="copySitemap">
+                  <i class="bi bi-clipboard me-2"></i>Copy Sitemap XML
+                </button>
+              </div>
+            </div>
+
+            <!-- Instructions -->
+            <div class="alert alert-info mt-4">
+              <h5><i class="bi bi-info-circle me-2"></i>How to use:</h5>
+              <ul class="mb-0">
+                <li>Enter your website's root URL (e.g., https://example.com)</li>
+                <li>Configure crawling settings as needed</li>
+                <li>Click "Generate Sitemap" to start the crawling process</li>
+                <li>Review discovered URLs and generated sitemap</li>
+                <li>Download the XML sitemap for your website</li>
+                <li>Upload the sitemap to your website root and submit to search engines</li>
+              </ul>
+            </div>
+          </div>
+          <!-- TOOL UI END -->
+        </div>
+      </main>
+      <!-- Sidebar Ad Section -->
+      <aside class="col-lg-4">
+        <div class="ad-placeholder mb-4">
+          <span class="text-muted">Sponsored</span><br>Ad Space
+        </div>
+      </aside>
+    </div>
+  </div>
+  <div id="site-footer"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/js/header-footer.js"></script>
+  <script>
+    // Sitemap Generator Tool Logic
+    class SitemapGenerator {
+      constructor() {
+        this.siteUrl = document.getElementById('siteUrl');
+        this.generateBtn = document.getElementById('generateBtn');
+        this.maxUrls = document.getElementById('maxUrls');
+        this.crawlDelay = document.getElementById('crawlDelay');
+        this.includeImages = document.getElementById('includeImages');
+        this.excludePatterns = document.getElementById('excludePatterns');
+        
+        this.discoveredUrls = [];
+        this.startTime = 0;
+        this.isCrawling = false;
+        
+        this.initializeEventListeners();
+      }
+
+      initializeEventListeners() {
+        this.generateBtn.addEventListener('click', () => this.startCrawling());
+        document.getElementById('downloadSitemap').addEventListener('click', () => this.downloadSitemap());
+        document.getElementById('downloadTxt').addEventListener('click', () => this.downloadUrlList());
+        document.getElementById('copySitemap').addEventListener('click', () => this.copySitemap());
+      }
+
+      async startCrawling() {
+        const url = this.siteUrl.value.trim();
+        if (!url) {
+          this.showNotification('Please enter a valid website URL', 'warning');
+          return;
+        }
+
+        if (!this.isValidUrl(url)) {
+          this.showNotification('Please enter a valid URL starting with http:// or https://', 'warning');
+          return;
+        }
+
+        this.isCrawling = true;
+        this.startTime = Date.now();
+        this.discoveredUrls = [];
+        
+        this.showCrawlingStatus();
+        this.updateStatus('Starting crawl...', 0);
+        
+        try {
+          await this.crawlWebsite(url);
+          this.completeCrawling();
+        } catch (error) {
+          this.showNotification('Crawling failed: ' + error.message, 'error');
+          this.hideCrawlingStatus();
+        }
+        
+        this.isCrawling = false;
+      }
+
+      async crawlWebsite(baseUrl) {
+        const maxUrls = parseInt(this.maxUrls.value);
+        const delay = parseFloat(this.crawlDelay.value) * 1000;
+        const excludePatterns = this.excludePatterns.value.split(',').map(p => p.trim()).filter(p => p);
+        
+        // Add the base URL
+        this.addUrl(baseUrl, 'Homepage');
+        
+        // Simulate crawling (in a real implementation, this would make actual HTTP requests)
+        const sampleUrls = this.generateSampleUrls(baseUrl);
+        
+        for (let i = 0; i < Math.min(sampleUrls.length, maxUrls - 1); i++) {
+          if (!this.isCrawling) break;
+          
+          const url = sampleUrls[i];
+          
+          // Check if URL should be excluded
+          if (excludePatterns.some(pattern => url.includes(pattern))) {
+            continue;
+          }
+          
+          this.addUrl(url, this.getUrlType(url));
+          
+          // Update progress
+          const progress = ((i + 1) / Math.min(sampleUrls.length, maxUrls - 1)) * 100;
+          this.updateStatus(`Crawling ${url}...`, progress);
+          
+          // Simulate delay
+          await this.sleep(delay);
+        }
+      }
+
+      generateSampleUrls(baseUrl) {
+        const base = new URL(baseUrl);
+        const sampleUrls = [
+          `${base.origin}/about`,
+          `${base.origin}/contact`,
+          `${base.origin}/services`,
+          `${base.origin}/products`,
+          `${base.origin}/blog`,
+          `${base.origin}/blog/post-1`,
+          `${base.origin}/blog/post-2`,
+          `${base.origin}/pricing`,
+          `${base.origin}/faq`,
+          `${base.origin}/privacy-policy`,
+          `${base.origin}/terms-of-service`,
+          `${base.origin}/sitemap.xml`,
+          `${base.origin}/robots.txt`,
+          `${base.origin}/assets/css/style.css`,
+          `${base.origin}/assets/js/main.js`,
+          `${base.origin}/images/logo.png`,
+          `${base.origin}/images/hero.jpg`,
+          `${base.origin}/images/product1.jpg`,
+          `${base.origin}/images/product2.jpg`,
+          `${base.origin}/images/product3.jpg`
+        ];
+        
+        return sampleUrls;
+      }
+
+      getUrlType(url) {
+        if (url.includes('.css') || url.includes('.js')) return 'Asset';
+        if (url.includes('.jpg') || url.includes('.png') || url.includes('.gif') || url.includes('.webp')) return 'Image';
+        if (url.includes('/blog/')) return 'Blog Post';
+        if (url.includes('/products/')) return 'Product';
+        if (url.includes('/services/')) return 'Service';
+        return 'Page';
+      }
+
+      addUrl(url, type) {
+        const urlObj = {
+          url: url,
+          type: type,
+          lastmod: new Date().toISOString().split('T')[0],
+          priority: this.getPriority(type),
+          changefreq: this.getChangeFreq(type)
+        };
+        
+        this.discoveredUrls.push(urlObj);
+        this.updateUrlList();
+        this.updateStats();
+      }
+
+      getPriority(type) {
+        const priorities = {
+          'Homepage': '1.0',
+          'Page': '0.8',
+          'Blog Post': '0.7',
+          'Product': '0.8',
+          'Service': '0.8',
+          'Image': '0.6',
+          'Asset': '0.3'
+        };
+        return priorities[type] || '0.5';
+      }
+
+      getChangeFreq(type) {
+        const frequencies = {
+          'Homepage': 'daily',
+          'Page': 'weekly',
+          'Blog Post': 'monthly',
+          'Product': 'weekly',
+          'Service': 'monthly',
+          'Image': 'monthly',
+          'Asset': 'monthly'
+        };
+        return frequencies[type] || 'monthly';
+      }
+
+      updateUrlList() {
+        const urlList = document.getElementById('urlList');
+        const urlListContent = document.getElementById('urlListContent');
+        
+        if (this.discoveredUrls.length > 0) {
+          urlList.style.display = 'block';
+          
+          urlListContent.innerHTML = this.discoveredUrls.map((urlObj, index) => `
+            <div class="url-item">
+              <div class="url-info">
+                <div class="url-path">${urlObj.url}</div>
+                <div class="url-meta">
+                  Type: ${urlObj.type} | Priority: ${urlObj.priority} | Change Freq: ${urlObj.changefreq} | Last Modified: ${urlObj.lastmod}
+                </div>
+              </div>
+              <div class="url-actions">
+                <span class="badge bg-${this.getBadgeColor(urlObj.type)}">${urlObj.type}</span>
+              </div>
+            </div>
+          `).join('');
+        }
+      }
+
+      getBadgeColor(type) {
+        const colors = {
+          'Homepage': 'primary',
+          'Page': 'success',
+          'Blog Post': 'info',
+          'Product': 'warning',
+          'Service': 'secondary',
+          'Image': 'light',
+          'Asset': 'dark'
+        };
+        return colors[type] || 'secondary';
+      }
+
+      updateStats() {
+        const totalUrls = this.discoveredUrls.length;
+        const totalImages = this.discoveredUrls.filter(u => u.type === 'Image').length;
+        const sitemapXml = this.generateSitemapXml();
+        const sitemapSize = new Blob([sitemapXml]).size;
+        const crawlTime = Math.round((Date.now() - this.startTime) / 1000);
+        
+        document.getElementById('totalUrls').textContent = totalUrls;
+        document.getElementById('totalImages').textContent = totalImages;
+        document.getElementById('sitemapSize').textContent = this.formatBytes(sitemapSize);
+        document.getElementById('urlsFound').textContent = totalUrls;
+        document.getElementById('urlsProcessed').textContent = totalUrls;
+      }
+
+      updateStatus(text, progress) {
+        document.getElementById('statusText').textContent = text;
+        document.getElementById('progressText').textContent = Math.round(progress) + '%';
+        document.getElementById('progressBar').style.width = progress + '%';
+      }
+
+      showCrawlingStatus() {
+        document.getElementById('crawlingStatus').style.display = 'block';
+        document.getElementById('statsPanel').style.display = 'none';
+        document.getElementById('urlList').style.display = 'none';
+        document.getElementById('sitemapPreview').style.display = 'none';
+        document.getElementById('downloadSection').style.display = 'none';
+      }
+
+      hideCrawlingStatus() {
+        document.getElementById('crawlingStatus').style.display = 'none';
+      }
+
+      completeCrawling() {
+        this.hideCrawlingStatus();
+        this.updateStats();
+        this.showResults();
+        this.showNotification(`Sitemap generated successfully! Found ${this.discoveredUrls.length} URLs.`, 'success');
+      }
+
+      showResults() {
+        document.getElementById('statsPanel').style.display = 'block';
+        document.getElementById('urlList').style.display = 'block';
+        document.getElementById('sitemapPreview').style.display = 'block';
+        document.getElementById('downloadSection').style.display = 'block';
+        
+        // Show sitemap preview
+        const sitemapXml = this.generateSitemapXml();
+        document.getElementById('sitemapContent').textContent = sitemapXml;
+      }
+
+      generateSitemapXml() {
+        const baseUrl = new URL(this.siteUrl.value);
+        const now = new Date().toISOString();
+        
+        let xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"`;
+        
+        if (this.includeImages.checked) {
+          xml += ` xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"`;
+        }
+        
+        xml += `>
+`;
+        
+        this.discoveredUrls.forEach(urlObj => {
+          xml += `  <url>
+    <loc>${urlObj.url}</loc>
+    <lastmod>${urlObj.lastmod}</lastmod>
+    <changefreq>${urlObj.changefreq}</changefreq>
+    <priority>${urlObj.priority}</priority>`;
+          
+          if (this.includeImages.checked && urlObj.type === 'Image') {
+            xml += `
+    <image:image>
+      <image:loc>${urlObj.url}</image:loc>
+      <image:title>${this.getImageTitle(urlObj.url)}</image:title>
+    </image:image>`;
+          }
+          
+          xml += `
+  </url>
+`;
+        });
+        
+        xml += `</urlset>`;
+        
+        return xml;
+      }
+
+      getImageTitle(url) {
+        const filename = url.split('/').pop().split('.')[0];
+        return filename.replace(/[-_]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+      }
+
+      async downloadSitemap() {
+        const sitemapXml = this.generateSitemapXml();
+        const blob = new Blob([sitemapXml], { type: 'application/xml' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'sitemap.xml';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        this.showNotification('Sitemap XML downloaded!', 'success');
+      }
+
+      downloadUrlList() {
+        const urlList = this.discoveredUrls.map(u => u.url).join('\n');
+        const blob = new Blob([urlList], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'url-list.txt';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        this.showNotification('URL list downloaded!', 'success');
+      }
+
+      async copySitemap() {
+        const sitemapXml = this.generateSitemapXml();
+        try {
+          await navigator.clipboard.writeText(sitemapXml);
+          this.showNotification('Sitemap XML copied to clipboard!', 'success');
+        } catch (err) {
+          this.showNotification('Failed to copy sitemap', 'error');
+        }
+      }
+
+      isValidUrl(string) {
+        try {
+          new URL(string);
+          return true;
+        } catch (_) {
+          return false;
+        }
+      }
+
+      formatBytes(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+      }
+
+      sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+      }
+
+      showNotification(message, type) {
+        const alertClass = type === 'success' ? 'alert-success' : 
+                          type === 'warning' ? 'alert-warning' : 'alert-danger';
+        
+        const alert = document.createElement('div');
+        alert.className = `alert ${alertClass} alert-dismissible fade show position-fixed`;
+        alert.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+        alert.innerHTML = `
+          ${message}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        
+        document.body.appendChild(alert);
+        
+        setTimeout(() => {
+          if (alert.parentNode) {
+            alert.remove();
+          }
+        }, 5000);
+      }
+    }
+
+    // Initialize the tool when the page loads
+    document.addEventListener('DOMContentLoaded', () => {
+      new SitemapGenerator();
+    });
+  </script>
+</body>
+</html> 

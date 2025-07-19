@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Convert Image to Base64 | Multi Utility Tools</title>
+  <meta name="description" content="Encode images to Base64 for web use. Fast, free, and easy image to Base64 converter tool.">
+  <meta name="keywords" content="image to base64, base64 converter, encode image, online base64 tool, image tool">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../assets/css/style.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <link rel="canonical" href="https://multiutilitytools.com/tools/image-to-base64.html">
+  <style>
+    .dropzone {
+      border: 2px dashed #0d6efd;
+      border-radius: 1rem;
+      background: #f8f9fa;
+      text-align: center;
+      padding: 2.5rem 1rem;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .dropzone.dragover {
+      background: #e7f1ff;
+      border-color: #0a58ca;
+    }
+    .dropzone i {
+      font-size: 2.5rem;
+      color: #0d6efd;
+    }
+    .upload-feedback {
+      min-height: 2rem;
+    }
+    .base64-output {
+      background: #f8f9fa;
+      border: 1px solid #dee2e6;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin: 1rem 0;
+      font-family: 'Courier New', monospace;
+      font-size: 0.875rem;
+      word-break: break-all;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    .copy-btn {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <div id="site-header"></div>
+  <div class="container-fluid my-4">
+    <div class="row">
+      <!-- Main Tool Card -->
+      <main class="col-lg-8 mb-4 mb-lg-0">
+        <div class="card card-tool shadow-sm p-4">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="d-flex align-items-center">
+              <i class="bi bi-file-earmark-code display-5 me-3"></i>
+              <div>
+                <h1 class="h3 mb-1">Convert Image to Base64</h1>
+                <p class="text-muted mb-0">Encode images to Base64 for web use.</p>
+              </div>
+            </div>
+            <a href="../index.html" class="btn btn-outline-primary btn-lg d-flex align-items-center" style="white-space:nowrap;"><i class="bi bi-house-door me-2"></i>Home</a>
+          </div>
+          <hr>
+          <!-- TOOL UI START -->
+          <div id="tool-ui">
+            <div class="mb-4">
+              <div id="dropzone" class="dropzone">
+                <i class="bi bi-cloud-arrow-up mb-2"></i>
+                <div><strong>Drag & Drop</strong> your image here<br>or click to select a file</div>
+                <input type="file" id="imageInput" accept="image/*" style="display:none;">
+              </div>
+            </div>
+            
+            <!-- Conversion Options -->
+            <div class="mb-4" id="conversionOptions" style="display: none;">
+              <h5>Conversion Settings</h5>
+              <div class="row">
+                <div class="col-md-6">
+                  <label for="outputFormat" class="form-label">Output Format</label>
+                  <select class="form-select" id="outputFormat">
+                    <option value="png">PNG</option>
+                    <option value="jpeg">JPEG</option>
+                    <option value="webp">WebP</option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label for="quality" class="form-label">Quality: <span id="qualityValue">90%</span></label>
+                  <input type="range" class="form-range" id="quality" min="10" max="100" value="90">
+                </div>
+              </div>
+              <div class="row mt-3">
+                <div class="col-md-6">
+                  <label for="maxWidth" class="form-label">Max Width (px)</label>
+                  <input type="number" class="form-control" id="maxWidth" placeholder="Auto">
+                </div>
+                <div class="col-md-6">
+                  <label for="maxHeight" class="form-label">Max Height (px)</label>
+                  <input type="number" class="form-control" id="maxHeight" placeholder="Auto">
+                </div>
+              </div>
+              <button class="btn btn-primary mt-3" id="convertBtn">
+                <i class="bi bi-file-earmark-code"></i> Convert to Base64
+              </button>
+            </div>
+            
+            <div class="upload-feedback mb-3" id="uploadFeedback"></div>
+            <div id="resultArea"></div>
+          </div>
+          <!-- TOOL UI END -->
+        </div>
+      </main>
+      <!-- Sidebar Ad Section -->
+      <aside class="col-lg-4">
+        <div class="ad-placeholder mb-4">
+          <span class="text-muted">Sponsored</span><br>Ad Space
+        </div>
+      </aside>
+    </div>
+  </div>
+  <div id="site-footer"></div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/js/header-footer.js"></script>
+  <script>
+    // Drag-and-drop and file upload logic
+    const dropzone = document.getElementById('dropzone');
+    const imageInput = document.getElementById('imageInput');
+    const feedback = document.getElementById('uploadFeedback');
+    const resultArea = document.getElementById('resultArea');
+    const conversionOptions = document.getElementById('conversionOptions');
+    const qualitySlider = document.getElementById('quality');
+    const qualityValue = document.getElementById('qualityValue');
+    const convertBtn = document.getElementById('convertBtn');
+    
+    let currentFile = null;
+    let originalImage = null;
+
+    dropzone.addEventListener('click', () => imageInput.click());
+    dropzone.addEventListener('dragover', e => {
+      e.preventDefault();
+      dropzone.classList.add('dragover');
+    });
+    dropzone.addEventListener('dragleave', e => {
+      e.preventDefault();
+      dropzone.classList.remove('dragover');
+    });
+    dropzone.addEventListener('drop', e => {
+      e.preventDefault();
+      dropzone.classList.remove('dragover');
+      if (e.dataTransfer.files.length) {
+        handleFile(e.dataTransfer.files[0]);
+      }
+    });
+    imageInput.addEventListener('change', e => {
+      if (e.target.files.length) {
+        handleFile(e.target.files[0]);
+      }
+    });
+
+    qualitySlider.addEventListener('input', () => {
+      qualityValue.textContent = qualitySlider.value + '%';
+    });
+
+    convertBtn.addEventListener('click', convertToBase64);
+
+    function handleFile(file) {
+      feedback.textContent = '';
+      resultArea.innerHTML = '';
+      currentFile = file;
+      
+      if (!file.type.startsWith('image/')) {
+        feedback.innerHTML = '<span class="text-danger"><i class="bi bi-x-circle"></i> Please upload a valid image file.</span>';
+        return;
+      }
+      
+      feedback.innerHTML = '<span class="text-info"><i class="bi bi-info-circle"></i> Image loaded successfully. Configure conversion settings below.</span>';
+      
+      // Load image to get dimensions
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+          originalImage = img;
+          document.getElementById('maxWidth').placeholder = img.width + 'px';
+          document.getElementById('maxHeight').placeholder = img.height + 'px';
+          conversionOptions.style.display = 'block';
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function convertToBase64() {
+      if (!currentFile || !originalImage) {
+        feedback.innerHTML = '<span class="text-danger"><i class="bi bi-x-circle"></i> Please upload an image first.</span>';
+        return;
+      }
+
+      feedback.innerHTML = '<span class="text-info"><i class="bi bi-arrow-repeat"></i> Converting...</span>';
+      convertBtn.disabled = true;
+
+      const quality = parseInt(qualitySlider.value) / 100;
+      const maxWidth = parseInt(document.getElementById('maxWidth').value) || originalImage.width;
+      const maxHeight = parseInt(document.getElementById('maxHeight').value) || originalImage.height;
+      const format = document.getElementById('outputFormat').value;
+
+      // Calculate new dimensions maintaining aspect ratio
+      let newWidth = originalImage.width;
+      let newHeight = originalImage.height;
+      
+      if (newWidth > maxWidth) {
+        newHeight = (newHeight * maxWidth) / newWidth;
+        newWidth = maxWidth;
+      }
+      if (newHeight > maxHeight) {
+        newWidth = (newWidth * maxHeight) / newHeight;
+        newHeight = maxHeight;
+      }
+
+      // Create canvas and convert
+      const canvas = document.createElement('canvas');
+      canvas.width = newWidth;
+      canvas.height = newHeight;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(originalImage, 0, 0, newWidth, newHeight);
+
+      let mimeType = 'image/png';
+      if (format === 'jpeg') mimeType = 'image/jpeg';
+      else if (format === 'webp') mimeType = 'image/webp';
+
+      canvas.toBlob(blob => {
+        if (blob) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            const base64 = e.target.result;
+            const base64Data = base64.split(',')[1]; // Remove data URL prefix
+            
+            const fileSize = (blob.size / 1024).toFixed(1);
+            const base64Size = (base64Data.length * 0.75 / 1024).toFixed(1);
+            
+            resultArea.innerHTML = `
+              <div class='alert alert-success'>
+                <i class='bi bi-check-circle'></i> Conversion successful!
+                <button class='btn btn-success btn-sm ms-2' onclick='copyToClipboard()'>
+                  <i class='bi bi-clipboard'></i> Copy Base64
+                </button>
+                <button class='btn btn-primary btn-sm ms-2' onclick='downloadBase64()'>
+                  <i class='bi bi-download'></i> Download as Text
+                </button>
+              </div>
+              <div class='base64-info mb-3'>
+                <h6>Conversion Results:</h6>
+                <p><strong>Original Size:</strong> ${(currentFile.size / 1024).toFixed(1)} KB</p>
+                <p><strong>Base64 Size:</strong> ${base64Size} KB (${((base64Size / (currentFile.size / 1024)) * 100).toFixed(1)}% of original)</p>
+                <p><strong>New Dimensions:</strong> ${newWidth} × ${newHeight} px</p>
+                <p><strong>Format:</strong> ${format.toUpperCase()}</p>
+              </div>
+              <div class='position-relative'>
+                <div class='base64-output' id='base64Output'>${base64}</div>
+                <button class='btn btn-sm btn-outline-secondary copy-btn' onclick='copyToClipboard()'>
+                  <i class='bi bi-clipboard'></i>
+                </button>
+              </div>
+            `;
+            feedback.textContent = '';
+            
+            // Store base64 for download
+            window.currentBase64 = base64;
+          };
+          reader.readAsDataURL(blob);
+        } else {
+          feedback.innerHTML = '<span class="text-danger"><i class="bi bi-x-circle"></i> Conversion failed. Please try again.</span>';
+        }
+        convertBtn.disabled = false;
+      }, mimeType, quality);
+    }
+
+    function copyToClipboard() {
+      const base64Output = document.getElementById('base64Output');
+      const text = base64Output.textContent;
+      
+      navigator.clipboard.writeText(text).then(() => {
+        // Show success message
+        const btn = event.target.closest('button');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="bi bi-check"></i>';
+        btn.classList.remove('btn-outline-secondary');
+        btn.classList.add('btn-success');
+        
+        setTimeout(() => {
+          btn.innerHTML = originalText;
+          btn.classList.remove('btn-success');
+          btn.classList.add('btn-outline-secondary');
+        }, 2000);
+      });
+    }
+
+    function downloadBase64() {
+      if (window.currentBase64) {
+        const blob = new Blob([window.currentBase64], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'image-base64.txt';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      }
+    }
+  </script>
+</body>
+</html> 

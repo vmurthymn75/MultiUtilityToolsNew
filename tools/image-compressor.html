@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Compressor | Multi Utility Tools</title>
+  <meta name="description" content="Compress images to reduce file size online. Fast, free, and easy image compressor tool.">
+  <meta name="keywords" content="image compressor, compress image, online image compression, photo compressor, image tool">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../assets/css/style.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <link rel="canonical" href="https://multiutilitytools.com/tools/image-compressor.html">
+  <style>
+    .dropzone {
+      border: 2px dashed #0d6efd;
+      border-radius: 1rem;
+      background: #f8f9fa;
+      text-align: center;
+      padding: 2.5rem 1rem;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .dropzone.dragover {
+      background: #e7f1ff;
+      border-color: #0a58ca;
+    }
+    .dropzone i {
+      font-size: 2.5rem;
+      color: #0d6efd;
+    }
+    .upload-feedback {
+      min-height: 2rem;
+    }
+    .compression-info {
+      background: #f8f9fa;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin: 1rem 0;
+    }
+  </style>
+</head>
+<body>
+  <div id="site-header"></div>
+  <div class="container-fluid my-4">
+    <div class="row">
+      <!-- Main Tool Card -->
+      <main class="col-lg-8 mb-4 mb-lg-0">
+        <div class="card card-tool shadow-sm p-4">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="d-flex align-items-center">
+              <i class="bi bi-file-earmark-zip display-5 me-3"></i>
+              <div>
+                <h1 class="h3 mb-1">Image Compressor</h1>
+                <p class="text-muted mb-0">Compress images to reduce file size online.</p>
+              </div>
+            </div>
+            <a href="../index.html" class="btn btn-outline-primary btn-lg d-flex align-items-center" style="white-space:nowrap;"><i class="bi bi-house-door me-2"></i>Home</a>
+          </div>
+          <hr>
+          <!-- TOOL UI START -->
+          <div id="tool-ui">
+            <div class="mb-4">
+              <div id="dropzone" class="dropzone">
+                <i class="bi bi-cloud-arrow-up mb-2"></i>
+                <div><strong>Drag & Drop</strong> your image here<br>or click to select a file</div>
+                <input type="file" id="imageInput" accept="image/*" style="display:none;">
+              </div>
+            </div>
+            
+            <!-- Compression Options -->
+            <div class="mb-4" id="compressionOptions" style="display: none;">
+              <h5>Compression Settings</h5>
+              <div class="row">
+                <div class="col-md-6">
+                  <label for="quality" class="form-label">Quality: <span id="qualityValue">80%</span></label>
+                  <input type="range" class="form-range" id="quality" min="10" max="100" value="80">
+                </div>
+                <div class="col-md-6">
+                  <label for="maxWidth" class="form-label">Max Width (px)</label>
+                  <input type="number" class="form-control" id="maxWidth" placeholder="Auto">
+                </div>
+              </div>
+              <div class="row mt-3">
+                <div class="col-md-6">
+                  <label for="maxHeight" class="form-label">Max Height (px)</label>
+                  <input type="number" class="form-control" id="maxHeight" placeholder="Auto">
+                </div>
+                <div class="col-md-6">
+                  <label for="format" class="form-label">Output Format</label>
+                  <select class="form-select" id="format">
+                    <option value="jpeg">JPEG</option>
+                    <option value="webp">WebP</option>
+                    <option value="png">PNG</option>
+                  </select>
+                </div>
+              </div>
+              <button class="btn btn-primary mt-3" id="compressBtn">
+                <i class="bi bi-file-earmark-zip"></i> Compress Image
+              </button>
+            </div>
+            
+            <div class="upload-feedback mb-3" id="uploadFeedback"></div>
+            <div id="resultArea"></div>
+          </div>
+          <!-- TOOL UI END -->
+        </div>
+      </main>
+      <!-- Sidebar Ad Section -->
+      <aside class="col-lg-4">
+        <div class="ad-placeholder mb-4">
+          <span class="text-muted">Sponsored</span><br>Ad Space
+        </div>
+      </aside>
+    </div>
+  </div>
+  <div id="site-footer"></div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/js/header-footer.js"></script>
+  <script>
+    // Drag-and-drop and file upload logic
+    const dropzone = document.getElementById('dropzone');
+    const imageInput = document.getElementById('imageInput');
+    const feedback = document.getElementById('uploadFeedback');
+    const resultArea = document.getElementById('resultArea');
+    const compressionOptions = document.getElementById('compressionOptions');
+    const qualitySlider = document.getElementById('quality');
+    const qualityValue = document.getElementById('qualityValue');
+    const compressBtn = document.getElementById('compressBtn');
+    
+    let currentFile = null;
+    let originalImage = null;
+
+    dropzone.addEventListener('click', () => imageInput.click());
+    dropzone.addEventListener('dragover', e => {
+      e.preventDefault();
+      dropzone.classList.add('dragover');
+    });
+    dropzone.addEventListener('dragleave', e => {
+      e.preventDefault();
+      dropzone.classList.remove('dragover');
+    });
+    dropzone.addEventListener('drop', e => {
+      e.preventDefault();
+      dropzone.classList.remove('dragover');
+      if (e.dataTransfer.files.length) {
+        handleFile(e.dataTransfer.files[0]);
+      }
+    });
+    imageInput.addEventListener('change', e => {
+      if (e.target.files.length) {
+        handleFile(e.target.files[0]);
+      }
+    });
+
+    qualitySlider.addEventListener('input', () => {
+      qualityValue.textContent = qualitySlider.value + '%';
+    });
+
+    compressBtn.addEventListener('click', compressImage);
+
+    function handleFile(file) {
+      feedback.textContent = '';
+      resultArea.innerHTML = '';
+      currentFile = file;
+      
+      if (!file.type.startsWith('image/')) {
+        feedback.innerHTML = '<span class="text-danger"><i class="bi bi-x-circle"></i> Please upload a valid image file.</span>';
+        return;
+      }
+      
+      feedback.innerHTML = '<span class="text-info"><i class="bi bi-info-circle"></i> Image loaded successfully. Configure compression settings below.</span>';
+      
+      // Load image to get dimensions
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+          originalImage = img;
+          document.getElementById('maxWidth').placeholder = img.width + 'px';
+          document.getElementById('maxHeight').placeholder = img.height + 'px';
+          compressionOptions.style.display = 'block';
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function compressImage() {
+      if (!currentFile || !originalImage) {
+        feedback.innerHTML = '<span class="text-danger"><i class="bi bi-x-circle"></i> Please upload an image first.</span>';
+        return;
+      }
+
+      feedback.innerHTML = '<span class="text-info"><i class="bi bi-arrow-repeat"></i> Compressing...</span>';
+      compressBtn.disabled = true;
+
+      const quality = parseInt(qualitySlider.value) / 100;
+      const maxWidth = parseInt(document.getElementById('maxWidth').value) || originalImage.width;
+      const maxHeight = parseInt(document.getElementById('maxHeight').value) || originalImage.height;
+      const format = document.getElementById('format').value;
+
+      // Calculate new dimensions maintaining aspect ratio
+      let newWidth = originalImage.width;
+      let newHeight = originalImage.height;
+      
+      if (newWidth > maxWidth) {
+        newHeight = (newHeight * maxWidth) / newWidth;
+        newWidth = maxWidth;
+      }
+      if (newHeight > maxHeight) {
+        newWidth = (newWidth * maxHeight) / newHeight;
+        newHeight = maxHeight;
+      }
+
+      // Create canvas and compress
+      const canvas = document.createElement('canvas');
+      canvas.width = newWidth;
+      canvas.height = newHeight;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(originalImage, 0, 0, newWidth, newHeight);
+
+      let mimeType = 'image/jpeg';
+      if (format === 'webp') mimeType = 'image/webp';
+      else if (format === 'png') mimeType = 'image/png';
+
+      canvas.toBlob(blob => {
+        if (blob) {
+          const url = URL.createObjectURL(blob);
+          const originalSize = (currentFile.size / 1024).toFixed(1);
+          const compressedSize = (blob.size / 1024).toFixed(1);
+          const savings = ((currentFile.size - blob.size) / currentFile.size * 100).toFixed(1);
+          
+          resultArea.innerHTML = `
+            <div class='alert alert-success'>
+              <i class='bi bi-check-circle'></i> Compression successful!
+              <a href='${url}' download='compressed.${format}' class='btn btn-success btn-sm ms-2'>
+                <i class='bi bi-download'></i> Download Compressed
+              </a>
+            </div>
+            <div class='compression-info'>
+              <h6>Compression Results:</h6>
+              <p><strong>Original:</strong> ${originalSize} KB</p>
+              <p><strong>Compressed:</strong> ${compressedSize} KB</p>
+              <p><strong>Size Reduction:</strong> ${savings}%</p>
+              <p><strong>New Dimensions:</strong> ${newWidth} × ${newHeight} px</p>
+            </div>
+            <img src='${url}' alt='Compressed Image' class='img-fluid rounded border mt-2' style='max-width:300px;'>
+          `;
+          feedback.textContent = '';
+        } else {
+          feedback.innerHTML = '<span class="text-danger"><i class="bi bi-x-circle"></i> Compression failed. Please try again.</span>';
+        }
+        compressBtn.disabled = false;
+      }, mimeType, quality);
+    }
+  </script>
+</body>
+</html> 

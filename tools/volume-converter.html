@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Volume Converter - Multi Utility Tools</title>
+  <meta name="description" content="Convert between different volume units with this free online Volume Converter.">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../assets/css/style.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+</head>
+<body>
+  <div class="container py-5">
+    <h1 class="mb-4 text-center">Volume Converter</h1>
+    <form id="volumeForm" class="card p-4 shadow-lg mx-auto" style="max-width: 500px;">
+      <div class="mb-3">
+        <label for="volumeValue" class="form-label">Value</label>
+        <input type="number" class="form-control" id="volumeValue" required min="0" step="any" placeholder="Enter value">
+      </div>
+      <div class="mb-3">
+        <label for="fromUnit" class="form-label">From</label>
+        <select class="form-select" id="fromUnit">
+          <option value="l">Liters</option>
+          <option value="ml">Milliliters</option>
+          <option value="gal">Gallons</option>
+          <option value="pt">Pints</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label for="toUnit" class="form-label">To</label>
+        <select class="form-select" id="toUnit">
+          <option value="l">Liters</option>
+          <option value="ml">Milliliters</option>
+          <option value="gal">Gallons</option>
+          <option value="pt">Pints</option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary w-100">Convert</button>
+    </form>
+    <div id="volumeResult" class="mt-4 text-center" style="display:none;">
+      <h4>Converted Value: <span id="convertedVolume" class="text-success"></span></h4>
+    </div>
+  </div>
+  <script>
+    const factors = {
+      l: {l:1, ml:1000, gal:0.264172, pt:2.11338},
+      ml: {l:0.001, ml:1, gal:0.000264172, pt:0.00211338},
+      gal: {l:3.78541, ml:3785.41, gal:1, pt:8},
+      pt: {l:0.473176, ml:473.176, gal:0.125, pt:1}
+    };
+    document.getElementById('volumeForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const value = parseFloat(document.getElementById('volumeValue').value);
+      const from = document.getElementById('fromUnit').value;
+      const to = document.getElementById('toUnit').value;
+      const result = value * factors[from][to];
+      document.getElementById('convertedVolume').textContent = result + ' ' + to;
+      document.getElementById('volumeResult').style.display = 'block';
+    });
+  </script>
+</body>
+</html> 

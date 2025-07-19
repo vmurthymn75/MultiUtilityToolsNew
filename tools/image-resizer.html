@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Resizer - Resize Images Online | Multi Utility Tools</title>
+  <meta name="description" content="Free online image resizer tool. Resize images to any dimensions with drag-and-drop support. Fast, secure, and easy to use. No registration required.">
+  <meta name="keywords" content="image resizer, resize image, online image editor, photo resizer, image resize tool, free image resizer">
+  <meta name="author" content="Multi Utility Tools">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://yourdomain.com/tools/image-resizer.html">
+  
+  <!-- Open Graph Meta Tags -->
+  <meta property="og:title" content="Image Resizer - Resize Images Online">
+  <meta property="og:description" content="Free online image resizer tool. Resize images to any dimensions with drag-and-drop support.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://yourdomain.com/tools/image-resizer.html">
+  
+  <!-- Twitter Card Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Image Resizer - Resize Images Online">
+  <meta name="twitter:description" content="Free online image resizer tool. Resize images to any dimensions with drag-and-drop support.">
+  
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="../assets/css/tools.css">
+  <link rel="icon" href="../assets/images/favicon.ico">
+</head>
+<body>
+  <!-- Header -->
+  <div id="header"></div>
+  
+  <!-- Main Content -->
+  <main class="tool-main container" tabindex="-1">
+    <!-- Breadcrumb Navigation -->
+    <nav aria-label="Breadcrumb" class="breadcrumb-nav">
+      <a href="../index.html" class="back-link" aria-label="Back to Home">
+        <i class="bi bi-arrow-left"></i> Back to Home
+      </a>
+    </nav>
+    
+    <!-- Tool Header -->
+    <header class="tool-header">
+      <h1><i class="bi bi-arrows-angle-expand"></i> Image Resizer</h1>
+      <p class="tool-desc">Resize your images quickly and easily. Upload an image and set your desired dimensions. Supports JPG, PNG, GIF, and WebP formats.</p>
+    </header>
+    
+    <!-- Tool UI -->
+    <section class="tool-ui" aria-labelledby="resizer-form-label">
+      <!-- Upload Form -->
+      <div class="tool-form">
+        <h2 id="resizer-form-label" class="h4 mb-4">Upload & Configure</h2>
+        
+        <form id="resizer-form" class="resizer-form" autocomplete="off">
+          <!-- File Upload Area -->
+          <div class="form-group">
+            <label for="image-upload" class="form-label">Upload Image</label>
+            <div class="upload-area" tabindex="0" role="button" aria-label="Upload image by clicking or dragging and dropping">
+              <i class="bi bi-cloud-upload upload-icon"></i>
+              <div class="upload-text">Click to upload or drag and drop</div>
+              <div class="upload-hint">Supports JPG, PNG, GIF, WebP (Max 10MB)</div>
+              <input type="file" id="image-upload" name="image-upload" class="file-input" accept="image/*" required aria-required="true">
+            </div>
+          </div>
+          
+          <!-- Progress Bar -->
+          <div class="progress-container" style="display: none;">
+            <div class="progress-bar">
+              <div class="progress-fill"></div>
+            </div>
+          </div>
+          
+          <!-- Resize Options -->
+          <div class="form-group">
+            <label class="form-label">Resize Options</label>
+            <div class="options-grid">
+              <div class="form-group">
+                <label for="width" class="form-label">Width (px)</label>
+                <input type="number" id="width" name="width" class="form-input" min="1" placeholder="e.g. 800" aria-describedby="width-help">
+                <div id="width-help" class="form-text">Leave empty to maintain aspect ratio</div>
+              </div>
+              
+              <div class="form-group">
+                <label for="height" class="form-label">Height (px)</label>
+                <input type="number" id="height" name="height" class="form-input" min="1" placeholder="e.g. 600" aria-describedby="height-help">
+                <div id="height-help" class="form-text">Leave empty to maintain aspect ratio</div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Preset Sizes -->
+          <div class="form-group">
+            <label class="form-label">Quick Presets</label>
+            <div class="d-flex flex-wrap gap-2">
+              <button type="button" class="btn btn-outline-secondary btn-sm" data-width="1920" data-height="1080">HD (1920×1080)</button>
+              <button type="button" class="btn btn-outline-secondary btn-sm" data-width="1280" data-height="720">HD (1280×720)</button>
+              <button type="button" class="btn btn-outline-secondary btn-sm" data-width="800" data-height="600">Standard (800×600)</button>
+              <button type="button" class="btn btn-outline-secondary btn-sm" data-width="640" data-height="480">VGA (640×480)</button>
+              <button type="button" class="btn btn-outline-secondary btn-sm" data-width="400" data-height="300">Thumbnail (400×300)</button>
+            </div>
+          </div>
+          
+          <!-- Action Buttons -->
+          <div class="d-flex gap-2 flex-wrap">
+            <button type="submit" class="btn btn-primary" data-original-text="Resize Image">
+              <i class="bi bi-arrows-angle-expand"></i> Resize Image
+            </button>
+            <button type="button" class="btn btn-secondary btn-reset">
+              <i class="bi bi-arrow-clockwise"></i> Reset
+            </button>
+          </div>
+        </form>
+      </div>
+      
+      <!-- Result Area -->
+      <div class="result-area">
+        <div class="result-placeholder">
+          <i class="bi bi-image"></i>
+          <p>Resized image will appear here</p>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Ad Section -->
+    <aside class="ad-placeholder" aria-label="Advertisement">
+      <div class="ad-box">Ad space</div>
+    </aside>
+  </main>
+  
+  <!-- Footer -->
+  <div id="footer"></div>
+  
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/js/header-footer.js" defer></script>
+  <script src="../assets/js/tools.js" defer></script>
+  <script>
+    // Tool-specific functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      // Handle preset buttons
+      const presetButtons = document.querySelectorAll('[data-width][data-height]');
+      presetButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          const width = this.dataset.width;
+          const height = this.dataset.height;
+          
+          document.getElementById('width').value = width;
+          document.getElementById('height').value = height;
+          
+          // Highlight selected preset
+          presetButtons.forEach(btn => btn.classList.remove('btn-primary', 'btn-outline-secondary'));
+          presetButtons.forEach(btn => btn.classList.add('btn-outline-secondary'));
+          this.classList.remove('btn-outline-secondary');
+          this.classList.add('btn-primary');
+        });
+      });
+      
+      // Auto-calculate aspect ratio
+      const widthInput = document.getElementById('width');
+      const heightInput = document.getElementById('height');
+      let originalAspectRatio = null;
+      
+      // Store original aspect ratio when image is loaded
+      document.addEventListener('fileSelected', function(e) {
+        if (e.detail.file) {
+          const img = new Image();
+          img.onload = function() {
+            originalAspectRatio = this.width / this.height;
+            // Update width/height inputs with original dimensions
+            widthInput.placeholder = this.width + 'px';
+            heightInput.placeholder = this.height + 'px';
+          };
+          img.src = URL.createObjectURL(e.detail.file);
+        }
+      });
+      
+      // Auto-calculate when one dimension changes
+      widthInput.addEventListener('input', function() {
+        if (originalAspectRatio && this.value && !heightInput.value) {
+          heightInput.value = Math.round(this.value / originalAspectRatio);
+        }
+      });
+      
+      heightInput.addEventListener('input', function() {
+        if (originalAspectRatio && this.value && !widthInput.value) {
+          widthInput.value = Math.round(this.value * originalAspectRatio);
+        }
+      });
+    });
+  </script>
+</body>
+</html> 

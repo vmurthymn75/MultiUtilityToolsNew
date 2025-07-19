@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Watermarker - Add Watermarks Online | Multi Utility Tools</title>
+  <meta name="description" content="Free online image watermarker tool. Add text or image watermarks to your photos with drag-and-drop support. Customize position, opacity, and style.">
+  <meta name="keywords" content="image watermarker, add watermark, photo watermark, text watermark, image watermark tool, online watermarker">
+  <meta name="author" content="Multi Utility Tools">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://yourdomain.com/tools/image-watermarker.html">
+  
+  <!-- Open Graph Meta Tags -->
+  <meta property="og:title" content="Image Watermarker - Add Watermarks Online">
+  <meta property="og:description" content="Free online image watermarker tool. Add text or image watermarks to your photos with drag-and-drop support.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://yourdomain.com/tools/image-watermarker.html">
+  
+  <!-- Twitter Card Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Image Watermarker - Add Watermarks Online">
+  <meta name="twitter:description" content="Free online image watermarker tool. Add text or image watermarks to your photos with drag-and-drop support.">
+  
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="../assets/css/tools.css">
+  <link rel="icon" href="../assets/images/favicon.ico">
+</head>
+<body>
+  <!-- Header -->
+  <div id="header"></div>
+  
+  <!-- Main Content -->
+  <main class="tool-main container" tabindex="-1">
+    <!-- Breadcrumb Navigation -->
+    <nav aria-label="Breadcrumb" class="breadcrumb-nav">
+      <a href="../index.html" class="back-link" aria-label="Back to Home">
+        <i class="bi bi-arrow-left"></i> Back to Home
+      </a>
+    </nav>
+    
+    <!-- Tool Header -->
+    <header class="tool-header">
+      <h1><i class="bi bi-type"></i> Image Watermarker</h1>
+      <p class="tool-desc">Add professional watermarks to your images. Customize text, position, opacity, and style to protect your photos.</p>
+    </header>
+    
+    <!-- Tool UI -->
+    <section class="tool-ui" aria-labelledby="watermarker-form-label">
+      <!-- Upload Form -->
+      <div class="tool-form">
+        <h2 id="watermarker-form-label" class="h4 mb-4">Upload & Watermark</h2>
+        
+        <form id="watermarker-form" class="watermarker-form" autocomplete="off">
+          <!-- File Upload Area -->
+          <div class="form-group">
+            <label for="image-upload" class="form-label">Upload Image</label>
+            <div class="upload-area" tabindex="0" role="button" aria-label="Upload image by clicking or dragging and dropping">
+              <i class="bi bi-cloud-upload upload-icon"></i>
+              <div class="upload-text">Click to upload or drag and drop</div>
+              <div class="upload-hint">Supports JPG, PNG, GIF, WebP (Max 10MB)</div>
+              <input type="file" id="image-upload" name="image-upload" class="file-input" accept="image/*" required aria-required="true">
+            </div>
+          </div>
+          
+          <!-- Progress Bar -->
+          <div class="progress-container" style="display: none;">
+            <div class="progress-bar">
+              <div class="progress-fill"></div>
+            </div>
+          </div>
+          
+          <!-- Watermark Type -->
+          <div class="form-group">
+            <label class="form-label">Watermark Type</label>
+            <div class="btn-group w-100" role="group" aria-label="Watermark type selection">
+              <input type="radio" class="btn-check" name="watermark-type" id="text-watermark" value="text" checked>
+              <label class="btn btn-outline-primary" for="text-watermark">
+                <i class="bi bi-type"></i> Text
+              </label>
+              
+              <input type="radio" class="btn-check" name="watermark-type" id="image-watermark" value="image">
+              <label class="btn btn-outline-primary" for="image-watermark">
+                <i class="bi bi-image"></i> Image
+              </label>
+            </div>
+          </div>
+          
+          <!-- Text Watermark Options -->
+          <div id="text-options" class="form-group">
+            <label for="watermark-text" class="form-label">Watermark Text</label>
+            <input type="text" id="watermark-text" name="watermark-text" class="form-input" placeholder="Enter your watermark text" value="© 2024 Your Brand">
+            
+            <div class="options-grid">
+              <div class="form-group">
+                <label for="font-size" class="form-label">Font Size</label>
+                <input type="range" id="font-size" name="font-size" class="form-range" min="12" max="72" value="24" aria-describedby="font-size-value">
+                <div id="font-size-value" class="form-text">24px</div>
+              </div>
+              
+              <div class="form-group">
+                <label for="font-color" class="form-label">Font Color</label>
+                <input type="color" id="font-color" name="font-color" class="form-control form-control-color" value="#ffffff">
+              </div>
+            </div>
+          </div>
+          
+          <!-- Image Watermark Options -->
+          <div id="image-options" class="form-group" style="display: none;">
+            <label for="watermark-image" class="form-label">Watermark Image</label>
+            <div class="upload-area" tabindex="0" role="button" aria-label="Upload watermark image by clicking or dragging and dropping">
+              <i class="bi bi-image upload-icon"></i>
+              <div class="upload-text">Click to upload watermark image</div>
+              <div class="upload-hint">PNG with transparency recommended</div>
+              <input type="file" id="watermark-image" name="watermark-image" class="file-input" accept="image/*">
+            </div>
+            
+            <div class="form-group mt-3">
+              <label for="watermark-size" class="form-label">Watermark Size (%)</label>
+              <input type="range" id="watermark-size" name="watermark-size" class="form-range" min="5" max="50" value="20" aria-describedby="watermark-size-value">
+              <div id="watermark-size-value" class="form-text">20% of image size</div>
+            </div>
+          </div>
+          
+          <!-- Position and Style -->
+          <div class="form-group">
+            <label for="position" class="form-label">Position</label>
+            <select id="position" name="position" class="form-input">
+              <option value="top-left">Top Left</option>
+              <option value="top-center">Top Center</option>
+              <option value="top-right">Top Right</option>
+              <option value="center-left">Center Left</option>
+              <option value="center">Center</option>
+              <option value="center-right">Center Right</option>
+              <option value="bottom-left">Bottom Left</option>
+              <option value="bottom-center">Bottom Center</option>
+              <option value="bottom-right" selected>Bottom Right</option>
+            </select>
+          </div>
+          
+          <div class="options-grid">
+            <div class="form-group">
+              <label for="opacity" class="form-label">Opacity</label>
+              <input type="range" id="opacity" name="opacity" class="form-range" min="0.1" max="1" step="0.1" value="0.5" aria-describedby="opacity-value">
+              <div id="opacity-value" class="form-text">50%</div>
+            </div>
+            
+            <div class="form-group">
+              <label for="rotation" class="form-label">Rotation</label>
+              <input type="range" id="rotation" name="rotation" class="form-range" min="-45" max="45" value="0" aria-describedby="rotation-value">
+              <div id="rotation-value" class="form-text">0°</div>
+            </div>
+          </div>
+          
+          <!-- Advanced Options -->
+          <div class="form-group">
+            <label class="form-label">Advanced Options</label>
+            <div class="options-grid">
+              <div class="form-check">
+                <input type="checkbox" id="add-shadow" name="add-shadow" class="form-check-input">
+                <label for="add-shadow" class="form-check-label">Add shadow</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" id="tile-watermark" name="tile-watermark" class="form-check-input">
+                <label for="tile-watermark" class="form-check-label">Tile watermark</label>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Action Buttons -->
+          <div class="d-flex gap-2 flex-wrap">
+            <button type="submit" class="btn btn-primary" data-original-text="Add Watermark">
+              <i class="bi bi-type"></i> Add Watermark
+            </button>
+            <button type="button" class="btn btn-secondary btn-reset">
+              <i class="bi bi-arrow-clockwise"></i> Reset
+            </button>
+          </div>
+        </form>
+      </div>
+      
+      <!-- Result Area -->
+      <div class="result-area">
+        <div class="result-placeholder">
+          <i class="bi bi-image"></i>
+          <p>Watermarked image will appear here</p>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Ad Section -->
+    <aside class="ad-placeholder" aria-label="Advertisement">
+      <div class="ad-box">Ad space</div>
+    </aside>
+  </main>
+  
+  <!-- Footer -->
+  <div id="footer"></div>
+  
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/js/header-footer.js" defer></script>
+  <script src="../assets/js/tools.js" defer></script>
+  <script>
+    // Tool-specific functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      // Watermark type toggle
+      const textWatermark = document.getElementById('text-watermark');
+      const imageWatermark = document.getElementById('image-watermark');
+      const textOptions = document.getElementById('text-options');
+      const imageOptions = document.getElementById('image-options');
+      
+      function toggleWatermarkOptions() {
+        if (textWatermark.checked) {
+          textOptions.style.display = 'block';
+          imageOptions.style.display = 'none';
+        } else {
+          textOptions.style.display = 'none';
+          imageOptions.style.display = 'block';
+        }
+      }
+      
+      textWatermark.addEventListener('change', toggleWatermarkOptions);
+      imageWatermark.addEventListener('change', toggleWatermarkOptions);
+      
+      // Range sliders
+      const fontSizeSlider = document.getElementById('font-size');
+      const fontSizeValue = document.getElementById('font-size-value');
+      fontSizeSlider.addEventListener('input', function() {
+        fontSizeValue.textContent = this.value + 'px';
+      });
+      
+      const opacitySlider = document.getElementById('opacity');
+      const opacityValue = document.getElementById('opacity-value');
+      opacitySlider.addEventListener('input', function() {
+        opacityValue.textContent = Math.round(this.value * 100) + '%';
+      });
+      
+      const rotationSlider = document.getElementById('rotation');
+      const rotationValue = document.getElementById('rotation-value');
+      rotationSlider.addEventListener('input', function() {
+        rotationValue.textContent = this.value + '°';
+      });
+      
+      const watermarkSizeSlider = document.getElementById('watermark-size');
+      const watermarkSizeValue = document.getElementById('watermark-size-value');
+      watermarkSizeSlider.addEventListener('input', function() {
+        watermarkSizeValue.textContent = this.value + '% of image size';
+      });
+      
+      // Preset watermark texts
+      const presetTexts = [
+        '© 2024 Your Brand',
+        'Confidential',
+        'Sample',
+        'Draft',
+        'Your Company Name',
+        'Photography by [Name]'
+      ];
+      
+      // Add preset buttons
+      const textInput = document.getElementById('watermark-text');
+      const presetContainer = document.createElement('div');
+      presetContainer.className = 'mt-2';
+      presetContainer.innerHTML = '<small class="text-muted">Quick presets: </small>';
+      
+      presetTexts.forEach(text => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'btn btn-sm btn-outline-secondary me-1 mb-1';
+        btn.textContent = text;
+        btn.addEventListener('click', () => {
+          textInput.value = text;
+        });
+        presetContainer.appendChild(btn);
+      });
+      
+      textInput.parentNode.appendChild(presetContainer);
+    });
+  </script>
+</body>
+</html> 

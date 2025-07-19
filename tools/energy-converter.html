@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Energy Converter - Multi Utility Tools</title>
+  <meta name="description" content="Convert between different energy units with this free online Energy Converter.">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../assets/css/style.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+</head>
+<body>
+  <div class="container py-5">
+    <h1 class="mb-4 text-center">Energy Converter</h1>
+    <form id="energyForm" class="card p-4 shadow-lg mx-auto" style="max-width: 500px;">
+      <div class="mb-3">
+        <label for="energyValue" class="form-label">Value</label>
+        <input type="number" class="form-control" id="energyValue" required min="0" step="any" placeholder="Enter value">
+      </div>
+      <div class="mb-3">
+        <label for="fromUnit" class="form-label">From</label>
+        <select class="form-select" id="fromUnit">
+          <option value="J">Joules</option>
+          <option value="kJ">Kilojoules</option>
+          <option value="cal">Calories</option>
+          <option value="kcal">Kilocalories</option>
+          <option value="Wh">Watt-hours</option>
+          <option value="kWh">Kilowatt-hours</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label for="toUnit" class="form-label">To</label>
+        <select class="form-select" id="toUnit">
+          <option value="J">Joules</option>
+          <option value="kJ">Kilojoules</option>
+          <option value="cal">Calories</option>
+          <option value="kcal">Kilocalories</option>
+          <option value="Wh">Watt-hours</option>
+          <option value="kWh">Kilowatt-hours</option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary w-100">Convert</button>
+    </form>
+    <div id="energyResult" class="mt-4 text-center" style="display:none;">
+      <h4>Converted Value: <span id="convertedEnergy" class="text-success"></span></h4>
+    </div>
+  </div>
+  <script>
+    const factors = {
+      J: {J:1, kJ:0.001, cal:0.239006, kcal:0.000239006, Wh:0.000277778, kWh:0.000000277778},
+      kJ: {J:1000, kJ:1, cal:239.006, kcal:0.239006, Wh:0.277778, kWh:0.000277778},
+      cal: {J:4.184, kJ:0.004184, cal:1, kcal:0.001, Wh:0.00116222, kWh:0.00000116222},
+      kcal: {J:4184, kJ:4.184, cal:1000, kcal:1, Wh:1.16222, kWh:0.00116222},
+      Wh: {J:3600, kJ:3.6, cal:860.421, kcal:0.860421, Wh:1, kWh:0.001},
+      kWh: {J:3600000, kJ:3600, cal:860421, kcal:860.421, Wh:1000, kWh:1}
+    };
+    document.getElementById('energyForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const value = parseFloat(document.getElementById('energyValue').value);
+      const from = document.getElementById('fromUnit').value;
+      const to = document.getElementById('toUnit').value;
+      const result = value * factors[from][to];
+      document.getElementById('convertedEnergy').textContent = result + ' ' + to;
+      document.getElementById('energyResult').style.display = 'block';
+    });
+  </script>
+</body>
+</html> 

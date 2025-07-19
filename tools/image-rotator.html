@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Rotator - Rotate Images Online | Multi Utility Tools</title>
+  <meta name="description" content="Free online image rotator tool. Rotate images to any angle with precision. Supports 90°, 180°, 270° rotations and custom angles. Drag-and-drop support.">
+  <meta name="keywords" content="image rotator, rotate image, photo rotation, image rotation tool, online image rotator, rotate photos">
+  <meta name="author" content="Multi Utility Tools">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://yourdomain.com/tools/image-rotator.html">
+  
+  <!-- Open Graph Meta Tags -->
+  <meta property="og:title" content="Image Rotator - Rotate Images Online">
+  <meta property="og:description" content="Free online image rotator tool. Rotate images to any angle with precision. Supports 90°, 180°, 270° rotations and custom angles.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://yourdomain.com/tools/image-rotator.html">
+  
+  <!-- Twitter Card Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Image Rotator - Rotate Images Online">
+  <meta name="twitter:description" content="Free online image rotator tool. Rotate images to any angle with precision. Supports 90°, 180°, 270° rotations and custom angles.">
+  
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="../assets/css/tools.css">
+  <link rel="icon" href="../assets/images/favicon.ico">
+</head>
+<body>
+  <!-- Header -->
+  <div id="header"></div>
+  
+  <!-- Main Content -->
+  <main class="tool-main container" tabindex="-1">
+    <!-- Breadcrumb Navigation -->
+    <nav aria-label="Breadcrumb" class="breadcrumb-nav">
+      <a href="../index.html" class="back-link" aria-label="Back to Home">
+        <i class="bi bi-arrow-left"></i> Back to Home
+      </a>
+    </nav>
+    
+    <!-- Tool Header -->
+    <header class="tool-header">
+      <h1><i class="bi bi-arrow-clockwise"></i> Image Rotator</h1>
+      <p class="tool-desc">Rotate images to any angle with precision. Use preset rotations or set custom angles for perfect image orientation.</p>
+    </header>
+    
+    <!-- Tool UI -->
+    <section class="tool-ui" aria-labelledby="rotator-form-label">
+      <!-- Upload Form -->
+      <div class="tool-form">
+        <h2 id="rotator-form-label" class="h4 mb-4">Upload & Rotate</h2>
+        
+        <form id="rotator-form" class="rotator-form" autocomplete="off">
+          <!-- File Upload Area -->
+          <div class="form-group">
+            <label for="image-upload" class="form-label">Upload Image</label>
+            <div class="upload-area" tabindex="0" role="button" aria-label="Upload image by clicking or dragging and dropping">
+              <i class="bi bi-cloud-upload upload-icon"></i>
+              <div class="upload-text">Click to upload or drag and drop</div>
+              <div class="upload-hint">Supports JPG, PNG, GIF, WebP (Max 10MB)</div>
+              <input type="file" id="image-upload" name="image-upload" class="file-input" accept="image/*" required aria-required="true">
+            </div>
+          </div>
+          
+          <!-- Progress Bar -->
+          <div class="progress-container" style="display: none;">
+            <div class="progress-bar">
+              <div class="progress-fill"></div>
+            </div>
+          </div>
+          
+          <!-- Rotation Type -->
+          <div class="form-group">
+            <label class="form-label">Rotation Type</label>
+            <div class="btn-group w-100" role="group" aria-label="Rotation type selection">
+              <input type="radio" class="btn-check" name="rotation-type" id="preset-rotation" value="preset" checked>
+              <label class="btn btn-outline-primary" for="preset-rotation">
+                <i class="bi bi-arrow-clockwise"></i> Preset
+              </label>
+              
+              <input type="radio" class="btn-check" name="rotation-type" id="custom-rotation" value="custom">
+              <label class="btn btn-outline-primary" for="custom-rotation">
+                <i class="bi bi-sliders"></i> Custom
+              </label>
+            </div>
+          </div>
+          
+          <!-- Preset Rotations -->
+          <div id="preset-options" class="form-group">
+            <label class="form-label">Preset Rotations</label>
+            <div class="d-flex flex-wrap gap-2">
+              <button type="button" class="btn btn-outline-secondary" data-angle="90">
+                <i class="bi bi-arrow-clockwise"></i> 90° Right
+              </button>
+              <button type="button" class="btn btn-outline-secondary" data-angle="180">
+                <i class="bi bi-arrow-clockwise"></i> 180°
+              </button>
+              <button type="button" class="btn btn-outline-secondary" data-angle="270">
+                <i class="bi bi-arrow-counterclockwise"></i> 90° Left
+              </button>
+              <button type="button" class="btn btn-outline-secondary" data-angle="0">
+                <i class="bi bi-arrow-clockwise"></i> Reset
+              </button>
+            </div>
+          </div>
+          
+          <!-- Custom Rotation -->
+          <div id="custom-options" class="form-group" style="display: none;">
+            <label for="custom-angle" class="form-label">Custom Angle (degrees)</label>
+            <div class="d-flex align-items-center gap-2">
+              <input type="range" id="custom-angle" name="custom-angle" class="form-range" min="-180" max="180" value="0" aria-describedby="angle-value">
+              <span id="angle-value" class="badge bg-primary">0°</span>
+            </div>
+            <div class="form-text">Drag the slider or enter a value between -180° and 180°</div>
+            
+            <div class="mt-2">
+              <input type="number" id="angle-input" class="form-control" placeholder="Enter angle" min="-180" max="180" value="0">
+            </div>
+          </div>
+          
+          <!-- Rotation Options -->
+          <div class="form-group">
+            <label class="form-label">Rotation Options</label>
+            <div class="options-grid">
+              <div class="form-check">
+                <input type="checkbox" id="maintain-aspect" name="maintain-aspect" class="form-check-input" checked>
+                <label for="maintain-aspect" class="form-check-label">Maintain aspect ratio</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" id="crop-to-fit" name="crop-to-fit" class="form-check-input">
+                <label for="crop-to-fit" class="form-check-label">Crop to fit</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" id="smooth-rotation" name="smooth-rotation" class="form-check-input" checked>
+                <label for="smooth-rotation" class="form-check-label">Smooth rotation</label>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Output Format -->
+          <div class="form-group">
+            <label for="output-format" class="form-label">Output Format</label>
+            <select id="output-format" name="output-format" class="form-input">
+              <option value="original" selected>Keep Original Format</option>
+              <option value="png">PNG</option>
+              <option value="jpg">JPG</option>
+              <option value="webp">WebP</option>
+            </select>
+          </div>
+          
+          <!-- Action Buttons -->
+          <div class="d-flex gap-2 flex-wrap">
+            <button type="submit" class="btn btn-primary" data-original-text="Rotate Image">
+              <i class="bi bi-arrow-clockwise"></i> Rotate Image
+            </button>
+            <button type="button" class="btn btn-secondary btn-reset">
+              <i class="bi bi-arrow-clockwise"></i> Reset
+            </button>
+          </div>
+        </form>
+      </div>
+      
+      <!-- Result Area -->
+      <div class="result-area">
+        <div class="result-placeholder">
+          <i class="bi bi-arrow-clockwise"></i>
+          <p>Rotated image will appear here</p>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Ad Section -->
+    <aside class="ad-placeholder" aria-label="Advertisement">
+      <div class="ad-box">Ad space</div>
+    </aside>
+  </main>
+  
+  <!-- Footer -->
+  <div id="footer"></div>
+  
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/js/header-footer.js" defer></script>
+  <script src="../assets/js/tools.js" defer></script>
+  <script>
+    // Tool-specific functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      let currentAngle = 0;
+      
+      // Rotation type toggle
+      const presetRotation = document.getElementById('preset-rotation');
+      const customRotation = document.getElementById('custom-rotation');
+      const presetOptions = document.getElementById('preset-options');
+      const customOptions = document.getElementById('custom-options');
+      
+      function toggleRotationOptions() {
+        if (presetRotation.checked) {
+          presetOptions.style.display = 'block';
+          customOptions.style.display = 'none';
+        } else {
+          presetOptions.style.display = 'none';
+          customOptions.style.display = 'block';
+        }
+      }
+      
+      presetRotation.addEventListener('change', toggleRotationOptions);
+      customRotation.addEventListener('change', toggleRotationOptions);
+      
+      // Preset rotation buttons
+      const presetButtons = document.querySelectorAll('[data-angle]');
+      presetButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          const angle = parseInt(this.dataset.angle);
+          currentAngle = angle;
+          
+          // Update custom angle inputs
+          const customAngleSlider = document.getElementById('custom-angle');
+          const customAngleInput = document.getElementById('angle-input');
+          const angleValue = document.getElementById('angle-value');
+          
+          if (customAngleSlider) customAngleSlider.value = angle;
+          if (customAngleInput) customAngleInput.value = angle;
+          if (angleValue) angleValue.textContent = angle + '°';
+          
+          // Highlight selected preset
+          presetButtons.forEach(btn => btn.classList.remove('btn-primary', 'btn-outline-secondary'));
+          presetButtons.forEach(btn => btn.classList.add('btn-outline-secondary'));
+          this.classList.remove('btn-outline-secondary');
+          this.classList.add('btn-primary');
+        });
+      });
+      
+      // Custom angle slider
+      const customAngleSlider = document.getElementById('custom-angle');
+      const customAngleInput = document.getElementById('angle-input');
+      const angleValue = document.getElementById('angle-value');
+      
+      if (customAngleSlider) {
+        customAngleSlider.addEventListener('input', function() {
+          currentAngle = parseInt(this.value);
+          if (customAngleInput) customAngleInput.value = currentAngle;
+          if (angleValue) angleValue.textContent = currentAngle + '°';
+          
+          // Clear preset selection
+          presetButtons.forEach(btn => btn.classList.remove('btn-primary', 'btn-outline-secondary'));
+          presetButtons.forEach(btn => btn.classList.add('btn-outline-secondary'));
+        });
+      }
+      
+      if (customAngleInput) {
+        customAngleInput.addEventListener('input', function() {
+          currentAngle = parseInt(this.value) || 0;
+          if (customAngleSlider) customAngleSlider.value = currentAngle;
+          if (angleValue) angleValue.textContent = currentAngle + '°';
+          
+          // Clear preset selection
+          presetButtons.forEach(btn => btn.classList.remove('btn-primary', 'btn-outline-secondary'));
+          presetButtons.forEach(btn => btn.classList.add('btn-outline-secondary'));
+        });
+      }
+      
+      // Enhanced processing for rotator
+      const originalProcessFile = window.ToolManager.prototype.processFile;
+      
+      window.ToolManager.prototype.processFile = async function(toolType, formData) {
+        if (toolType === 'image-rotator') {
+          return this.processImageRotatorEnhanced(formData);
+        }
+        return originalProcessFile.call(this, toolType, formData);
+      };
+      
+      window.ToolManager.prototype.processImageRotatorEnhanced = async function(formData) {
+        const file = this.currentFile;
+        
+        // Get rotation angle
+        const rotationType = formData.get('rotation-type') || 'preset';
+        let angle = 0;
+        
+        if (rotationType === 'preset') {
+          // Get angle from preset buttons
+          const selectedPreset = document.querySelector('[data-angle].btn-primary');
+          angle = selectedPreset ? parseInt(selectedPreset.dataset.angle) : 0;
+        } else {
+          angle = parseInt(formData.get('custom-angle')) || 0;
+        }
+        
+        const maintainAspect = formData.get('maintain-aspect') === 'on';
+        const cropToFit = formData.get('crop-to-fit') === 'on';
+        const smoothRotation = formData.get('smooth-rotation') === 'on';
+        
+        return new Promise((resolve) => {
+          const img = new Image();
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Calculate new dimensions
+            const radians = (angle * Math.PI) / 180;
+            const cos = Math.abs(Math.cos(radians));
+            const sin = Math.abs(Math.sin(radians));
+            
+            let newWidth, newHeight;
+            
+            if (cropToFit) {
+              // Crop to fit original dimensions
+              newWidth = img.width;
+              newHeight = img.height;
+            } else {
+              // Calculate full rotated dimensions
+              newWidth = Math.ceil(img.width * cos + img.height * sin);
+              newHeight = Math.ceil(img.width * sin + img.height * cos);
+            }
+            
+            canvas.width = newWidth;
+            canvas.height = newHeight;
+            
+            // Set up context for smooth rotation
+            if (smoothRotation) {
+              ctx.imageSmoothingEnabled = true;
+              ctx.imageSmoothingQuality = 'high';
+            }
+            
+            // Move to center and rotate
+            ctx.translate(newWidth / 2, newHeight / 2);
+            ctx.rotate(radians);
+            
+            // Draw image centered
+            ctx.drawImage(img, -img.width / 2, -img.height / 2);
+            
+            // Get output format
+            const outputFormat = formData.get('output-format') || 'original';
+            let mimeType = 'image/png';
+            
+            if (outputFormat === 'original') {
+              mimeType = file.type;
+            } else if (outputFormat === 'jpg') {
+              mimeType = 'image/jpeg';
+            } else if (outputFormat === 'webp') {
+              mimeType = 'image/webp';
+            }
+            
+            resolve({
+              dataUrl: canvas.toDataURL(mimeType),
+              filename: `rotated_${angle}deg_${file.name}`,
+              message: `Image rotated ${angle}° successfully`,
+              rotationInfo: {
+                angle: angle,
+                type: rotationType,
+                maintainAspect: maintainAspect,
+                cropToFit: cropToFit,
+                smoothRotation: smoothRotation
+              }
+            });
+          };
+          img.src = URL.createObjectURL(file);
+        });
+      };
+    });
+  </script>
+</body>
+</html> 

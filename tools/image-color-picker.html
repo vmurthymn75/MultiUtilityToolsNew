@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Color Picker - Pick Colors from Images Online | Multi Utility Tools</title>
+  <meta name="description" content="Free online image color picker tool. Pick colors from any image with precision. Get hex, RGB, HSL values and create color palettes. Drag-and-drop support.">
+  <meta name="keywords" content="image color picker, color picker, pick colors from image, hex color picker, RGB color picker, color palette generator">
+  <meta name="author" content="Multi Utility Tools">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://yourdomain.com/tools/image-color-picker.html">
+  
+  <!-- Open Graph Meta Tags -->
+  <meta property="og:title" content="Image Color Picker - Pick Colors from Images Online">
+  <meta property="og:description" content="Free online image color picker tool. Pick colors from any image with precision. Get hex, RGB, HSL values and create color palettes.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://yourdomain.com/tools/image-color-picker.html">
+  
+  <!-- Twitter Card Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Image Color Picker - Pick Colors from Images Online">
+  <meta name="twitter:description" content="Free online image color picker tool. Pick colors from any image with precision. Get hex, RGB, HSL values and create color palettes.">
+  
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="../assets/css/tools.css">
+  <link rel="icon" href="../assets/images/favicon.ico">
+  <style>
+    .color-picker-canvas {
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      cursor: crosshair;
+      max-width: 100%;
+      height: auto;
+    }
+    
+    .color-palette {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 1rem;
+    }
+    
+    .color-swatch {
+      width: 60px;
+      height: 60px;
+      border-radius: 8px;
+      border: 2px solid #ddd;
+      position: relative;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+    }
+    
+    .color-swatch:hover {
+      transform: scale(1.05);
+      transition: transform 0.2s;
+    }
+    
+    .color-info {
+      background: white;
+      padding: 1rem;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      margin-top: 1rem;
+    }
+    
+    .color-value {
+      font-family: monospace;
+      background: #f8f9fa;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      margin: 0.25rem;
+      display: inline-block;
+    }
+    
+    .magnifier {
+      position: absolute;
+      width: 100px;
+      height: 100px;
+      border: 2px solid #fff;
+      border-radius: 50%;
+      pointer-events: none;
+      display: none;
+      background: white;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <div id="header"></div>
+  
+  <!-- Main Content -->
+  <main class="tool-main container" tabindex="-1">
+    <!-- Breadcrumb Navigation -->
+    <nav aria-label="Breadcrumb" class="breadcrumb-nav">
+      <a href="../index.html" class="back-link" aria-label="Back to Home">
+        <i class="bi bi-arrow-left"></i> Back to Home
+      </a>
+    </nav>
+    
+    <!-- Tool Header -->
+    <header class="tool-header">
+      <h1><i class="bi bi-palette"></i> Image Color Picker</h1>
+      <p class="tool-desc">Pick colors from any image with precision. Get hex, RGB, HSL values and create beautiful color palettes for your design projects.</p>
+    </header>
+    
+    <!-- Tool UI -->
+    <section class="tool-ui" aria-labelledby="color-picker-form-label">
+      <!-- Upload Form -->
+      <div class="tool-form">
+        <h2 id="color-picker-form-label" class="h4 mb-4">Upload & Pick Colors</h2>
+        
+        <form id="color-picker-form" class="color-picker-form" autocomplete="off">
+          <!-- File Upload Area -->
+          <div class="form-group">
+            <label for="image-upload" class="form-label">Upload Image</label>
+            <div class="upload-area" tabindex="0" role="button" aria-label="Upload image by clicking or dragging and dropping">
+              <i class="bi bi-cloud-upload upload-icon"></i>
+              <div class="upload-text">Click to upload or drag and drop</div>
+              <div class="upload-hint">Supports JPG, PNG, GIF, WebP (Max 10MB)</div>
+              <input type="file" id="image-upload" name="image-upload" class="file-input" accept="image/*" required aria-required="true">
+            </div>
+          </div>
+          
+          <!-- Progress Bar -->
+          <div class="progress-container" style="display: none;">
+            <div class="progress-bar">
+              <div class="progress-fill"></div>
+            </div>
+          </div>
+          
+          <!-- Picker Options -->
+          <div class="form-group">
+            <label class="form-label">Picker Options</label>
+            <div class="options-grid">
+              <div class="form-check">
+                <input type="checkbox" id="show-magnifier" name="show-magnifier" class="form-check-input" checked>
+                <label for="show-magnifier" class="form-check-label">Show magnifier</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" id="auto-palette" name="auto-palette" class="form-check-input" checked>
+                <label for="auto-palette" class="form-check-label">Auto-generate palette</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" id="copy-on-click" name="copy-on-click" class="form-check-input">
+                <label for="copy-on-click" class="form-check-label">Copy color on click</label>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Color Format -->
+          <div class="form-group">
+            <label for="color-format" class="form-label">Default Color Format</label>
+            <select id="color-format" name="color-format" class="form-input">
+              <option value="hex" selected>HEX (#RRGGBB)</option>
+              <option value="rgb">RGB (r, g, b)</option>
+              <option value="hsl">HSL (h, s%, l%)</option>
+              <option value="rgba">RGBA (r, g, b, a)</option>
+            </select>
+          </div>
+          
+          <!-- Action Buttons -->
+          <div class="d-flex gap-2 flex-wrap">
+            <button type="submit" class="btn btn-primary" data-original-text="Load Image">
+              <i class="bi bi-palette"></i> Load Image
+            </button>
+            <button type="button" class="btn btn-secondary btn-reset">
+              <i class="bi bi-arrow-clockwise"></i> Reset
+            </button>
+          </div>
+        </form>
+      </div>
+      
+      <!-- Result Area -->
+      <div class="result-area">
+        <div class="result-placeholder">
+          <i class="bi bi-palette"></i>
+          <p>Upload an image to start picking colors</p>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Ad Section -->
+    <aside class="ad-placeholder" aria-label="Advertisement">
+      <div class="ad-box">Ad space</div>
+    </aside>
+  </main>
+  
+  <!-- Footer -->
+  <div id="footer"></div>
+  
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/js/header-footer.js" defer></script>
+  <script src="../assets/js/tools.js" defer></script>
+  <script>
+    // Tool-specific functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      let canvas = null;
+      let ctx = null;
+      let currentImage = null;
+      let colorPalette = [];
+      let magnifier = null;
+      
+      // Enhanced processing for color picker
+      const originalProcessFile = window.ToolManager.prototype.processFile;
+      
+      window.ToolManager.prototype.processFile = async function(toolType, formData) {
+        if (toolType === 'image-color-picker') {
+          return this.processImageColorPickerEnhanced(formData);
+        }
+        return originalProcessFile.call(this, toolType, formData);
+      };
+      
+      window.ToolManager.prototype.processImageColorPickerEnhanced = async function(formData) {
+        const file = this.currentFile;
+        
+        return new Promise((resolve) => {
+          const img = new Image();
+          img.onload = () => {
+            // Create canvas for color picking
+            canvas = document.createElement('canvas');
+            ctx = canvas.getContext('2d');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            ctx.drawImage(img, 0, 0);
+            
+            currentImage = img;
+            
+            // Generate color palette
+            colorPalette = generateColorPalette(canvas);
+            
+            resolve({
+              filename: file.name,
+              imageData: img.src,
+              canvas: canvas,
+              palette: colorPalette,
+              message: 'Image loaded successfully. Click on the image to pick colors!'
+            });
+          };
+          img.src = URL.createObjectURL(file);
+        });
+      };
+      
+      // Enhanced result display for color picker
+      const originalDisplayResult = window.ToolManager.prototype.displayResult;
+      
+      window.ToolManager.prototype.displayResult = function(result) {
+        if (result.canvas) {
+          this.displayColorPickerResult(result);
+        } else {
+          originalDisplayResult.call(this, result);
+        }
+      };
+      
+      window.ToolManager.prototype.displayColorPickerResult = function(result) {
+        const resultArea = document.querySelector('.result-area');
+        if (!resultArea) return;
+        
+        resultArea.innerHTML = '';
+        
+        // Create image container
+        const imageContainer = document.createElement('div');
+        imageContainer.className = 'position-relative';
+        imageContainer.style.textAlign = 'center';
+        
+        // Add canvas to container
+        const displayCanvas = result.canvas.cloneNode();
+        displayCanvas.className = 'color-picker-canvas';
+        displayCanvas.style.maxHeight = '400px';
+        displayCanvas.style.width = 'auto';
+        
+        // Add magnifier
+        magnifier = document.createElement('div');
+        magnifier.className = 'magnifier';
+        magnifier.style.display = 'none';
+        
+        imageContainer.appendChild(displayCanvas);
+        imageContainer.appendChild(magnifier);
+        resultArea.appendChild(imageContainer);
+        
+        // Add color info section
+        const colorInfo = document.createElement('div');
+        colorInfo.className = 'color-info';
+        colorInfo.innerHTML = `
+          <h5>Picked Color</h5>
+          <div id="picked-color-display">
+            <div class="color-swatch" style="background: #ffffff; color: #000;">Click image</div>
+            <div class="mt-2">
+              <span class="color-value" id="hex-value">#FFFFFF</span>
+              <span class="color-value" id="rgb-value">RGB(255, 255, 255)</span>
+              <span class="color-value" id="hsl-value">HSL(0, 0%, 100%)</span>
+            </div>
+          </div>
+        `;
+        resultArea.appendChild(colorInfo);
+        
+        // Add color palette
+        if (result.palette && result.palette.length > 0) {
+          const paletteSection = document.createElement('div');
+          paletteSection.className = 'mt-4';
+          paletteSection.innerHTML = `
+            <h5>Color Palette</h5>
+            <div class="color-palette" id="color-palette"></div>
+          `;
+          resultArea.appendChild(paletteSection);
+          
+          const paletteContainer = document.getElementById('color-palette');
+          result.palette.forEach(color => {
+            const swatch = document.createElement('div');
+            swatch.className = 'color-swatch';
+            swatch.style.background = color.hex;
+            swatch.textContent = color.hex;
+            swatch.title = `HEX: ${color.hex}\nRGB: ${color.rgb}\nHSL: ${color.hsl}`;
+            swatch.addEventListener('click', () => copyColor(color.hex));
+            paletteContainer.appendChild(swatch);
+          });
+        }
+        
+        // Add canvas event listeners
+        setupCanvasEventListeners(displayCanvas, result.canvas);
+      };
+      
+      function setupCanvasEventListeners(displayCanvas, sourceCanvas) {
+        const showMagnifier = document.getElementById('show-magnifier')?.checked || true;
+        const copyOnClick = document.getElementById('copy-on-click')?.checked || false;
+        
+        displayCanvas.addEventListener('mousemove', (e) => {
+          if (!showMagnifier) return;
+          
+          const rect = displayCanvas.getBoundingClientRect();
+          const scaleX = sourceCanvas.width / displayCanvas.width;
+          const scaleY = sourceCanvas.height / displayCanvas.height;
+          
+          const x = (e.clientX - rect.left) * scaleX;
+          const y = (e.clientY - rect.top) * scaleY;
+          
+          if (x >= 0 && x < sourceCanvas.width && y >= 0 && y < sourceCanvas.height) {
+            const pixel = ctx.getImageData(x, y, 1, 1).data;
+            const color = {
+              r: pixel[0],
+              g: pixel[1],
+              b: pixel[2],
+              a: pixel[3]
+            };
+            
+            updateColorDisplay(color);
+            
+            // Update magnifier
+            magnifier.style.display = 'block';
+            magnifier.style.left = (e.clientX + 10) + 'px';
+            magnifier.style.top = (e.clientY + 10) + 'px';
+            magnifier.style.background = `rgb(${color.r}, ${color.g}, ${color.b})`;
+          }
+        });
+        
+        displayCanvas.addEventListener('mouseleave', () => {
+          magnifier.style.display = 'none';
+        });
+        
+        displayCanvas.addEventListener('click', (e) => {
+          const rect = displayCanvas.getBoundingClientRect();
+          const scaleX = sourceCanvas.width / displayCanvas.width;
+          const scaleY = sourceCanvas.height / displayCanvas.height;
+          
+          const x = (e.clientX - rect.left) * scaleX;
+          const y = (e.clientY - rect.top) * scaleY;
+          
+          if (x >= 0 && x < sourceCanvas.width && y >= 0 && y < sourceCanvas.height) {
+            const pixel = ctx.getImageData(x, y, 1, 1).data;
+            const color = {
+              r: pixel[0],
+              g: pixel[1],
+              b: pixel[2],
+              a: pixel[3]
+            };
+            
+            updateColorDisplay(color);
+            
+            if (copyOnClick) {
+              copyColor(rgbToHex(color.r, color.g, color.b));
+            }
+          }
+        });
+      }
+      
+      function updateColorDisplay(color) {
+        const hex = rgbToHex(color.r, color.g, color.b);
+        const rgb = `RGB(${color.r}, ${color.g}, ${color.b})`;
+        const hsl = rgbToHsl(color.r, color.g, color.b);
+        
+        const swatch = document.querySelector('#picked-color-display .color-swatch');
+        const hexValue = document.getElementById('hex-value');
+        const rgbValue = document.getElementById('rgb-value');
+        const hslValue = document.getElementById('hsl-value');
+        
+        if (swatch) {
+          swatch.style.background = hex;
+          swatch.textContent = hex;
+          swatch.style.color = isLightColor(color.r, color.g, color.b) ? '#000' : '#fff';
+        }
+        
+        if (hexValue) hexValue.textContent = hex;
+        if (rgbValue) rgbValue.textContent = rgb;
+        if (hslValue) hslValue.textContent = hsl;
+      }
+      
+      function generateColorPalette(canvas) {
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+        const colors = {};
+        
+        // Sample colors from image
+        for (let i = 0; i < imageData.length; i += 4) {
+          const r = imageData[i];
+          const g = imageData[i + 1];
+          const b = imageData[i + 2];
+          
+          // Quantize colors to reduce palette size
+          const quantizedR = Math.round(r / 32) * 32;
+          const quantizedG = Math.round(g / 32) * 32;
+          const quantizedB = Math.round(b / 32) * 32;
+          
+          const key = `${quantizedR},${quantizedG},${quantizedB}`;
+          colors[key] = (colors[key] || 0) + 1;
+        }
+        
+        // Convert to array and sort by frequency
+        const colorArray = Object.entries(colors)
+          .map(([key, count]) => {
+            const [r, g, b] = key.split(',').map(Number);
+            return { r, g, b, count };
+          })
+          .sort((a, b) => b.count - a.count)
+          .slice(0, 8); // Top 8 colors
+        
+        return colorArray.map(color => ({
+          hex: rgbToHex(color.r, color.g, color.b),
+          rgb: `RGB(${color.r}, ${color.g}, ${color.b})`,
+          hsl: rgbToHsl(color.r, color.g, color.b)
+        }));
+      }
+      
+      function rgbToHex(r, g, b) {
+        return '#' + [r, g, b].map(x => {
+          const hex = x.toString(16);
+          return hex.length === 1 ? '0' + hex : hex;
+        }).join('');
+      }
+      
+      function rgbToHsl(r, g, b) {
+        r /= 255;
+        g /= 255;
+        b /= 255;
+        
+        const max = Math.max(r, g, b);
+        const min = Math.min(r, g, b);
+        let h, s, l = (max + min) / 2;
+        
+        if (max === min) {
+          h = s = 0;
+        } else {
+          const d = max - min;
+          s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+          
+          switch (max) {
+            case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+            case g: h = (b - r) / d + 2; break;
+            case b: h = (r - g) / d + 4; break;
+          }
+          h /= 6;
+        }
+        
+        return `HSL(${Math.round(h * 360)}, ${Math.round(s * 100)}%, ${Math.round(l * 100)}%)`;
+      }
+      
+      function isLightColor(r, g, b) {
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        return brightness > 128;
+      }
+      
+      function copyColor(color) {
+        navigator.clipboard.writeText(color).then(() => {
+          // Show success message
+          const message = document.createElement('div');
+          message.className = 'message success';
+          message.innerHTML = `<i class="bi bi-check-circle"></i> Color ${color} copied to clipboard!`;
+          message.style.position = 'fixed';
+          message.style.top = '20px';
+          message.style.right = '20px';
+          message.style.zIndex = '1000';
+          document.body.appendChild(message);
+          
+          setTimeout(() => {
+            message.remove();
+          }, 2000);
+        });
+      }
+    });
+  </script>
+</body>
+</html> 

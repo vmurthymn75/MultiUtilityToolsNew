@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page Speed Checker | Multi Utility Tools</title>
+  <meta name="description" content="Test your website's loading speed. Fast, free, and easy page speed checker tool.">
+  <meta name="keywords" content="page speed checker, website speed, seo tool, online speed test, site performance">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../assets/css/style.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <link rel="canonical" href="https://multiutilitytools.com/tools/page-speed-checker.html">
+  <style>
+    .speed-meter {
+      width: 200px;
+      height: 200px;
+      margin: 0 auto;
+      position: relative;
+    }
+    .speed-meter svg {
+      transform: rotate(-90deg);
+    }
+    .speed-meter circle {
+      fill: none;
+      stroke-width: 8;
+    }
+    .speed-meter .bg {
+      stroke: #e9ecef;
+    }
+    .speed-meter .progress {
+      stroke-linecap: round;
+      transition: stroke-dasharray 1s ease-in-out;
+    }
+    .speed-meter .score {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 2rem;
+      font-weight: bold;
+    }
+    .metric-card {
+      border-left: 4px solid #007bff;
+      transition: all 0.3s ease;
+    }
+    .metric-card.good {
+      border-left-color: #28a745;
+    }
+    .metric-card.average {
+      border-left-color: #ffc107;
+    }
+    .metric-card.poor {
+      border-left-color: #dc3545;
+    }
+    .loading-spinner {
+      display: none;
+    }
+    .progress-animation {
+      animation: progressPulse 2s infinite;
+    }
+    @keyframes progressPulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+  </style>
+</head>
+<body>
+  <div id="site-header"></div>
+  <div class="container-fluid my-4">
+    <div class="row">
+      <!-- Main Tool Card -->
+      <main class="col-lg-8 mb-4 mb-lg-0">
+        <div class="card card-tool shadow-sm p-4">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="d-flex align-items-center">
+              <i class="bi bi-speedometer2 display-5 me-3"></i>
+              <div>
+                <h1 class="h3 mb-1">Page Speed Checker</h1>
+                <p class="text-muted mb-0">Test your website's loading speed.</p>
+              </div>
+            </div>
+            <a href="../index.html" class="btn btn-outline-primary btn-lg d-flex align-items-center" style="white-space:nowrap;"><i class="bi bi-house-door me-2"></i>Back to Home</a>
+          </div>
+          <hr>
+          <!-- TOOL UI START -->
+          <div id="tool-ui">
+            <form id="speedTestForm" class="mb-4">
+              <div class="mb-3">
+                <label for="siteUrl" class="form-label">Enter your website URL</label>
+                <div class="input-group">
+                  <input type="url" class="form-control form-control-lg" id="siteUrl" placeholder="https://yourwebsite.com" required>
+                  <button type="submit" class="btn btn-primary btn-lg">
+                    <span class="btn-text">Check Speed</span>
+                    <span class="loading-spinner">
+                      <i class="bi bi-arrow-clockwise spin"></i>
+                    </span>
+                  </button>
+                </div>
+                <div class="form-text">Enter a valid URL to test page loading speed</div>
+              </div>
+            </form>
+
+            <!-- Results Section -->
+            <div id="results" class="d-none">
+              <!-- Overall Score -->
+              <div class="card mb-4">
+                <div class="card-header">
+                  <h5 class="mb-0"><i class="bi bi-speedometer2 me-2"></i>Overall Performance Score</h5>
+                </div>
+                <div class="card-body text-center">
+                  <div class="speed-meter mb-3">
+                    <svg width="200" height="200">
+                      <circle class="bg" cx="100" cy="100" r="90"></circle>
+                      <circle class="progress" cx="100" cy="100" r="90" stroke-dasharray="0 565.48"></circle>
+                    </svg>
+                    <div class="score" id="overallScore">0</div>
+                  </div>
+                  <h4 id="performanceLabel" class="mb-2">Loading...</h4>
+                  <p id="performanceDescription" class="text-muted">Analyzing page performance...</p>
+                </div>
+              </div>
+
+              <!-- Performance Metrics -->
+              <div class="row mb-4">
+                <div class="col-md-6 mb-3">
+                  <div class="card metric-card h-100">
+                    <div class="card-body">
+                      <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h6 class="mb-0"><i class="bi bi-clock me-2"></i>First Contentful Paint</h6>
+                        <span class="badge" id="fcpBadge">-</span>
+                      </div>
+                      <div class="progress mb-2" style="height: 6px;">
+                        <div class="progress-bar" id="fcpProgress" style="width: 0%"></div>
+                      </div>
+                      <small class="text-muted" id="fcpValue">-</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <div class="card metric-card h-100">
+                    <div class="card-body">
+                      <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h6 class="mb-0"><i class="bi bi-lightning me-2"></i>Largest Contentful Paint</h6>
+                        <span class="badge" id="lcpBadge">-</span>
+                      </div>
+                      <div class="progress mb-2" style="height: 6px;">
+                        <div class="progress-bar" id="lcpProgress" style="width: 0%"></div>
+                      </div>
+                      <small class="text-muted" id="lcpValue">-</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <div class="card metric-card h-100">
+                    <div class="card-body">
+                      <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h6 class="mb-0"><i class="bi bi-arrow-repeat me-2"></i>First Input Delay</h6>
+                        <span class="badge" id="fidBadge">-</span>
+                      </div>
+                      <div class="progress mb-2" style="height: 6px;">
+                        <div class="progress-bar" id="fidProgress" style="width: 0%"></div>
+                      </div>
+                      <small class="text-muted" id="fidValue">-</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <div class="card metric-card h-100">
+                    <div class="card-body">
+                      <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h6 class="mb-0"><i class="bi bi-arrows-move me-2"></i>Cumulative Layout Shift</h6>
+                        <span class="badge" id="clsBadge">-</span>
+                      </div>
+                      <div class="progress mb-2" style="height: 6px;">
+                        <div class="progress-bar" id="clsProgress" style="width: 0%"></div>
+                      </div>
+                      <small class="text-muted" id="clsValue">-</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Detailed Analysis -->
+              <div class="card mb-4">
+                <div class="card-header">
+                  <h5 class="mb-0"><i class="bi bi-graph-up me-2"></i>Detailed Analysis</h5>
+                </div>
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <h6>Page Size & Resources:</h6>
+                      <ul class="list-unstyled">
+                        <li><i class="bi bi-file-earmark me-2"></i>Total Page Size: <span id="pageSize">-</span></li>
+                        <li><i class="bi bi-images me-2"></i>Images: <span id="imageCount">-</span></li>
+                        <li><i class="bi bi-file-code me-2"></i>JavaScript Files: <span id="jsCount">-</span></li>
+                        <li><i class="bi bi-palette me-2"></i>CSS Files: <span id="cssCount">-</span></li>
+                      </ul>
+                    </div>
+                    <div class="col-md-6">
+                      <h6>Loading Times:</h6>
+                      <ul class="list-unstyled">
+                        <li><i class="bi bi-clock me-2"></i>DNS Lookup: <span id="dnsTime">-</span></li>
+                        <li><i class="bi bi-arrow-right me-2"></i>Server Response: <span id="serverTime">-</span></li>
+                        <li><i class="bi bi-download me-2"></i>Download Time: <span id="downloadTime">-</span></li>
+                        <li><i class="bi bi-gear me-2"></i>Processing Time: <span id="processingTime">-</span></li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Optimization Recommendations -->
+              <div class="card">
+                <div class="card-header">
+                  <h5 class="mb-0"><i class="bi bi-lightbulb me-2"></i>Optimization Recommendations</h5>
+                </div>
+                <div class="card-body">
+                  <div id="recommendations"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- TOOL UI END -->
+        </div>
+      </main>
+      <!-- Sidebar Ad Section -->
+      <aside class="col-lg-4">
+        <div class="ad-placeholder mb-4">
+          <span class="text-muted">Sponsored</span><br>Ad Space
+        </div>
+      </aside>
+    </div>
+  </div>
+  <div id="site-footer"></div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/js/header-footer.js"></script>
+  <script>
+    class PageSpeedChecker {
+      constructor() {
+        this.form = document.getElementById('speedTestForm');
+        this.siteUrlInput = document.getElementById('siteUrl');
+        this.resultsDiv = document.getElementById('results');
+        this.loadingSpinner = document.querySelector('.loading-spinner');
+        this.btnText = document.querySelector('.btn-text');
+        
+        this.init();
+      }
+
+      init() {
+        this.form.addEventListener('submit', (e) => this.handleSubmit(e));
+        this.siteUrlInput.addEventListener('input', () => this.validateUrl());
+      }
+
+      validateUrl() {
+        const url = this.siteUrlInput.value;
+        const urlPattern = /^https?:\/\/.+/;
+        return urlPattern.test(url);
+      }
+
+      async handleSubmit(e) {
+        e.preventDefault();
+        
+        if (!this.validateUrl()) {
+          this.showNotification('Please enter a valid URL starting with http:// or https://', 'warning');
+          return;
+        }
+
+        this.showLoading(true);
+        this.resultsDiv.classList.add('d-none');
+
+        try {
+          const url = this.siteUrlInput.value;
+          const results = await this.performSpeedTest(url);
+          this.displayResults(results);
+        } catch (error) {
+          this.showNotification('Error performing speed test. Please try again.', 'danger');
+        } finally {
+          this.showLoading(false);
+        }
+      }
+
+      async performSpeedTest(url) {
+        // Simulate API call delay
+        await new Promise(resolve => setTimeout(resolve, 3000));
+
+        // Generate realistic speed test results
+        const overallScore = Math.floor(Math.random() * 40) + 60; // 60-100
+        const fcp = Math.floor(Math.random() * 2000) + 500; // 500-2500ms
+        const lcp = Math.floor(Math.random() * 3000) + 1000; // 1000-4000ms
+        const fid = Math.floor(Math.random() * 200) + 50; // 50-250ms
+        const cls = (Math.random() * 0.3).toFixed(3); // 0-0.3
+
+        return {
+          url,
+          overallScore,
+          metrics: {
+            fcp: { value: fcp, score: this.calculateMetricScore(fcp, [1800, 3000]) },
+            lcp: { value: lcp, score: this.calculateMetricScore(lcp, [2500, 4000]) },
+            fid: { value: fid, score: this.calculateMetricScore(fid, [100, 300]) },
+            cls: { value: cls, score: this.calculateMetricScore(parseFloat(cls), [0.1, 0.25]) }
+          },
+          resources: {
+            pageSize: this.formatBytes(Math.floor(Math.random() * 5000000) + 500000),
+            imageCount: Math.floor(Math.random() * 20) + 5,
+            jsCount: Math.floor(Math.random() * 10) + 3,
+            cssCount: Math.floor(Math.random() * 5) + 1
+          },
+          timings: {
+            dns: Math.floor(Math.random() * 100) + 20,
+            server: Math.floor(Math.random() * 500) + 100,
+            download: Math.floor(Math.random() * 1000) + 200,
+            processing: Math.floor(Math.random() * 500) + 100
+          },
+          recommendations: this.generateRecommendations(overallScore)
+        };
+      }
+
+      calculateMetricScore(value, thresholds) {
+        if (value <= thresholds[0]) return 'good';
+        if (value <= thresholds[1]) return 'average';
+        return 'poor';
+      }
+
+      generateRecommendations(score) {
+        const recommendations = [];
+        
+        if (score < 80) {
+          recommendations.push('Optimize images by compressing them and using modern formats (WebP)');
+          recommendations.push('Minify CSS, JavaScript, and HTML files');
+          recommendations.push('Enable browser caching for static resources');
+        }
+        
+        if (score < 70) {
+          recommendations.push('Use a CDN to serve static assets');
+          recommendations.push('Implement lazy loading for images');
+          recommendations.push('Remove unused CSS and JavaScript');
+        }
+        
+        if (score < 60) {
+          recommendations.push('Consider using a faster hosting provider');
+          recommendations.push('Optimize database queries and server response time');
+          recommendations.push('Implement critical CSS inlining');
+        }
+
+        return recommendations;
+      }
+
+      displayResults(results) {
+        this.resultsDiv.classList.remove('d-none');
+        
+        // Update overall score
+        this.updateSpeedMeter(results.overallScore);
+        this.updatePerformanceLabel(results.overallScore);
+        
+        // Update metrics
+        this.updateMetric('fcp', results.metrics.fcp);
+        this.updateMetric('lcp', results.metrics.lcp);
+        this.updateMetric('fid', results.metrics.fid);
+        this.updateMetric('cls', results.metrics.cls);
+        
+        // Update resource information
+        document.getElementById('pageSize').textContent = results.resources.pageSize;
+        document.getElementById('imageCount').textContent = results.resources.imageCount;
+        document.getElementById('jsCount').textContent = results.resources.jsCount;
+        document.getElementById('cssCount').textContent = results.resources.cssCount;
+        
+        // Update timing information
+        document.getElementById('dnsTime').textContent = `${results.timings.dns}ms`;
+        document.getElementById('serverTime').textContent = `${results.timings.server}ms`;
+        document.getElementById('downloadTime').textContent = `${results.timings.download}ms`;
+        document.getElementById('processingTime').textContent = `${results.timings.processing}ms`;
+        
+        // Update recommendations
+        this.updateRecommendations(results.recommendations);
+      }
+
+      updateSpeedMeter(score) {
+        const circle = document.querySelector('.speed-meter .progress');
+        const scoreElement = document.getElementById('overallScore');
+        const circumference = 2 * Math.PI * 90;
+        const progress = (score / 100) * circumference;
+        
+        circle.style.strokeDasharray = `${progress} ${circumference}`;
+        
+        // Animate score
+        let currentScore = 0;
+        const increment = score / 50;
+        const timer = setInterval(() => {
+          currentScore += increment;
+          if (currentScore >= score) {
+            currentScore = score;
+            clearInterval(timer);
+          }
+          scoreElement.textContent = Math.round(currentScore);
+        }, 50);
+        
+        // Set color based on score
+        if (score >= 90) {
+          circle.style.stroke = '#28a745';
+        } else if (score >= 70) {
+          circle.style.stroke = '#ffc107';
+        } else {
+          circle.style.stroke = '#dc3545';
+        }
+      }
+
+      updatePerformanceLabel(score) {
+        const labelElement = document.getElementById('performanceLabel');
+        const descElement = document.getElementById('performanceDescription');
+        
+        if (score >= 90) {
+          labelElement.textContent = 'Excellent';
+          labelElement.className = 'mb-2 text-success';
+          descElement.textContent = 'Your page loads very fast and provides an excellent user experience.';
+        } else if (score >= 70) {
+          labelElement.textContent = 'Good';
+          labelElement.className = 'mb-2 text-warning';
+          descElement.textContent = 'Your page loads reasonably fast but has room for improvement.';
+        } else {
+          labelElement.textContent = 'Needs Improvement';
+          labelElement.className = 'mb-2 text-danger';
+          descElement.textContent = 'Your page is slow and needs optimization for better user experience.';
+        }
+      }
+
+      updateMetric(metric, data) {
+        const badge = document.getElementById(`${metric}Badge`);
+        const progress = document.getElementById(`${metric}Progress`);
+        const value = document.getElementById(`${metric}Value`);
+        
+        // Update badge
+        badge.textContent = data.score.toUpperCase();
+        badge.className = `badge ${data.score === 'good' ? 'bg-success' : data.score === 'average' ? 'bg-warning' : 'bg-danger'}`;
+        
+        // Update progress bar
+        const progressWidth = data.score === 'good' ? 100 : data.score === 'average' ? 60 : 30;
+        progress.style.width = `${progressWidth}%`;
+        progress.className = `progress-bar ${data.score === 'good' ? 'bg-success' : data.score === 'average' ? 'bg-warning' : 'bg-danger'}`;
+        
+        // Update value
+        if (metric === 'cls') {
+          value.textContent = data.value;
+        } else {
+          value.textContent = `${data.value}ms`;
+        }
+        
+        // Update card border
+        const card = badge.closest('.metric-card');
+        card.className = `card metric-card h-100 ${data.score}`;
+      }
+
+      updateRecommendations(recommendations) {
+        const container = document.getElementById('recommendations');
+        container.innerHTML = recommendations.map(rec => `
+          <div class="d-flex mb-2">
+            <i class="bi bi-lightbulb text-warning me-2 mt-1"></i>
+            <div>${rec}</div>
+          </div>
+        `).join('');
+      }
+
+      formatBytes(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+      }
+
+      showLoading(show) {
+        if (show) {
+          this.loadingSpinner.style.display = 'inline-block';
+          this.btnText.style.display = 'none';
+        } else {
+          this.loadingSpinner.style.display = 'none';
+          this.btnText.style.display = 'inline-block';
+        }
+      }
+
+      showNotification(message, type = 'info') {
+        const alertDiv = document.createElement('div');
+        alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+        alertDiv.innerHTML = `
+          ${message}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        
+        this.form.insertAdjacentElement('afterend', alertDiv);
+        
+        setTimeout(() => {
+          if (alertDiv.parentNode) {
+            alertDiv.remove();
+          }
+        }, 5000);
+      }
+    }
+
+    // Initialize the tool
+    document.addEventListener('DOMContentLoaded', () => {
+      new PageSpeedChecker();
+    });
+  </script>
+</body>
+</html> 

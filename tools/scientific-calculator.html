@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scientific Calculator - Multi Utility Tools</title>
+  <meta name="description" content="Perform advanced scientific calculations online with this free Scientific Calculator.">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../assets/css/style.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+</head>
+<body>
+  <div class="container py-5">
+    <h1 class="mb-4 text-center">Scientific Calculator</h1>
+    <div class="card p-4 shadow-lg mx-auto" style="max-width: 400px;">
+      <input type="text" id="display" class="form-control mb-3 text-end" readonly style="font-size:1.5rem;">
+      <div class="row g-2">
+        <div class="col-3"><button class="btn btn-light w-100" onclick="append('7')">7</button></div>
+        <div class="col-3"><button class="btn btn-light w-100" onclick="append('8')">8</button></div>
+        <div class="col-3"><button class="btn btn-light w-100" onclick="append('9')">9</button></div>
+        <div class="col-3"><button class="btn btn-warning w-100" onclick="operate('/')">÷</button></div>
+        <div class="col-3"><button class="btn btn-light w-100" onclick="append('4')">4</button></div>
+        <div class="col-3"><button class="btn btn-light w-100" onclick="append('5')">5</button></div>
+        <div class="col-3"><button class="btn btn-light w-100" onclick="append('6')">6</button></div>
+        <div class="col-3"><button class="btn btn-warning w-100" onclick="operate('*')">×</button></div>
+        <div class="col-3"><button class="btn btn-light w-100" onclick="append('1')">1</button></div>
+        <div class="col-3"><button class="btn btn-light w-100" onclick="append('2')">2</button></div>
+        <div class="col-3"><button class="btn btn-light w-100" onclick="append('3')">3</button></div>
+        <div class="col-3"><button class="btn btn-warning w-100" onclick="operate('-')">−</button></div>
+        <div class="col-3"><button class="btn btn-light w-100" onclick="append('0')">0</button></div>
+        <div class="col-3"><button class="btn btn-light w-100" onclick="append('.')">.</button></div>
+        <div class="col-3"><button class="btn btn-danger w-100" onclick="clearDisplay()">C</button></div>
+        <div class="col-3"><button class="btn btn-warning w-100" onclick="operate('+')">+</button></div>
+        <div class="col-3"><button class="btn btn-info w-100" onclick="func('sin')">sin</button></div>
+        <div class="col-3"><button class="btn btn-info w-100" onclick="func('cos')">cos</button></div>
+        <div class="col-3"><button class="btn btn-info w-100" onclick="func('tan')">tan</button></div>
+        <div class="col-3"><button class="btn btn-success w-100" onclick="calculate()">=</button></div>
+        <div class="col-3"><button class="btn btn-info w-100" onclick="func('log')">log</button></div>
+        <div class="col-3"><button class="btn btn-info w-100" onclick="func('sqrt')">√</button></div>
+        <div class="col-3"><button class="btn btn-info w-100" onclick="func('pow')">x²</button></div>
+        <div class="col-3"><button class="btn btn-info w-100" onclick="func('pi')">π</button></div>
+      </div>
+    </div>
+  </div>
+  <script>
+    let current = '';
+    function append(val) {
+      current += val;
+      document.getElementById('display').value = current;
+    }
+    function clearDisplay() {
+      current = '';
+      document.getElementById('display').value = '';
+    }
+    function operate(op) {
+      current += op;
+      document.getElementById('display').value = current;
+    }
+    function func(f) {
+      let v = parseFloat(current);
+      if (isNaN(v)) return;
+      switch(f) {
+        case 'sin': current = Math.sin(v * Math.PI/180).toString(); break;
+        case 'cos': current = Math.cos(v * Math.PI/180).toString(); break;
+        case 'tan': current = Math.tan(v * Math.PI/180).toString(); break;
+        case 'log': current = Math.log10(v).toString(); break;
+        case 'sqrt': current = Math.sqrt(v).toString(); break;
+        case 'pow': current = Math.pow(v,2).toString(); break;
+        case 'pi': current = (Math.PI).toString(); break;
+      }
+      document.getElementById('display').value = current;
+    }
+    function calculate() {
+      try {
+        current = eval(current).toString();
+        document.getElementById('display').value = current;
+      } catch {
+        document.getElementById('display').value = 'Error';
+        current = '';
+      }
+    }
+  </script>
+</body>
+</html> 

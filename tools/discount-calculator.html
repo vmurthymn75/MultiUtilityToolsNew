@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Discount Calculator - Multi Utility Tools</title>
+  <meta name="description" content="Calculate discounts and savings easily with this free online Discount Calculator.">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../assets/css/style.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+</head>
+<body>
+  <div class="container py-5">
+    <h1 class="mb-4 text-center">Discount Calculator</h1>
+    <form id="discountForm" class="card p-4 shadow-lg mx-auto" style="max-width: 500px;">
+      <div class="mb-3">
+        <label for="originalPrice" class="form-label">Original Price (₹)</label>
+        <input type="number" class="form-control" id="originalPrice" required min="0.01" placeholder="Enter original price">
+      </div>
+      <div class="mb-3">
+        <label for="discountPercent" class="form-label">Discount (%)</label>
+        <input type="number" class="form-control" id="discountPercent" required min="0" max="100" step="0.01" placeholder="Enter discount percentage">
+      </div>
+      <button type="submit" class="btn btn-primary w-100">Calculate Discount</button>
+    </form>
+    <div id="discountResult" class="mt-4 text-center" style="display:none;">
+      <h4>Discounted Price: <span id="discountedPrice" class="text-success"></span></h4>
+      <p>You Save: <span id="savings"></span></p>
+    </div>
+  </div>
+  <script>
+    document.getElementById('discountForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const original = parseFloat(document.getElementById('originalPrice').value);
+      const percent = parseFloat(document.getElementById('discountPercent').value);
+      const savings = original * percent / 100;
+      const discounted = original - savings;
+      document.getElementById('discountedPrice').textContent = '₹' + discounted.toFixed(2);
+      document.getElementById('savings').textContent = '₹' + savings.toFixed(2);
+      document.getElementById('discountResult').style.display = 'block';
+    });
+  </script>
+</body>
+</html> 

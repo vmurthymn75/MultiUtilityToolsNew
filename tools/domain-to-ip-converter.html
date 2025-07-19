@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Domain to IP Converter | Multi Utility Tools</title>
+  <meta name="description" content="Convert a domain to its IP address. Modern, accessible, and responsive tool for webmasters, SEOs, and digital marketers.">
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <link rel="icon" href="../assets/images/favicon.ico">
+</head>
+<body>
+  <div id="header"></div>
+  <main class="tool-main container" tabindex="-1">
+    <nav aria-label="Breadcrumb" class="breadcrumb-nav">
+      <a href="../index.html" class="back-link" aria-label="Back to Home">&larr; Back to Home</a>
+    </nav>
+    <header class="tool-header">
+      <h1>Domain to IP Converter</h1>
+      <p class="tool-desc">Convert a domain name to its IP address. Enter a domain to get its current IP address.</p>
+    </header>
+    <section class="tool-ui" aria-labelledby="converter-form-label">
+      <form id="converter-form" class="converter-form" autocomplete="off">
+        <label for="domain-name" id="converter-form-label" class="form-label">Domain Name</label>
+        <input type="text" id="domain-name" name="domain-name" class="form-input" placeholder="example.com" required aria-required="true" autocomplete="url">
+        <button type="submit" class="btn btn-primary">Convert</button>
+      </form>
+      <div class="converter-result placeholder" aria-live="polite">
+        <p class="placeholder-text">IP address will appear here.</p>
+      </div>
+    </section>
+    <aside class="ad-placeholder" aria-label="Advertisement">
+      <div class="ad-box">Ad space</div>
+    </aside>
+  </main>
+  <div id="footer"></div>
+  <script src="../assets/js/header-footer.js" defer></script>
+</body>
+</html> 

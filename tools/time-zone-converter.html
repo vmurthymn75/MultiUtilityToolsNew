@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Time Zone Converter - Multi Utility Tools</title>
+  <meta name="description" content="Convert time between different time zones with this free online Time Zone Converter.">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../assets/css/style.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+</head>
+<body>
+  <div class="container py-5">
+    <h1 class="mb-4 text-center">Time Zone Converter</h1>
+    <form id="tzForm" class="card p-4 shadow-lg mx-auto" style="max-width: 500px;">
+      <div class="mb-3">
+        <label for="fromTime" class="form-label">From Time</label>
+        <input type="datetime-local" class="form-control" id="fromTime" required>
+      </div>
+      <div class="mb-3">
+        <label for="fromZone" class="form-label">From Time Zone</label>
+        <select class="form-select" id="fromZone"></select>
+      </div>
+      <div class="mb-3">
+        <label for="toZone" class="form-label">To Time Zone</label>
+        <select class="form-select" id="toZone"></select>
+      </div>
+      <button type="submit" class="btn btn-primary w-100">Convert</button>
+    </form>
+    <div id="tzResult" class="mt-4 text-center" style="display:none;">
+      <h4>Converted Time: <span id="convertedTime" class="text-success"></span></h4>
+    </div>
+  </div>
+  <script>
+    const zones = [
+      {name: 'UTC', offset: 0},
+      {name: 'GMT', offset: 0},
+      {name: 'EST', offset: -5},
+      {name: 'CST', offset: -6},
+      {name: 'MST', offset: -7},
+      {name: 'PST', offset: -8},
+      {name: 'IST', offset: 5.5},
+      {name: 'CET', offset: 1},
+      {name: 'EET', offset: 2},
+      {name: 'JST', offset: 9},
+      {name: 'AEST', offset: 10},
+      {name: 'NZST', offset: 12}
+    ];
+    function fillZones() {
+      const from = document.getElementById('fromZone');
+      const to = document.getElementById('toZone');
+      zones.forEach(z => {
+        const opt1 = document.createElement('option');
+        opt1.value = z.offset; opt1.textContent = z.name;
+        from.appendChild(opt1);
+        const opt2 = document.createElement('option');
+        opt2.value = z.offset; opt2.textContent = z.name;
+        to.appendChild(opt2.cloneNode(true));
+      });
+      from.value = '0';
+      to.value = '5.5';
+    }
+    fillZones();
+    document.getElementById('tzForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const fromTime = new Date(document.getElementById('fromTime').value);
+      const fromOffset = parseFloat(document.getElementById('fromZone').value);
+      const toOffset = parseFloat(document.getElementById('toZone').value);
+      if (isNaN(fromTime.getTime())) return;
+      const utc = fromTime.getTime() + (fromOffset * -60 * 60 * 1000);
+      const toTime = new Date(utc + (toOffset * 60 * 60 * 1000));
+      document.getElementById('convertedTime').textContent = toTime.toLocaleString();
+      document.getElementById('tzResult').style.display = 'block';
+    });
+  </script>
+</body>
+</html> 

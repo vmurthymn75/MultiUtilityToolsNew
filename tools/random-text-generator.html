@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Text Generator - Multi-Tools Website</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="../assets/css/style.css" rel="stylesheet">
+    <style>
+        .text-output {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            min-height: 200px;
+            font-family: 'Georgia', serif;
+            line-height: 1.6;
+            border: 2px solid #e9ecef;
+        }
+        
+        .generate-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .copy-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .copy-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .copy-btn.copied {
+            background: #28a745;
+        }
+        
+        .text-stats {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+            padding: 8px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .stat-item:last-child {
+            border-bottom: none;
+        }
+        
+        .text-type-btn {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 20px;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .text-type-btn:hover {
+            border-color: #667eea;
+            background: #667eea;
+            color: white;
+        }
+        
+        .text-type-btn.active {
+            border-color: #667eea;
+            background: #667eea;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="tool-header">
+                    <h1><i class="fas fa-random"></i> Random Text Generator</h1>
+                    <p>Generate various types of random text for testing, design, or content creation</p>
+                    <a href="../index.html" class="btn btn-outline-primary">
+                        <i class="fas fa-home"></i> Back to Home
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="tool-card">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="fas fa-cog"></i> Generation Options
+                            </h5>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Text Type:</label>
+                                    <div class="d-flex flex-wrap">
+                                        <div class="text-type-btn active" onclick="selectTextType('lorem')">Lorem Ipsum</div>
+                                        <div class="text-type-btn" onclick="selectTextType('random')">Random Words</div>
+                                        <div class="text-type-btn" onclick="selectTextType('sentences')">Random Sentences</div>
+                                        <div class="text-type-btn" onclick="selectTextType('paragraphs')">Random Paragraphs</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Length:</label>
+                                    <input type="range" class="form-range" id="lengthSlider" min="50" max="1000" value="200" onchange="updateLength()">
+                                    <div class="text-center">
+                                        <span id="lengthValue">200 words</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="text-center">
+                                <button class="generate-btn" onclick="generateText()">
+                                    <i class="fas fa-magic"></i> Generate Random Text
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tool-card">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="fas fa-file-text"></i> Generated Text
+                            </h5>
+                            
+                            <div class="text-output" id="textOutput">
+                                <div class="text-center text-muted">
+                                    <i class="fas fa-file-text fa-3x mb-3"></i>
+                                    <h5>Generated text will appear here</h5>
+                                    <p>Click "Generate Random Text" to create content</p>
+                                </div>
+                            </div>
+                            
+                            <div class="text-center">
+                                <button class="copy-btn" onclick="copyText()" id="copyBtn" style="display: none;">
+                                    <i class="fas fa-copy"></i> Copy Text
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="tool-card">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="fas fa-chart-bar"></i> Text Statistics
+                            </h5>
+                            
+                            <div class="text-stats" id="textStats">
+                                <div class="text-center text-muted">
+                                    <i class="fas fa-chart-bar fa-2x mb-2"></i>
+                                    <p>Statistics will appear here after generation</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tool-card">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="fas fa-lightbulb"></i> Quick Actions
+                            </h5>
+                            
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-outline-primary" onclick="generateLoremIpsum()">
+                                    <i class="fas fa-paragraph"></i> Lorem Ipsum
+                                </button>
+                                <button class="btn btn-outline-success" onclick="generateRandomWords()">
+                                    <i class="fas fa-random"></i> Random Words
+                                </button>
+                                <button class="btn btn-outline-info" onclick="generateSentences()">
+                                    <i class="fas fa-comment"></i> Random Sentences
+                                </button>
+                                <button class="btn btn-outline-warning" onclick="generateParagraphs()">
+                                    <i class="fas fa-align-left"></i> Random Paragraphs
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        class RandomTextGenerator {
+            constructor() {
+                this.currentText = '';
+                this.textType = 'lorem';
+                this.length = 200;
+                this.loremWords = [
+                    'lorem', 'ipsum', 'dolor', 'sit', 'amet', 'consectetur', 'adipiscing', 'elit',
+                    'sed', 'do', 'eiusmod', 'tempor', 'incididunt', 'ut', 'labore', 'et', 'dolore',
+                    'magna', 'aliqua', 'ut', 'enim', 'ad', 'minim', 'veniam', 'quis', 'nostrud',
+                    'exercitation', 'ullamco', 'laboris', 'nisi', 'ut', 'aliquip', 'ex', 'ea',
+                    'commodo', 'consequat', 'duis', 'aute', 'irure', 'dolor', 'in', 'reprehenderit',
+                    'voluptate', 'velit', 'esse', 'cillum', 'dolore', 'eu', 'fugiat', 'nulla',
+                    'pariatur', 'excepteur', 'sint', 'occaecat', 'cupidatat', 'non', 'proident',
+                    'sunt', 'culpa', 'qui', 'officia', 'deserunt', 'mollit', 'anim', 'id', 'est',
+                    'laborum', 'et', 'dolore', 'magna', 'aliqua', 'ut', 'enim', 'ad', 'minim'
+                ];
+                
+                this.randomWords = [
+                    'technology', 'innovation', 'creativity', 'success', 'opportunity', 'challenge',
+                    'solution', 'development', 'progress', 'achievement', 'excellence', 'quality',
+                    'efficiency', 'productivity', 'collaboration', 'communication', 'leadership',
+                    'strategy', 'vision', 'mission', 'growth', 'improvement', 'optimization',
+                    'transformation', 'evolution', 'revolution', 'breakthrough', 'discovery',
+                    'invention', 'creation', 'design', 'implementation', 'execution', 'delivery',
+                    'performance', 'results', 'outcomes', 'impact', 'value', 'benefit', 'advantage',
+                    'competitive', 'strategic', 'tactical', 'operational', 'functional', 'technical',
+                    'professional', 'expertise', 'knowledge', 'experience', 'skill', 'capability'
+                ];
+                
+                this.init();
+            }
+            
+            init() {
+                this.updateLength();
+            }
+            
+            selectTextType(type) {
+                this.textType = type;
+                document.querySelectorAll('.text-type-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                event.target.classList.add('active');
+            }
+            
+            updateLength() {
+                this.length = document.getElementById('lengthSlider').value;
+                document.getElementById('lengthValue').textContent = this.length + ' words';
+            }
+            
+            generateText() {
+                let text = '';
+                
+                switch(this.textType) {
+                    case 'lorem':
+                        text = this.generateLoremIpsum();
+                        break;
+                    case 'random':
+                        text = this.generateRandomWords();
+                        break;
+                    case 'sentences':
+                        text = this.generateRandomSentences();
+                        break;
+                    case 'paragraphs':
+                        text = this.generateRandomParagraphs();
+                        break;
+                }
+                
+                this.currentText = text;
+                this.updateOutput();
+                this.updateStats();
+                document.getElementById('copyBtn').style.display = 'inline-block';
+            }
+            
+            generateLoremIpsum() {
+                let text = '';
+                const words = this.length;
+                
+                for (let i = 0; i < words; i++) {
+                    const word = this.loremWords[Math.floor(Math.random() * this.loremWords.length)];
+                    text += word;
+                    
+                    if (i < words - 1) {
+                        if (i % 15 === 14) {
+                            text += '. ';
+                        } else {
+                            text += ' ';
+                        }
+                    }
+                }
+                
+                return text + '.';
+            }
+            
+            generateRandomWords() {
+                let text = '';
+                const words = this.length;
+                
+                for (let i = 0; i < words; i++) {
+                    const word = this.randomWords[Math.floor(Math.random() * this.randomWords.length)];
+                    text += word;
+                    
+                    if (i < words - 1) {
+                        text += ' ';
+                    }
+                }
+                
+                return text;
+            }
+            
+            generateRandomSentences() {
+                const sentences = [
+                    'The quick brown fox jumps over the lazy dog.',
+                    'Innovation drives progress in modern technology.',
+                    'Success comes from hard work and dedication.',
+                    'Quality is more important than quantity.',
+                    'Collaboration leads to better solutions.',
+                    'Continuous improvement is the key to excellence.',
+                    'Strategic thinking enables long-term success.',
+                    'Effective communication builds strong relationships.',
+                    'Leadership inspires others to achieve greatness.',
+                    'Creativity opens new possibilities and opportunities.'
+                ];
+                
+                let text = '';
+                const numSentences = Math.ceil(this.length / 10);
+                
+                for (let i = 0; i < numSentences; i++) {
+                    const sentence = sentences[Math.floor(Math.random() * sentences.length)];
+                    text += sentence + ' ';
+                }
+                
+                return text.trim();
+            }
+            
+            generateRandomParagraphs() {
+                const paragraphs = [
+                    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+                    'Innovation and creativity are essential for success in today\'s competitive world. Companies that embrace change and adapt to new technologies are more likely to thrive in the long term. Continuous learning and improvement should be part of every organization\'s culture.',
+                    'Quality is not an act, it is a habit. Excellence is achieved through consistent effort and attention to detail. Every small improvement contributes to overall success and customer satisfaction.',
+                    'Collaboration and teamwork are fundamental to achieving great results. When people work together towards a common goal, they can accomplish more than they could individually. Effective communication and mutual respect are key to successful partnerships.'
+                ];
+                
+                let text = '';
+                const numParagraphs = Math.ceil(this.length / 50);
+                
+                for (let i = 0; i < numParagraphs; i++) {
+                    const paragraph = paragraphs[Math.floor(Math.random() * paragraphs.length)];
+                    text += paragraph + '\n\n';
+                }
+                
+                return text.trim();
+            }
+            
+            updateOutput() {
+                document.getElementById('textOutput').innerHTML = this.currentText;
+            }
+            
+            updateStats() {
+                const words = this.currentText.split(/\s+/).length;
+                const characters = this.currentText.length;
+                const sentences = this.currentText.split(/[.!?]+/).length - 1;
+                const paragraphs = this.currentText.split(/\n\n/).length;
+                
+                const statsHtml = `
+                    <div class="stat-item">
+                        <span>Words:</span>
+                        <span>${words}</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>Characters:</span>
+                        <span>${characters}</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>Sentences:</span>
+                        <span>${sentences}</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>Paragraphs:</span>
+                        <span>${paragraphs}</span>
+                    </div>
+                `;
+                
+                document.getElementById('textStats').innerHTML = statsHtml;
+            }
+            
+            copyText() {
+                if (this.currentText) {
+                    navigator.clipboard.writeText(this.currentText).then(() => {
+                        const btn = document.getElementById('copyBtn');
+                        const originalText = btn.innerHTML;
+                        btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                        btn.classList.add('copied');
+                        
+                        setTimeout(() => {
+                            btn.innerHTML = originalText;
+                            btn.classList.remove('copied');
+                        }, 2000);
+                    });
+                }
+            }
+        }
+        
+        // Global functions for HTML onclick handlers
+        let textGenerator;
+        
+        function selectTextType(type) {
+            if (!textGenerator) {
+                textGenerator = new RandomTextGenerator();
+            }
+            textGenerator.selectTextType(type);
+        }
+        
+        function updateLength() {
+            if (!textGenerator) {
+                textGenerator = new RandomTextGenerator();
+            }
+            textGenerator.updateLength();
+        }
+        
+        function generateText() {
+            if (!textGenerator) {
+                textGenerator = new RandomTextGenerator();
+            }
+            textGenerator.generateText();
+        }
+        
+        function copyText() {
+            if (textGenerator) {
+                textGenerator.copyText();
+            }
+        }
+        
+        function generateLoremIpsum() {
+            if (!textGenerator) {
+                textGenerator = new RandomTextGenerator();
+            }
+            textGenerator.textType = 'lorem';
+            textGenerator.generateText();
+        }
+        
+        function generateRandomWords() {
+            if (!textGenerator) {
+                textGenerator = new RandomTextGenerator();
+            }
+            textGenerator.textType = 'random';
+            textGenerator.generateText();
+        }
+        
+        function generateSentences() {
+            if (!textGenerator) {
+                textGenerator = new RandomTextGenerator();
+            }
+            textGenerator.textType = 'sentences';
+            textGenerator.generateText();
+        }
+        
+        function generateParagraphs() {
+            if (!textGenerator) {
+                textGenerator = new RandomTextGenerator();
+            }
+            textGenerator.textType = 'paragraphs';
+            textGenerator.generateText();
+        }
+        
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            textGenerator = new RandomTextGenerator();
+        });
+    </script>
+</body>
+</html> 

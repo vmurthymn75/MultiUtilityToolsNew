@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Border Adder - Add Borders to Images Online | Multi Utility Tools</title>
+  <meta name="description" content="Free online image border adder tool. Add beautiful borders to your images with customizable colors, styles, and thickness. Perfect for framing photos and creating professional presentations.">
+  <meta name="keywords" content="image border adder, add border to image, photo border, image frame, border tool, online border adder, image framing">
+  <meta name="author" content="Multi Utility Tools">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://yourdomain.com/tools/image-border-adder.html">
+  
+  <!-- Open Graph Meta Tags -->
+  <meta property="og:title" content="Image Border Adder - Add Borders to Images Online">
+  <meta property="og:description" content="Free online image border adder tool. Add beautiful borders to your images with customizable colors, styles, and thickness.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://yourdomain.com/tools/image-border-adder.html">
+  
+  <!-- Twitter Card Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Image Border Adder - Add Borders to Images Online">
+  <meta name="twitter:description" content="Free online image border adder tool. Add beautiful borders to your images with customizable colors, styles, and thickness.">
+  
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="../assets/css/tools.css">
+  <link rel="icon" href="../assets/images/favicon.ico">
+</head>
+<body>
+  <!-- Header -->
+  <div id="header"></div>
+  
+  <!-- Main Content -->
+  <main class="tool-main container" tabindex="-1">
+    <!-- Breadcrumb Navigation -->
+    <nav aria-label="Breadcrumb" class="breadcrumb-nav">
+      <a href="../index.html" class="back-link" aria-label="Back to Home">
+        <i class="bi bi-arrow-left"></i> Back to Home
+      </a>
+    </nav>
+    
+    <!-- Tool Header -->
+    <header class="tool-header">
+      <h1><i class="bi bi-square"></i> Image Border Adder</h1>
+      <p class="tool-desc">Add beautiful borders to your images with customizable colors, styles, and thickness. Perfect for framing photos and creating professional presentations.</p>
+    </header>
+    
+    <!-- Tool UI -->
+    <section class="tool-ui" aria-labelledby="border-form-label">
+      <!-- Upload Form -->
+      <div class="tool-form">
+        <h2 id="border-form-label" class="h4 mb-4">Upload & Add Border</h2>
+        
+        <form id="border-form" class="border-form" autocomplete="off">
+          <!-- File Upload Area -->
+          <div class="form-group">
+            <label for="image-upload" class="form-label">Upload Image</label>
+            <div class="upload-area" tabindex="0" role="button" aria-label="Upload image by clicking or dragging and dropping">
+              <i class="bi bi-cloud-upload upload-icon"></i>
+              <div class="upload-text">Click to upload or drag and drop</div>
+              <div class="upload-hint">Supports JPG, PNG, GIF, WebP (Max 10MB)</div>
+              <input type="file" id="image-upload" name="image-upload" class="file-input" accept="image/*" required aria-required="true">
+            </div>
+          </div>
+          
+          <!-- Progress Bar -->
+          <div class="progress-container" style="display: none;">
+            <div class="progress-bar">
+              <div class="progress-fill"></div>
+            </div>
+          </div>
+          
+          <!-- Border Style -->
+          <div class="form-group">
+            <label for="border-style" class="form-label">Border Style</label>
+            <select id="border-style" name="border-style" class="form-input">
+              <option value="solid" selected>Solid</option>
+              <option value="dashed">Dashed</option>
+              <option value="dotted">Dotted</option>
+              <option value="double">Double</option>
+              <option value="groove">Groove</option>
+              <option value="ridge">Ridge</option>
+              <option value="inset">Inset</option>
+              <option value="outset">Outset</option>
+            </select>
+          </div>
+          
+          <!-- Border Width -->
+          <div class="form-group">
+            <label for="border-width" class="form-label">Border Width (px)</label>
+            <div class="d-flex align-items-center gap-2">
+              <input type="range" id="border-width" name="border-width" class="form-range" min="1" max="50" value="10" aria-describedby="width-value">
+              <span id="width-value" class="badge bg-primary">10px</span>
+            </div>
+            <div class="form-text">Drag the slider or enter a value between 1-50px</div>
+            
+            <div class="mt-2">
+              <input type="number" id="width-input" class="form-control" placeholder="Enter width" min="1" max="50" value="10">
+            </div>
+          </div>
+          
+          <!-- Border Color -->
+          <div class="form-group">
+            <label for="border-color" class="form-label">Border Color</label>
+            <div class="d-flex align-items-center gap-2">
+              <input type="color" id="border-color" name="border-color" class="form-control form-control-color" value="#000000">
+              <input type="text" id="color-input" class="form-control" placeholder="#000000" value="#000000">
+            </div>
+          </div>
+          
+          <!-- Quick Color Presets -->
+          <div class="form-group">
+            <label class="form-label">Quick Color Presets</label>
+            <div class="d-flex flex-wrap gap-2">
+              <button type="button" class="btn btn-sm" style="background: #000000; color: white;" data-color="#000000">Black</button>
+              <button type="button" class="btn btn-sm" style="background: #ffffff; color: black; border: 1px solid #ddd;" data-color="#ffffff">White</button>
+              <button type="button" class="btn btn-sm" style="background: #dc3545; color: white;" data-color="#dc3545">Red</button>
+              <button type="button" class="btn btn-sm" style="background: #198754; color: white;" data-color="#198754">Green</button>
+              <button type="button" class="btn btn-sm" style="background: #0d6efd; color: white;" data-color="#0d6efd">Blue</button>
+              <button type="button" class="btn btn-sm" style="background: #ffc107; color: black;" data-color="#ffc107">Yellow</button>
+              <button type="button" class="btn btn-sm" style="background: #6f42c1; color: white;" data-color="#6f42c1">Purple</button>
+              <button type="button" class="btn btn-sm" style="background: #fd7e14; color: white;" data-color="#fd7e14">Orange</button>
+            </div>
+          </div>
+          
+          <!-- Border Options -->
+          <div class="form-group">
+            <label class="form-label">Border Options</label>
+            <div class="options-grid">
+              <div class="form-check">
+                <input type="checkbox" id="rounded-corners" name="rounded-corners" class="form-check-input">
+                <label for="rounded-corners" class="form-check-label">Rounded corners</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" id="shadow-effect" name="shadow-effect" class="form-check-input">
+                <label for="shadow-effect" class="form-check-label">Add shadow</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" id="preserve-aspect" name="preserve-aspect" class="form-check-input" checked>
+                <label for="preserve-aspect" class="form-check-label">Preserve aspect ratio</label>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Border Sides -->
+          <div class="form-group">
+            <label class="form-label">Border Sides</label>
+            <div class="options-grid">
+              <div class="form-check">
+                <input type="checkbox" id="border-top" name="border-top" class="form-check-input" checked>
+                <label for="border-top" class="form-check-label">Top</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" id="border-right" name="border-right" class="form-check-input" checked>
+                <label for="border-right" class="form-check-label">Right</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" id="border-bottom" name="border-bottom" class="form-check-input" checked>
+                <label for="border-bottom" class="form-check-label">Bottom</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" id="border-left" name="border-left" class="form-check-input" checked>
+                <label for="border-left" class="form-check-label">Left</label>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Output Format -->
+          <div class="form-group">
+            <label for="output-format" class="form-label">Output Format</label>
+            <select id="output-format" name="output-format" class="form-input">
+              <option value="original" selected>Keep Original Format</option>
+              <option value="png">PNG</option>
+              <option value="jpg">JPG</option>
+              <option value="webp">WebP</option>
+            </select>
+          </div>
+          
+          <!-- Action Buttons -->
+          <div class="d-flex gap-2 flex-wrap">
+            <button type="submit" class="btn btn-primary" data-original-text="Add Border">
+              <i class="bi bi-square"></i> Add Border
+            </button>
+            <button type="button" class="btn btn-secondary btn-reset">
+              <i class="bi bi-arrow-clockwise"></i> Reset
+            </button>
+          </div>
+        </form>
+      </div>
+      
+      <!-- Result Area -->
+      <div class="result-area">
+        <div class="result-placeholder">
+          <i class="bi bi-square"></i>
+          <p>Image with border will appear here</p>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Ad Section -->
+    <aside class="ad-placeholder" aria-label="Advertisement">
+      <div class="ad-box">Ad space</div>
+    </aside>
+  </main>
+  
+  <!-- Footer -->
+  <div id="footer"></div>
+  
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/js/header-footer.js" defer></script>
+  <script src="../assets/js/tools.js" defer></script>
+  <script>
+    // Tool-specific functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      // Border width controls
+      const borderWidthSlider = document.getElementById('border-width');
+      const borderWidthInput = document.getElementById('width-input');
+      const widthValue = document.getElementById('width-value');
+      
+      function updateWidthDisplay(value) {
+        if (widthValue) widthValue.textContent = value + 'px';
+      }
+      
+      if (borderWidthSlider) {
+        borderWidthSlider.addEventListener('input', function() {
+          const value = this.value;
+          if (borderWidthInput) borderWidthInput.value = value;
+          updateWidthDisplay(value);
+        });
+      }
+      
+      if (borderWidthInput) {
+        borderWidthInput.addEventListener('input', function() {
+          const value = this.value;
+          if (borderWidthSlider) borderWidthSlider.value = value;
+          updateWidthDisplay(value);
+        });
+      }
+      
+      // Border color controls
+      const borderColorPicker = document.getElementById('border-color');
+      const colorInput = document.getElementById('color-input');
+      
+      if (borderColorPicker) {
+        borderColorPicker.addEventListener('input', function() {
+          if (colorInput) colorInput.value = this.value;
+        });
+      }
+      
+      if (colorInput) {
+        colorInput.addEventListener('input', function() {
+          if (borderColorPicker) borderColorPicker.value = this.value;
+        });
+      }
+      
+      // Quick color presets
+      const colorPresets = document.querySelectorAll('[data-color]');
+      colorPresets.forEach(button => {
+        button.addEventListener('click', function() {
+          const color = this.dataset.color;
+          if (borderColorPicker) borderColorPicker.value = color;
+          if (colorInput) colorInput.value = color;
+        });
+      });
+      
+      // Enhanced processing for border adder
+      const originalProcessFile = window.ToolManager.prototype.processFile;
+      
+      window.ToolManager.prototype.processFile = async function(toolType, formData) {
+        if (toolType === 'image-border-adder') {
+          return this.processImageBorderAdderEnhanced(formData);
+        }
+        return originalProcessFile.call(this, toolType, formData);
+      };
+      
+      window.ToolManager.prototype.processImageBorderAdderEnhanced = async function(formData) {
+        const file = this.currentFile;
+        
+        // Get border properties
+        const borderWidth = parseInt(formData.get('border-width')) || 10;
+        const borderColor = formData.get('border-color') || '#000000';
+        const borderStyle = formData.get('border-style') || 'solid';
+        const roundedCorners = formData.get('rounded-corners') === 'on';
+        const shadowEffect = formData.get('shadow-effect') === 'on';
+        const preserveAspect = formData.get('preserve-aspect') === 'on';
+        
+        // Get border sides
+        const borderSides = {
+          top: formData.get('border-top') === 'on',
+          right: formData.get('border-right') === 'on',
+          bottom: formData.get('border-bottom') === 'on',
+          left: formData.get('border-left') === 'on'
+        };
+        
+        return new Promise((resolve) => {
+          const img = new Image();
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Calculate new dimensions with border
+            const totalBorderWidth = borderWidth * 2;
+            canvas.width = img.width + totalBorderWidth;
+            canvas.height = img.height + totalBorderWidth;
+            
+            // Set up context for quality
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
+            
+            // Add shadow if enabled
+            if (shadowEffect) {
+              ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+              ctx.shadowBlur = 10;
+              ctx.shadowOffsetX = 5;
+              ctx.shadowOffsetY = 5;
+            }
+            
+            // Draw border background
+            ctx.fillStyle = borderColor;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Clear shadow for image
+            ctx.shadowColor = 'transparent';
+            ctx.shadowBlur = 0;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 0;
+            
+            // Draw image centered
+            ctx.drawImage(img, borderWidth, borderWidth);
+            
+            // Add rounded corners if enabled
+            if (roundedCorners) {
+              const radius = 20;
+              ctx.globalCompositeOperation = 'destination-in';
+              ctx.beginPath();
+              ctx.roundRect(0, 0, canvas.width, canvas.height, radius);
+              ctx.fill();
+              ctx.globalCompositeOperation = 'source-over';
+            }
+            
+            // Get output format
+            const outputFormat = formData.get('output-format') || 'original';
+            let mimeType = 'image/png';
+            
+            if (outputFormat === 'original') {
+              mimeType = file.type;
+            } else if (outputFormat === 'jpg') {
+              mimeType = 'image/jpeg';
+            } else if (outputFormat === 'webp') {
+              mimeType = 'image/webp';
+            }
+            
+            resolve({
+              dataUrl: canvas.toDataURL(mimeType),
+              filename: `bordered_${file.name}`,
+              message: `Border added successfully`,
+              borderInfo: {
+                width: borderWidth,
+                color: borderColor,
+                style: borderStyle,
+                sides: borderSides,
+                roundedCorners: roundedCorners,
+                shadowEffect: shadowEffect
+              }
+            });
+          };
+          img.src = URL.createObjectURL(file);
+        });
+      };
+    });
+  </script>
+</body>
+</html> 

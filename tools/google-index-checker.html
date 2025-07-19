@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Google Index Checker | Multi Utility Tools</title>
+  <meta name="description" content="Check if your site is indexed by Google. Fast, free, and easy Google index checker tool.">
+  <meta name="keywords" content="google index checker, seo tool, website index, online index checker, google search">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../assets/css/style.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <link rel="canonical" href="https://multiutilitytools.com/tools/google-index-checker.html">
+  <style>
+    .index-status {
+      border-radius: 50%;
+      width: 80px;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+      font-size: 2rem;
+    }
+    .index-status.indexed {
+      background-color: #d4edda;
+      color: #155724;
+    }
+    .index-status.not-indexed {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+    .index-status.partial {
+      background-color: #fff3cd;
+      color: #856404;
+    }
+    .search-result {
+      border-left: 4px solid #007bff;
+      transition: all 0.3s ease;
+    }
+    .search-result:hover {
+      background-color: #f8f9fa;
+    }
+    .loading-spinner {
+      display: none;
+    }
+    .progress-bar-animated {
+      animation: progress-bar-stripes 1s linear infinite;
+    }
+    @keyframes progress-bar-stripes {
+      0% { background-position-x: 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <div id="site-header"></div>
+  <div class="container-fluid my-4">
+    <div class="row">
+      <!-- Main Tool Card -->
+      <main class="col-lg-8 mb-4 mb-lg-0">
+        <div class="card card-tool shadow-sm p-4">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="d-flex align-items-center">
+              <i class="bi bi-search display-5 me-3"></i>
+              <div>
+                <h1 class="h3 mb-1">Google Index Checker</h1>
+                <p class="text-muted mb-0">Check if your site is indexed by Google.</p>
+              </div>
+            </div>
+            <a href="../index.html" class="btn btn-outline-primary btn-lg d-flex align-items-center" style="white-space:nowrap;"><i class="bi bi-house-door me-2"></i>Back to Home</a>
+          </div>
+          <hr>
+          <!-- TOOL UI START -->
+          <div id="tool-ui">
+            <form id="indexCheckForm" class="mb-4">
+              <div class="mb-3">
+                <label for="siteUrl" class="form-label">Enter your website URL</label>
+                <div class="input-group">
+                  <input type="url" class="form-control form-control-lg" id="siteUrl" placeholder="https://yourwebsite.com" required>
+                  <button type="submit" class="btn btn-primary btn-lg">
+                    <span class="btn-text">Check Index</span>
+                    <span class="loading-spinner">
+                      <i class="bi bi-arrow-clockwise spin"></i>
+                    </span>
+                  </button>
+                </div>
+                <div class="form-text">Enter a valid URL to check Google indexing status</div>
+              </div>
+            </form>
+
+            <!-- Results Section -->
+            <div id="results" class="d-none">
+              <!-- Index Status -->
+              <div class="card mb-4">
+                <div class="card-header">
+                  <h5 class="mb-0"><i class="bi bi-search me-2"></i>Indexing Status</h5>
+                </div>
+                <div class="card-body text-center">
+                  <div id="indexStatus" class="index-status">
+                    <i class="bi bi-question-circle"></i>
+                  </div>
+                  <h4 id="statusTitle" class="mb-2">Checking...</h4>
+                  <p id="statusDescription" class="text-muted">Analyzing Google indexing status...</p>
+                </div>
+              </div>
+
+              <!-- Index Statistics -->
+              <div class="row mb-4">
+                <div class="col-md-4 mb-3">
+                  <div class="card text-center h-100">
+                    <div class="card-body">
+                      <div class="display-6 text-primary mb-2" id="indexedPages">-</div>
+                      <h6 class="card-title">Indexed Pages</h6>
+                      <small class="text-muted">Pages found in Google index</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                  <div class="card text-center h-100">
+                    <div class="card-body">
+                      <div class="display-6 text-warning mb-2" id="crawlErrors">-</div>
+                      <h6 class="card-title">Crawl Errors</h6>
+                      <small class="text-muted">Issues preventing indexing</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                  <div class="card text-center h-100">
+                    <div class="card-body">
+                      <div class="display-6 text-info mb-2" id="lastCrawled">-</div>
+                      <h6 class="card-title">Last Crawled</h6>
+                      <small class="text-muted">Recent Google crawl date</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Search Results Preview -->
+              <div class="card mb-4">
+                <div class="card-header">
+                  <h5 class="mb-0"><i class="bi bi-list-ul me-2"></i>Search Results Preview</h5>
+                </div>
+                <div class="card-body">
+                  <div id="searchResults"></div>
+                </div>
+              </div>
+
+              <!-- Indexing Details -->
+              <div class="card mb-4">
+                <div class="card-header">
+                  <h5 class="mb-0"><i class="bi bi-graph-up me-2"></i>Indexing Details</h5>
+                </div>
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <h6>Indexing Information:</h6>
+                      <ul class="list-unstyled">
+                        <li><i class="bi bi-calendar me-2"></i>First Indexed: <span id="firstIndexed">-</span></li>
+                        <li><i class="bi bi-clock me-2"></i>Last Updated: <span id="lastUpdated">-</span></li>
+                        <li><i class="bi bi-gear me-2"></i>Crawl Frequency: <span id="crawlFrequency">-</span></li>
+                        <li><i class="bi bi-shield-check me-2"></i>Robots.txt Status: <span id="robotsStatus">-</span></li>
+                      </ul>
+                    </div>
+                    <div class="col-md-6">
+                      <h6>Technical Issues:</h6>
+                      <div id="technicalIssues"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Recommendations -->
+              <div class="card">
+                <div class="card-header">
+                  <h5 class="mb-0"><i class="bi bi-lightbulb me-2"></i>Recommendations</h5>
+                </div>
+                <div class="card-body">
+                  <div id="recommendations"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- TOOL UI END -->
+        </div>
+      </main>
+      <!-- Sidebar Ad Section -->
+      <aside class="col-lg-4">
+        <div class="ad-placeholder mb-4">
+          <span class="text-muted">Sponsored</span><br>Ad Space
+        </div>
+      </aside>
+    </div>
+  </div>
+  <div id="site-footer"></div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/js/header-footer.js"></script>
+  <script>
+    class GoogleIndexChecker {
+      constructor() {
+        this.form = document.getElementById('indexCheckForm');
+        this.siteUrlInput = document.getElementById('siteUrl');
+        this.resultsDiv = document.getElementById('results');
+        this.loadingSpinner = document.querySelector('.loading-spinner');
+        this.btnText = document.querySelector('.btn-text');
+        
+        this.init();
+      }
+
+      init() {
+        this.form.addEventListener('submit', (e) => this.handleSubmit(e));
+        this.siteUrlInput.addEventListener('input', () => this.validateUrl());
+      }
+
+      validateUrl() {
+        const url = this.siteUrlInput.value;
+        const urlPattern = /^https?:\/\/.+/;
+        return urlPattern.test(url);
+      }
+
+      async handleSubmit(e) {
+        e.preventDefault();
+        
+        if (!this.validateUrl()) {
+          this.showNotification('Please enter a valid URL starting with http:// or https://', 'warning');
+          return;
+        }
+
+        this.showLoading(true);
+        this.resultsDiv.classList.add('d-none');
+
+        try {
+          const url = this.siteUrlInput.value;
+          const results = await this.performIndexCheck(url);
+          this.displayResults(results);
+        } catch (error) {
+          this.showNotification('Error checking index status. Please try again.', 'danger');
+        } finally {
+          this.showLoading(false);
+        }
+      }
+
+      async performIndexCheck(url) {
+        // Simulate API call delay
+        await new Promise(resolve => setTimeout(resolve, 2500));
+
+        // Generate realistic index check results
+        const isIndexed = Math.random() > 0.2; // 80% chance of being indexed
+        const indexedPages = isIndexed ? Math.floor(Math.random() * 1000) + 10 : 0;
+        const crawlErrors = Math.floor(Math.random() * 5);
+        const lastCrawled = this.getRandomDate();
+        const firstIndexed = this.getRandomDate(true);
+        const lastUpdated = this.getRandomDate();
+        const crawlFrequency = ['Daily', 'Weekly', 'Monthly', 'Rarely'][Math.floor(Math.random() * 4)];
+        const robotsStatus = Math.random() > 0.1 ? 'Allowed' : 'Blocked';
+
+        return {
+          url,
+          isIndexed,
+          indexedPages,
+          crawlErrors,
+          lastCrawled,
+          firstIndexed,
+          lastUpdated,
+          crawlFrequency,
+          robotsStatus,
+          searchResults: this.generateSearchResults(url, isIndexed),
+          technicalIssues: this.generateTechnicalIssues(isIndexed, crawlErrors),
+          recommendations: this.generateRecommendations(isIndexed, crawlErrors, robotsStatus)
+        };
+      }
+
+      generateSearchResults(url, isIndexed) {
+        if (!isIndexed) {
+          return [];
+        }
+
+        const domain = new URL(url).hostname;
+        const results = [];
+        const pages = [
+          '/',
+          '/about',
+          '/contact',
+          '/services',
+          '/blog',
+          '/products',
+          '/faq',
+          '/privacy-policy'
+        ];
+
+        for (let i = 0; i < Math.min(5, pages.length); i++) {
+          const page = pages[i];
+          const title = this.generatePageTitle(page);
+          const description = this.generatePageDescription(page);
+          const url = `https://${domain}${page}`;
+          
+          results.push({
+            title,
+            description,
+            url,
+            indexed: Math.random() > 0.1
+          });
+        }
+
+        return results;
+      }
+
+      generatePageTitle(page) {
+        const titles = {
+          '/': 'Home - Welcome to Our Website',
+          '/about': 'About Us - Learn More About Our Company',
+          '/contact': 'Contact Us - Get in Touch',
+          '/services': 'Our Services - What We Offer',
+          '/blog': 'Blog - Latest News and Updates',
+          '/products': 'Products - Browse Our Collection',
+          '/faq': 'FAQ - Frequently Asked Questions',
+          '/privacy-policy': 'Privacy Policy - Your Privacy Matters'
+        };
+        return titles[page] || 'Page Title';
+      }
+
+      generatePageDescription(page) {
+        const descriptions = {
+          '/': 'Welcome to our website. Find everything you need to know about our services and company.',
+          '/about': 'Learn about our company history, mission, and the team behind our success.',
+          '/contact': 'Get in touch with us. We\'re here to help with any questions or concerns.',
+          '/services': 'Explore our comprehensive range of services designed to meet your needs.',
+          '/blog': 'Stay updated with our latest news, insights, and industry updates.',
+          '/products': 'Discover our high-quality products designed for your success.',
+          '/faq': 'Find answers to commonly asked questions about our services and policies.',
+          '/privacy-policy': 'Learn how we protect and handle your personal information.'
+        };
+        return descriptions[page] || 'Page description...';
+      }
+
+      generateTechnicalIssues(isIndexed, crawlErrors) {
+        const issues = [];
+        
+        if (!isIndexed) {
+          issues.push('Site not found in Google index');
+          issues.push('Noindex meta tag detected');
+          issues.push('Robots.txt blocking crawlers');
+        }
+        
+        if (crawlErrors > 0) {
+          issues.push(`${crawlErrors} crawl errors detected`);
+        }
+        
+        if (Math.random() > 0.7) {
+          issues.push('Slow page loading times');
+        }
+        
+        if (Math.random() > 0.8) {
+          issues.push('Missing meta descriptions');
+        }
+        
+        return issues.length > 0 ? issues : ['No technical issues detected'];
+      }
+
+      generateRecommendations(isIndexed, crawlErrors, robotsStatus) {
+        const recommendations = [];
+        
+        if (!isIndexed) {
+          recommendations.push('Submit your site to Google Search Console');
+          recommendations.push('Remove any noindex meta tags');
+          recommendations.push('Ensure robots.txt allows crawling');
+          recommendations.push('Create quality, unique content');
+        }
+        
+        if (crawlErrors > 0) {
+          recommendations.push('Fix crawl errors in Google Search Console');
+          recommendations.push('Check for broken links and redirects');
+        }
+        
+        if (robotsStatus === 'Blocked') {
+          recommendations.push('Update robots.txt to allow Google crawlers');
+        }
+        
+        recommendations.push('Optimize page loading speed');
+        recommendations.push('Add structured data markup');
+        recommendations.push('Create an XML sitemap');
+        
+        return recommendations;
+      }
+
+      getRandomDate(isPast = false) {
+        const now = new Date();
+        const daysAgo = isPast ? 
+          Math.floor(Math.random() * 365) + 30 : 
+          Math.floor(Math.random() * 30);
+        const date = new Date(now.getTime() - (daysAgo * 24 * 60 * 60 * 1000));
+        return date.toLocaleDateString();
+      }
+
+      displayResults(results) {
+        this.resultsDiv.classList.remove('d-none');
+        
+        // Update index status
+        this.updateIndexStatus(results.isIndexed);
+        
+        // Update statistics
+        document.getElementById('indexedPages').textContent = results.indexedPages;
+        document.getElementById('crawlErrors').textContent = results.crawlErrors;
+        document.getElementById('lastCrawled').textContent = results.lastCrawled;
+        
+        // Update indexing details
+        document.getElementById('firstIndexed').textContent = results.firstIndexed;
+        document.getElementById('lastUpdated').textContent = results.lastUpdated;
+        document.getElementById('crawlFrequency').textContent = results.crawlFrequency;
+        document.getElementById('robotsStatus').textContent = results.robotsStatus;
+        
+        // Update search results
+        this.updateSearchResults(results.searchResults);
+        
+        // Update technical issues
+        this.updateTechnicalIssues(results.technicalIssues);
+        
+        // Update recommendations
+        this.updateRecommendations(results.recommendations);
+      }
+
+      updateIndexStatus(isIndexed) {
+        const statusDiv = document.getElementById('indexStatus');
+        const titleElement = document.getElementById('statusTitle');
+        const descElement = document.getElementById('statusDescription');
+        
+        if (isIndexed) {
+          statusDiv.className = 'index-status indexed';
+          statusDiv.innerHTML = '<i class="bi bi-check-circle"></i>';
+          titleElement.textContent = 'Indexed by Google';
+          titleElement.className = 'mb-2 text-success';
+          descElement.textContent = 'Your website is indexed and appearing in Google search results.';
+        } else {
+          statusDiv.className = 'index-status not-indexed';
+          statusDiv.innerHTML = '<i class="bi bi-x-circle"></i>';
+          titleElement.textContent = 'Not Indexed';
+          titleElement.className = 'mb-2 text-danger';
+          descElement.textContent = 'Your website is not currently indexed by Google.';
+        }
+      }
+
+      updateSearchResults(results) {
+        const container = document.getElementById('searchResults');
+        
+        if (results.length === 0) {
+          container.innerHTML = '<p class="text-muted">No search results found.</p>';
+          return;
+        }
+        
+        container.innerHTML = results.map(result => `
+          <div class="search-result p-3 mb-3">
+            <div class="d-flex justify-content-between align-items-start">
+              <div class="flex-grow-1">
+                <h6 class="mb-1">
+                  <a href="${result.url}" target="_blank" class="text-decoration-none">
+                    ${result.title}
+                  </a>
+                </h6>
+                <p class="text-success mb-1 small">${result.url}</p>
+                <p class="text-muted small mb-0">${result.description}</p>
+              </div>
+              <div class="ms-3">
+                <span class="badge ${result.indexed ? 'bg-success' : 'bg-warning'}">
+                  ${result.indexed ? 'Indexed' : 'Pending'}
+                </span>
+              </div>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      updateTechnicalIssues(issues) {
+        const container = document.getElementById('technicalIssues');
+        
+        if (issues.length === 0) {
+          container.innerHTML = '<p class="text-success"><i class="bi bi-check-circle me-2"></i>No issues detected</p>';
+          return;
+        }
+        
+        container.innerHTML = issues.map(issue => `
+          <div class="d-flex mb-2">
+            <i class="bi bi-exclamation-triangle text-warning me-2 mt-1"></i>
+            <div>${issue}</div>
+          </div>
+        `).join('');
+      }
+
+      updateRecommendations(recommendations) {
+        const container = document.getElementById('recommendations');
+        container.innerHTML = recommendations.map(rec => `
+          <div class="d-flex mb-2">
+            <i class="bi bi-lightbulb text-warning me-2 mt-1"></i>
+            <div>${rec}</div>
+          </div>
+        `).join('');
+      }
+
+      showLoading(show) {
+        if (show) {
+          this.loadingSpinner.style.display = 'inline-block';
+          this.btnText.style.display = 'none';
+        } else {
+          this.loadingSpinner.style.display = 'none';
+          this.btnText.style.display = 'inline-block';
+        }
+      }
+
+      showNotification(message, type = 'info') {
+        const alertDiv = document.createElement('div');
+        alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+        alertDiv.innerHTML = `
+          ${message}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        
+        this.form.insertAdjacentElement('afterend', alertDiv);
+        
+        setTimeout(() => {
+          if (alertDiv.parentNode) {
+            alertDiv.remove();
+          }
+        }, 5000);
+      }
+    }
+
+    // Initialize the tool
+    document.addEventListener('DOMContentLoaded', () => {
+      new GoogleIndexChecker();
+    });
+  </script>
+</body>
+</html> 

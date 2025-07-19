@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weight Converter - Multi Utility Tools</title>
+  <meta name="description" content="Convert between different weight units with this free online Weight Converter.">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../assets/css/style.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+</head>
+<body>
+  <div class="container py-5">
+    <h1 class="mb-4 text-center">Weight Converter</h1>
+    <form id="weightForm" class="card p-4 shadow-lg mx-auto" style="max-width: 500px;">
+      <div class="mb-3">
+        <label for="weightValue" class="form-label">Value</label>
+        <input type="number" class="form-control" id="weightValue" required min="0" step="any" placeholder="Enter value">
+      </div>
+      <div class="mb-3">
+        <label for="fromUnit" class="form-label">From</label>
+        <select class="form-select" id="fromUnit">
+          <option value="kg">Kilograms</option>
+          <option value="g">Grams</option>
+          <option value="lb">Pounds</option>
+          <option value="oz">Ounces</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label for="toUnit" class="form-label">To</label>
+        <select class="form-select" id="toUnit">
+          <option value="kg">Kilograms</option>
+          <option value="g">Grams</option>
+          <option value="lb">Pounds</option>
+          <option value="oz">Ounces</option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary w-100">Convert</button>
+    </form>
+    <div id="weightResult" class="mt-4 text-center" style="display:none;">
+      <h4>Converted Value: <span id="convertedWeight" class="text-success"></span></h4>
+    </div>
+  </div>
+  <script>
+    const factors = {
+      kg: {kg:1, g:1000, lb:2.20462, oz:35.274},
+      g: {kg:0.001, g:1, lb:0.00220462, oz:0.035274},
+      lb: {kg:0.453592, g:453.592, lb:1, oz:16},
+      oz: {kg:0.0283495, g:28.3495, lb:0.0625, oz:1}
+    };
+    document.getElementById('weightForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const value = parseFloat(document.getElementById('weightValue').value);
+      const from = document.getElementById('fromUnit').value;
+      const to = document.getElementById('toUnit').value;
+      const result = value * factors[from][to];
+      document.getElementById('convertedWeight').textContent = result + ' ' + to;
+      document.getElementById('weightResult').style.display = 'block';
+    });
+  </script>
+</body>
+</html> 

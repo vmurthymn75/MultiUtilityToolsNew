@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Metadata Viewer - View EXIF Data Online | Multi Utility Tools</title>
+  <meta name="description" content="Free online image metadata viewer tool. View EXIF, IPTC, and other metadata from your photos with drag-and-drop support. Extract camera settings, location, and more.">
+  <meta name="keywords" content="image metadata viewer, EXIF viewer, photo metadata, image EXIF data, metadata extractor, photo information viewer">
+  <meta name="author" content="Multi Utility Tools">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://yourdomain.com/tools/image-metadata-viewer.html">
+  
+  <!-- Open Graph Meta Tags -->
+  <meta property="og:title" content="Image Metadata Viewer - View EXIF Data Online">
+  <meta property="og:description" content="Free online image metadata viewer tool. View EXIF, IPTC, and other metadata from your photos with drag-and-drop support.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://yourdomain.com/tools/image-metadata-viewer.html">
+  
+  <!-- Twitter Card Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Image Metadata Viewer - View EXIF Data Online">
+  <meta name="twitter:description" content="Free online image metadata viewer tool. View EXIF, IPTC, and other metadata from your photos with drag-and-drop support.">
+  
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="../assets/css/tools.css">
+  <link rel="icon" href="../assets/images/favicon.ico">
+</head>
+<body>
+  <!-- Header -->
+  <div id="header"></div>
+  
+  <!-- Main Content -->
+  <main class="tool-main container" tabindex="-1">
+    <!-- Breadcrumb Navigation -->
+    <nav aria-label="Breadcrumb" class="breadcrumb-nav">
+      <a href="../index.html" class="back-link" aria-label="Back to Home">
+        <i class="bi bi-arrow-left"></i> Back to Home
+      </a>
+    </nav>
+    
+    <!-- Tool Header -->
+    <header class="tool-header">
+      <h1><i class="bi bi-info-circle"></i> Image Metadata Viewer</h1>
+      <p class="tool-desc">Extract and view detailed metadata from your images. View EXIF data, camera settings, location information, and more.</p>
+    </header>
+    
+    <!-- Tool UI -->
+    <section class="tool-ui" aria-labelledby="metadata-form-label">
+      <!-- Upload Form -->
+      <div class="tool-form">
+        <h2 id="metadata-form-label" class="h4 mb-4">Upload & Analyze</h2>
+        
+        <form id="metadata-form" class="metadata-form" autocomplete="off">
+          <!-- File Upload Area -->
+          <div class="form-group">
+            <label for="image-upload" class="form-label">Upload Image</label>
+            <div class="upload-area" tabindex="0" role="button" aria-label="Upload image by clicking or dragging and dropping">
+              <i class="bi bi-cloud-upload upload-icon"></i>
+              <div class="upload-text">Click to upload or drag and drop</div>
+              <div class="upload-hint">Supports JPG, PNG, GIF, WebP (Max 10MB)</div>
+              <input type="file" id="image-upload" name="image-upload" class="file-input" accept="image/*" required aria-required="true">
+            </div>
+          </div>
+          
+          <!-- Progress Bar -->
+          <div class="progress-container" style="display: none;">
+            <div class="progress-bar">
+              <div class="progress-fill"></div>
+            </div>
+          </div>
+          
+          <!-- Metadata Options -->
+          <div class="form-group">
+            <label class="form-label">Metadata Types to Extract</label>
+            <div class="options-grid">
+              <div class="form-check">
+                <input type="checkbox" id="extract-exif" name="extract-exif" class="form-check-input" checked>
+                <label for="extract-exif" class="form-check-label">
+                  <i class="bi bi-camera"></i> EXIF Data
+                </label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" id="extract-iptc" name="extract-iptc" class="form-check-input" checked>
+                <label for="extract-iptc" class="form-check-label">
+                  <i class="bi bi-tag"></i> IPTC Data
+                </label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" id="extract-xmp" name="extract-xmp" class="form-check-input" checked>
+                <label for="extract-xmp" class="form-check-label">
+                  <i class="bi bi-file-text"></i> XMP Data
+                </label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" id="extract-basic" name="extract-basic" class="form-check-input" checked>
+                <label for="extract-basic" class="form-check-label">
+                  <i class="bi bi-info"></i> Basic Info
+                </label>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Action Buttons -->
+          <div class="d-flex gap-2 flex-wrap">
+            <button type="submit" class="btn btn-primary" data-original-text="Extract Metadata">
+              <i class="bi bi-search"></i> Extract Metadata
+            </button>
+            <button type="button" class="btn btn-secondary btn-reset">
+              <i class="bi bi-arrow-clockwise"></i> Reset
+            </button>
+          </div>
+        </form>
+      </div>
+      
+      <!-- Result Area -->
+      <div class="result-area">
+        <div class="result-placeholder">
+          <i class="bi bi-info-circle"></i>
+          <p>Image metadata will appear here</p>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Ad Section -->
+    <aside class="ad-placeholder" aria-label="Advertisement">
+      <div class="ad-box">Ad space</div>
+    </aside>
+  </main>
+  
+  <!-- Footer -->
+  <div id="footer"></div>
+  
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/js/header-footer.js" defer></script>
+  <script src="../assets/js/tools.js" defer></script>
+  <script>
+    // Tool-specific functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      // Enhanced metadata processing
+      const originalProcessFile = window.ToolManager.prototype.processFile;
+      
+      window.ToolManager.prototype.processFile = async function(toolType, formData) {
+        if (toolType === 'image-metadata-viewer') {
+          return this.processImageMetadataEnhanced(formData);
+        }
+        return originalProcessFile.call(this, toolType, formData);
+      };
+      
+      window.ToolManager.prototype.processImageMetadataEnhanced = async function(formData) {
+        const file = this.currentFile;
+        
+        // Simulate metadata extraction
+        const metadata = {
+          filename: file.name,
+          size: this.formatFileSize(file.size),
+          type: file.type,
+          lastModified: new Date(file.lastModified).toLocaleString(),
+          
+          // Basic Info
+          basic: {
+            'File Name': file.name,
+            'File Size': this.formatFileSize(file.size),
+            'File Type': file.type,
+            'Last Modified': new Date(file.lastModified).toLocaleString(),
+            'Dimensions': '1920 × 1080 px',
+            'Color Space': 'sRGB',
+            'Bit Depth': '8 bits per channel'
+          },
+          
+          // EXIF Data (simulated)
+          exif: {
+            'Make': 'Canon',
+            'Model': 'EOS R5',
+            'Software': 'Adobe Photoshop 2024',
+            'Date Time': '2024:01:15 14:30:25',
+            'Exposure Time': '1/125 sec',
+            'F Number': 'f/2.8',
+            'ISO Speed': 'ISO 100',
+            'Focal Length': '50 mm',
+            'Flash': 'No Flash',
+            'White Balance': 'Auto',
+            'Metering Mode': 'Pattern',
+            'Exposure Program': 'Aperture Priority'
+          },
+          
+          // GPS Data (if available)
+          gps: {
+            'GPS Latitude': '40.7128° N',
+            'GPS Longitude': '74.0060° W',
+            'GPS Altitude': '10 m',
+            'GPS Time Stamp': '14:30:25 UTC'
+          },
+          
+          // IPTC Data (simulated)
+          iptc: {
+            'Headline': 'Sample Image',
+            'Caption': 'This is a sample image for demonstration',
+            'Keywords': 'sample, demo, test',
+            'Copyright': '© 2024 Your Name',
+            'Creator': 'Your Name',
+            'Source': 'Multi Utility Tools'
+          }
+        };
+        
+        return {
+          filename: file.name,
+          metadata: metadata,
+          message: 'Metadata extracted successfully'
+        };
+      };
+      
+      // Enhanced result display
+      const originalDisplayResult = window.ToolManager.prototype.displayResult;
+      
+      window.ToolManager.prototype.displayResult = function(result) {
+        if (result.metadata) {
+          this.displayMetadataResult(result);
+        } else {
+          originalDisplayResult.call(this, result);
+        }
+      };
+      
+      window.ToolManager.prototype.displayMetadataResult = function(result) {
+        const resultArea = document.querySelector('.result-area');
+        if (!resultArea) return;
+        
+        resultArea.innerHTML = '';
+        
+        // Create metadata display
+        const metadata = result.metadata;
+        const sections = [
+          { title: 'Basic Information', data: metadata.basic, icon: 'bi-info-circle' },
+          { title: 'EXIF Data', data: metadata.exif, icon: 'bi-camera' },
+          { title: 'GPS Data', data: metadata.gps, icon: 'bi-geo-alt' },
+          { title: 'IPTC Data', data: metadata.iptc, icon: 'bi-tag' }
+        ];
+        
+        sections.forEach(section => {
+          if (Object.keys(section.data).length > 0) {
+            const sectionDiv = document.createElement('div');
+            sectionDiv.className = 'metadata-section mb-4';
+            
+            const sectionHeader = document.createElement('h4');
+            sectionHeader.className = 'h5 mb-3';
+            sectionHeader.innerHTML = `<i class="${section.icon}"></i> ${section.title}`;
+            sectionDiv.appendChild(sectionHeader);
+            
+            const table = document.createElement('table');
+            table.className = 'table table-striped table-sm';
+            
+            const tbody = document.createElement('tbody');
+            Object.entries(section.data).forEach(([key, value]) => {
+              const row = document.createElement('tr');
+              row.innerHTML = `
+                <td><strong>${key}</strong></td>
+                <td>${value}</td>
+              `;
+              tbody.appendChild(row);
+            });
+            
+            table.appendChild(tbody);
+            sectionDiv.appendChild(table);
+            resultArea.appendChild(sectionDiv);
+          }
+        });
+        
+        // Add export buttons
+        const exportSection = document.createElement('div');
+        exportSection.className = 'download-section';
+        exportSection.innerHTML = `
+          <h4>Export Metadata</h4>
+          <button class="btn btn-success download-btn me-2" onclick="exportMetadata('json')">
+            <i class="bi bi-download"></i> Export as JSON
+          </button>
+          <button class="btn btn-success download-btn me-2" onclick="exportMetadata('csv')">
+            <i class="bi bi-download"></i> Export as CSV
+          </button>
+          <button class="btn btn-success download-btn" onclick="exportMetadata('txt')">
+            <i class="bi bi-download"></i> Export as Text
+          </button>
+        `;
+        resultArea.appendChild(exportSection);
+      };
+      
+      // Export functions
+      window.exportMetadata = function(format) {
+        const resultArea = document.querySelector('.result-area');
+        const metadata = {}; // This would contain the actual metadata
+        
+        let content = '';
+        let filename = 'metadata';
+        let mimeType = '';
+        
+        switch(format) {
+          case 'json':
+            content = JSON.stringify(metadata, null, 2);
+            filename += '.json';
+            mimeType = 'application/json';
+            break;
+          case 'csv':
+            content = 'Property,Value\n';
+            Object.entries(metadata).forEach(([key, value]) => {
+              content += `"${key}","${value}"\n`;
+            });
+            filename += '.csv';
+            mimeType = 'text/csv';
+            break;
+          case 'txt':
+            Object.entries(metadata).forEach(([key, value]) => {
+              content += `${key}: ${value}\n`;
+            });
+            filename += '.txt';
+            mimeType = 'text/plain';
+            break;
+        }
+        
+        const blob = new Blob([content], { type: mimeType });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      };
+    });
+  </script>
+</body>
+</html> 

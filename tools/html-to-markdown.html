@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML to Markdown Converter - Multi-Tools Website</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="../assets/css/style.css" rel="stylesheet">
+    <style>
+        .code-editor {
+            background: #1e1e1e;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            color: #d4d4d4;
+            min-height: 300px;
+            position: relative;
+        }
+        
+        .code-input {
+            background: transparent;
+            border: none;
+            color: #d4d4d4;
+            width: 100%;
+            min-height: 250px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            resize: vertical;
+            outline: none;
+        }
+        
+        .markdown-output {
+            background: #2d2d2d;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            color: #d4d4d4;
+            min-height: 200px;
+            white-space: pre-wrap;
+            word-break: break-all;
+            position: relative;
+        }
+        
+        .convert-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .convert-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .convert-btn:disabled {
+            background: #6c757d;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .copy-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 12px;
+        }
+        
+        .copy-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .copy-btn.copied {
+            background: #28a745;
+        }
+        
+        .conversion-stats {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+            padding: 8px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .stat-item:last-child {
+            border-bottom: none;
+        }
+        
+        .stat-value {
+            font-weight: 600;
+            color: #667eea;
+        }
+        
+        .conversion-options {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .option-item {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+        }
+        
+        .option-item input[type="checkbox"] {
+            margin-right: 10px;
+        }
+        
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .sample-html {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .sample-html:hover {
+            border-color: #667eea;
+            background: #667eea;
+            color: white;
+        }
+        
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .html-tag {
+            color: #569cd6;
+        }
+        
+        .html-attribute {
+            color: #9cdcfe;
+        }
+        
+        .html-string {
+            color: #ce9178;
+        }
+        
+        .markdown-heading {
+            color: #4ec9b0;
+        }
+        
+        .markdown-bold {
+            color: #dcdcaa;
+        }
+        
+        .markdown-link {
+            color: #569cd6;
+        }
+        
+        .preview-panel {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            min-height: 200px;
+        }
+        
+        .preview-panel h1, .preview-panel h2, .preview-panel h3 {
+            color: #333;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        
+        .preview-panel p {
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        .preview-panel a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        
+        .preview-panel a:hover {
+            text-decoration: underline;
+        }
+        
+        .preview-panel ul, .preview-panel ol {
+            color: #666;
+            padding-left: 20px;
+        }
+        
+        .preview-panel blockquote {
+            border-left: 4px solid #667eea;
+            padding-left: 15px;
+            margin: 15px 0;
+            color: #666;
+            font-style: italic;
+        }
+        
+        .preview-panel code {
+            background: #f8f9fa;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: #e83e8c;
+        }
+        
+        .preview-panel pre {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="tool-header">
+                    <h1><i class="fab fa-html5"></i> HTML to Markdown Converter</h1>
+                    <p>Convert HTML code to clean, readable Markdown format</p>
+                    <a href="../index.html" class="btn btn-outline-primary">
+                        <i class="fas fa-home"></i> Back to Home
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="tool-card">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="fas fa-code"></i> Input HTML Code
+                            </h5>
+                            
+                            <div class="code-editor">
+                                <div class="code-header">
+                                    <span>HTML Input</span>
+                                    <button class="copy-btn" onclick="copyHtmlCode()">
+                                        <i class="fas fa-copy"></i> Copy
+                                    </button>
+                                </div>
+                                <textarea 
+                                    class="code-input" 
+                                    id="htmlInput" 
+                                    placeholder="<!-- Paste your HTML code here -->
+<h1>Hello World</h1>
+<p>This is a <strong>paragraph</strong> with <a href='#'>a link</a>.</p>
+<ul>
+    <li>List item 1</li>
+    <li>List item 2</li>
+</ul>"
+                                ></textarea>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <button class="convert-btn w-100 mb-2" onclick="convertToMarkdown()" id="convertBtn">
+                                        <i class="fas fa-exchange-alt"></i> Convert to Markdown
+                                    </button>
+                                </div>
+                                <div class="col-md-6">
+                                    <button class="btn btn-outline-secondary w-100 mb-2" onclick="clearCode()">
+                                        <i class="fas fa-trash"></i> Clear Code
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="conversion-options">
+                                <h6><i class="fas fa-cog"></i> Conversion Options</h6>
+                                <div class="option-item">
+                                    <input type="checkbox" id="preserveLinks" checked>
+                                    <label for="preserveLinks">Preserve links and URLs</label>
+                                </div>
+                                <div class="option-item">
+                                    <input type="checkbox" id="preserveImages" checked>
+                                    <label for="preserveImages">Preserve images</label>
+                                </div>
+                                <div class="option-item">
+                                    <input type="checkbox" id="preserveTables" checked>
+                                    <label for="preserveTables">Convert tables to Markdown</label>
+                                </div>
+                                <div class="option-item">
+                                    <input type="checkbox" id="preserveCode" checked>
+                                    <label for="preserveCode">Preserve code blocks</label>
+                                </div>
+                                <div class="option-item">
+                                    <input type="checkbox" id="cleanWhitespace" checked>
+                                    <label for="cleanWhitespace">Clean extra whitespace</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tool-card">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="fab fa-markdown"></i> Markdown Output
+                            </h5>
+                            
+                            <div class="markdown-output" id="markdownOutput">
+                                <div class="text-center text-muted">
+                                    <i class="fab fa-markdown fa-3x mb-3"></i>
+                                    <h5>Markdown will appear here</h5>
+                                    <p>Enter HTML code above and click "Convert to Markdown"</p>
+                                </div>
+                            </div>
+                            
+                            <div class="text-center">
+                                <button class="copy-btn" onclick="copyMarkdown()" id="copyMarkdownBtn" style="display: none;">
+                                    <i class="fas fa-copy"></i> Copy Markdown
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tool-card">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="fas fa-eye"></i> Markdown Preview
+                            </h5>
+                            
+                            <div class="preview-panel" id="markdownPreview">
+                                <div class="text-center text-muted">
+                                    <i class="fas fa-eye fa-3x mb-3"></i>
+                                    <h5>Preview will appear here</h5>
+                                    <p>Convert HTML to see the rendered Markdown preview</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="tool-card">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="fas fa-chart-bar"></i> Conversion Statistics
+                            </h5>
+                            
+                            <div class="conversion-stats" id="conversionStats">
+                                <div class="text-center text-muted">
+                                    <i class="fas fa-chart-bar fa-2x mb-2"></i>
+                                    <p>Statistics will appear here after conversion</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tool-card">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="fas fa-lightbulb"></i> Sample HTML
+                            </h5>
+                            
+                            <div class="sample-html" onclick="loadSampleHtml('basic')">
+                                <div class="code-header">
+                                    <span>Basic HTML</span>
+                                    <i class="fas fa-arrow-right"></i>
+                                </div>
+                                <div style="font-size: 12px; color: #666;">
+                                    Simple HTML with headings and paragraphs
+                                </div>
+                            </div>
+                            
+                            <div class="sample-html" onclick="loadSampleHtml('complex')">
+                                <div class="code-header">
+                                    <span>Complex HTML</span>
+                                    <i class="fas fa-arrow-right"></i>
+                                </div>
+                                <div style="font-size: 12px; color: #666;">
+                                    HTML with tables, lists, and formatting
+                                </div>
+                            </div>
+                            
+                            <div class="sample-html" onclick="loadSampleHtml('article')">
+                                <div class="code-header">
+                                    <span>Article HTML</span>
+                                    <i class="fas fa-arrow-right"></i>
+                                </div>
+                                <div style="font-size: 12px; color: #666;">
+                                    Article with images, links, and code blocks
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tool-card">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="fas fa-info-circle"></i> Conversion Guide
+                            </h5>
+                            
+                            <ul class="list-unstyled">
+                                <li class="mb-2">
+                                    <i class="fas fa-check text-success"></i>
+                                    <strong>Headings</strong> - H1-H6 tags become # ## ###
+                                </li>
+                                <li class="mb-2">
+                                    <i class="fas fa-check text-success"></i>
+                                    <strong>Links</strong> - &lt;a&gt; tags become [text](url)
+                                </li>
+                                <li class="mb-2">
+                                    <i class="fas fa-check text-success"></i>
+                                    <strong>Images</strong> - &lt;img&gt; tags become ![alt](src)
+                                </li>
+                                <li class="mb-2">
+                                    <i class="fas fa-check text-success"></i>
+                                    <strong>Lists</strong> - &lt;ul&gt;/&lt;ol&gt; become - or 1.
+                                </li>
+                                <li class="mb-2">
+                                    <i class="fas fa-check text-success"></i>
+                                    <strong>Code</strong> - &lt;code&gt; becomes `code`
+                                </li>
+                                <li class="mb-2">
+                                    <i class="fas fa-exclamation-triangle text-warning"></i>
+                                    <strong>Complex tables</strong> - May need manual adjustment
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        class HtmlToMarkdownConverter {
+            constructor() {
+                this.htmlCode = '';
+                this.markdownCode = '';
+                this.init();
+            }
+            
+            init() {
+                this.setupEventListeners();
+            }
+            
+            setupEventListeners() {
+                const textarea = document.getElementById('htmlInput');
+                textarea.addEventListener('input', () => {
+                    this.htmlCode = textarea.value;
+                });
+            }
+            
+            convertToMarkdown() {
+                if (!this.htmlCode.trim()) {
+                    this.showError('Please enter some HTML code to convert.');
+                    return;
+                }
+                
+                const convertBtn = document.getElementById('convertBtn');
+                convertBtn.disabled = true;
+                convertBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Converting...';
+                
+                // Simulate processing delay
+                setTimeout(() => {
+                    try {
+                        this.markdownCode = this.performConversion(this.htmlCode);
+                        this.updateOutput();
+                        this.updatePreview();
+                        this.updateStats();
+                        this.showSuccess('HTML converted to Markdown successfully!');
+                        document.getElementById('copyMarkdownBtn').style.display = 'inline-block';
+                    } catch (error) {
+                        this.showError('Error during conversion: ' + error.message);
+                    } finally {
+                        convertBtn.disabled = false;
+                        convertBtn.innerHTML = '<i class="fas fa-exchange-alt"></i> Convert to Markdown';
+                    }
+                }, 800);
+            }
+            
+            performConversion(html) {
+                let markdown = html;
+                
+                // Get conversion options
+                const preserveLinks = document.getElementById('preserveLinks').checked;
+                const preserveImages = document.getElementById('preserveImages').checked;
+                const preserveTables = document.getElementById('preserveTables').checked;
+                const preserveCode = document.getElementById('preserveCode').checked;
+                const cleanWhitespace = document.getElementById('cleanWhitespace').checked;
+                
+                // Remove DOCTYPE and HTML tags
+                markdown = markdown.replace(/<!DOCTYPE[^>]*>/gi, '');
+                markdown = markdown.replace(/<html[^>]*>|<\/html>/gi, '');
+                markdown = markdown.replace(/<head[\s\S]*?<\/head>/gi, '');
+                markdown = markdown.replace(/<body[^>]*>|<\/body>/gi, '');
+                
+                // Convert headings
+                markdown = markdown.replace(/<h1[^>]*>(.*?)<\/h1>/gi, '# $1\n');
+                markdown = markdown.replace(/<h2[^>]*>(.*?)<\/h2>/gi, '## $1\n');
+                markdown = markdown.replace(/<h3[^>]*>(.*?)<\/h3>/gi, '### $1\n');
+                markdown = markdown.replace(/<h4[^>]*>(.*?)<\/h4>/gi, '#### $1\n');
+                markdown = markdown.replace(/<h5[^>]*>(.*?)<\/h5>/gi, '##### $1\n');
+                markdown = markdown.replace(/<h6[^>]*>(.*?)<\/h6>/gi, '###### $1\n');
+                
+                // Convert paragraphs
+                markdown = markdown.replace(/<p[^>]*>(.*?)<\/p>/gi, '$1\n\n');
+                
+                // Convert links
+                if (preserveLinks) {
+                    markdown = markdown.replace(/<a[^>]*href=["']([^"']*)["'][^>]*>(.*?)<\/a>/gi, '[$2]($1)');
+                }
+                
+                // Convert images
+                if (preserveImages) {
+                    markdown = markdown.replace(/<img[^>]*src=["']([^"']*)["'][^>]*alt=["']([^"']*)["'][^>]*>/gi, '![$2]($1)');
+                    markdown = markdown.replace(/<img[^>]*alt=["']([^"']*)["'][^>]*src=["']([^"']*)["'][^>]*>/gi, '![$1]($2)');
+                    markdown = markdown.replace(/<img[^>]*src=["']([^"']*)["'][^>]*>/gi, '![]($1)');
+                }
+                
+                // Convert bold and italic
+                markdown = markdown.replace(/<strong[^>]*>(.*?)<\/strong>/gi, '**$1**');
+                markdown = markdown.replace(/<b[^>]*>(.*?)<\/b>/gi, '**$1**');
+                markdown = markdown.replace(/<em[^>]*>(.*?)<\/em>/gi, '*$1*');
+                markdown = markdown.replace(/<i[^>]*>(.*?)<\/i>/gi, '*$1*');
+                
+                // Convert code
+                if (preserveCode) {
+                    markdown = markdown.replace(/<code[^>]*>(.*?)<\/code>/gi, '`$1`');
+                    markdown = markdown.replace(/<pre[^>]*>(.*?)<\/pre>/gi, '```\n$1\n```');
+                }
+                
+                // Convert blockquotes
+                markdown = markdown.replace(/<blockquote[^>]*>(.*?)<\/blockquote>/gi, '> $1\n');
+                
+                // Convert lists
+                markdown = markdown.replace(/<ul[^>]*>|<\/ul>/gi, '');
+                markdown = markdown.replace(/<ol[^>]*>|<\/ol>/gi, '');
+                markdown = markdown.replace(/<li[^>]*>(.*?)<\/li>/gi, '- $1\n');
+                
+                // Convert tables (basic)
+                if (preserveTables) {
+                    markdown = this.convertTables(markdown);
+                }
+                
+                // Convert line breaks
+                markdown = markdown.replace(/<br[^>]*>/gi, '\n');
+                markdown = markdown.replace(/<hr[^>]*>/gi, '---\n');
+                
+                // Clean up whitespace
+                if (cleanWhitespace) {
+                    markdown = markdown.replace(/\n\s*\n\s*\n/g, '\n\n');
+                    markdown = markdown.replace(/^\s+|\s+$/gm, '');
+                }
+                
+                // Remove any remaining HTML tags
+                markdown = markdown.replace(/<[^>]*>/g, '');
+                
+                // Decode HTML entities
+                markdown = this.decodeHtmlEntities(markdown);
+                
+                return markdown.trim();
+            }
+            
+            convertTables(markdown) {
+                // Basic table conversion - this is simplified
+                const tableRegex = /<table[^>]*>([\s\S]*?)<\/table>/gi;
+                return markdown.replace(tableRegex, (match, tableContent) => {
+                    const rows = tableContent.match(/<tr[^>]*>([\s\S]*?)<\/tr>/gi) || [];
+                    let tableMarkdown = '';
+                    
+                    rows.forEach((row, index) => {
+                        const cells = row.match(/<t[dh][^>]*>([\s\S]*?)<\/t[dh]>/gi) || [];
+                        const cellContent = cells.map(cell => {
+                            return cell.replace(/<t[dh][^>]*>([\s\S]*?)<\/t[dh]>/i, '$1').trim();
+                        });
+                        
+                        tableMarkdown += '| ' + cellContent.join(' | ') + ' |\n';
+                        
+                        // Add separator row after header
+                        if (index === 0) {
+                            tableMarkdown += '| ' + cellContent.map(() => '---').join(' | ') + ' |\n';
+                        }
+                    });
+                    
+                    return tableMarkdown + '\n';
+                });
+            }
+            
+            decodeHtmlEntities(text) {
+                const entities = {
+                    '&amp;': '&',
+                    '&lt;': '<',
+                    '&gt;': '>',
+                    '&quot;': '"',
+                    '&#39;': "'",
+                    '&nbsp;': ' '
+                };
+                
+                return text.replace(/&amp;|&lt;|&gt;|&quot;|&#39;|&nbsp;/g, match => entities[match]);
+            }
+            
+            updateOutput() {
+                const output = document.getElementById('markdownOutput');
+                output.innerHTML = `<pre style="margin: 0; color: #d4d4d4;">${this.escapeHtml(this.markdownCode)}</pre>`;
+            }
+            
+            updatePreview() {
+                const preview = document.getElementById('markdownPreview');
+                const htmlPreview = this.markdownToHtml(this.markdownCode);
+                preview.innerHTML = htmlPreview;
+            }
+            
+            markdownToHtml(markdown) {
+                let html = markdown;
+                
+                // Convert headings
+                html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
+                html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
+                html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
+                html = html.replace(/^#### (.*$)/gim, '<h4>$1</h4>');
+                html = html.replace(/^##### (.*$)/gim, '<h5>$1</h5>');
+                html = html.replace(/^###### (.*$)/gim, '<h6>$1</h6>');
+                
+                // Convert bold and italic
+                html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+                
+                // Convert links
+                html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
+                
+                // Convert images
+                html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1">');
+                
+                // Convert code
+                html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+                html = html.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>');
+                
+                // Convert blockquotes
+                html = html.replace(/^> (.*$)/gim, '<blockquote>$1</blockquote>');
+                
+                // Convert lists
+                html = html.replace(/^- (.*$)/gim, '<li>$1</li>');
+                html = html.replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
+                
+                // Convert paragraphs
+                html = html.replace(/\n\n/g, '</p><p>');
+                html = '<p>' + html + '</p>';
+                html = html.replace(/<p><\/p>/g, '');
+                
+                return html;
+            }
+            
+            updateStats() {
+                const htmlSize = this.htmlCode.length;
+                const markdownSize = this.markdownCode.length;
+                const savings = htmlSize - markdownSize;
+                const ratio = htmlSize > 0 ? ((savings / htmlSize) * 100).toFixed(1) : 0;
+                
+                const statsHtml = `
+                    <div class="stat-item">
+                        <span>HTML size:</span>
+                        <span class="stat-value">${htmlSize.toLocaleString()} chars</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>Markdown size:</span>
+                        <span class="stat-value">${markdownSize.toLocaleString()} chars</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>Size reduction:</span>
+                        <span class="stat-value">${savings.toLocaleString()} chars</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>Compression ratio:</span>
+                        <span class="stat-value">${ratio}%</span>
+                    </div>
+                `;
+                
+                document.getElementById('conversionStats').innerHTML = statsHtml;
+            }
+            
+            showError(message) {
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'error-message';
+                errorDiv.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${message}`;
+                
+                const container = document.querySelector('.tool-card .card-body');
+                container.insertBefore(errorDiv, container.firstChild);
+                
+                setTimeout(() => errorDiv.remove(), 5000);
+            }
+            
+            showSuccess(message) {
+                const successDiv = document.createElement('div');
+                successDiv.className = 'success-message';
+                successDiv.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+                
+                const container = document.querySelector('.tool-card .card-body');
+                container.insertBefore(successDiv, container.firstChild);
+                
+                setTimeout(() => successDiv.remove(), 3000);
+            }
+            
+            escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+            
+            clearCode() {
+                this.htmlCode = '';
+                this.markdownCode = '';
+                document.getElementById('htmlInput').value = '';
+                document.getElementById('markdownOutput').innerHTML = `
+                    <div class="text-center text-muted">
+                        <i class="fab fa-markdown fa-3x mb-3"></i>
+                        <h5>Markdown will appear here</h5>
+                        <p>Enter HTML code above and click "Convert to Markdown"</p>
+                    </div>
+                `;
+                document.getElementById('markdownPreview').innerHTML = `
+                    <div class="text-center text-muted">
+                        <i class="fas fa-eye fa-3x mb-3"></i>
+                        <h5>Preview will appear here</h5>
+                        <p>Convert HTML to see the rendered Markdown preview</p>
+                    </div>
+                `;
+                document.getElementById('conversionStats').innerHTML = `
+                    <div class="text-center text-muted">
+                        <i class="fas fa-chart-bar fa-2x mb-2"></i>
+                        <p>Statistics will appear here after conversion</p>
+                    </div>
+                `;
+                document.getElementById('copyMarkdownBtn').style.display = 'none';
+            }
+        }
+        
+        // Global functions for HTML onclick handlers
+        let htmlConverter;
+        
+        function convertToMarkdown() {
+            if (!htmlConverter) {
+                htmlConverter = new HtmlToMarkdownConverter();
+            }
+            htmlConverter.convertToMarkdown();
+        }
+        
+        function clearCode() {
+            if (htmlConverter) {
+                htmlConverter.clearCode();
+            }
+        }
+        
+        function copyHtmlCode() {
+            const code = document.getElementById('htmlInput').value;
+            if (code) {
+                navigator.clipboard.writeText(code).then(() => {
+                    const btn = event.target.closest('.copy-btn');
+                    const originalText = btn.innerHTML;
+                    btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                    btn.classList.add('copied');
+                    
+                    setTimeout(() => {
+                        btn.innerHTML = originalText;
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            }
+        }
+        
+        function copyMarkdown() {
+            if (htmlConverter && htmlConverter.markdownCode) {
+                navigator.clipboard.writeText(htmlConverter.markdownCode).then(() => {
+                    const btn = document.getElementById('copyMarkdownBtn');
+                    const originalText = btn.innerHTML;
+                    btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                    btn.classList.add('copied');
+                    
+                    setTimeout(() => {
+                        btn.innerHTML = originalText;
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            }
+        }
+        
+        function loadSampleHtml(type) {
+            const samples = {
+                basic: `<h1>Welcome to Our Website</h1>
+<p>This is a <strong>sample paragraph</strong> with some <em>emphasized text</em>.</p>
+<h2>About Us</h2>
+<p>We are a company dedicated to providing <a href="https://example.com">quality services</a>.</p>
+<h3>Our Mission</h3>
+<p>To help people achieve their goals through innovative solutions.</p>`,
+                
+                complex: `<h1>Product Documentation</h1>
+<p>This document describes our <strong>latest product</strong> features.</p>
+
+<h2>Features List</h2>
+<ul>
+    <li>Easy to use interface</li>
+    <li>Advanced customization options</li>
+    <li>24/7 customer support</li>
+    <li>Mobile responsive design</li>
+</ul>
+
+<h2>Technical Specifications</h2>
+<table>
+    <tr>
+        <th>Feature</th>
+        <th>Description</th>
+        <th>Status</th>
+    </tr>
+    <tr>
+        <td>API Integration</td>
+        <td>RESTful API with JSON support</td>
+        <td>Available</td>
+    </tr>
+    <tr>
+        <td>Database</td>
+        <td>MySQL and PostgreSQL support</td>
+        <td>Available</td>
+    </tr>
+</table>
+
+<blockquote>
+    <p>This product has exceeded our expectations in terms of performance and reliability.</p>
+</blockquote>`,
+                
+                article: `<article>
+    <h1>Getting Started with Web Development</h1>
+    
+    <p>Web development is an exciting journey that combines creativity with technical skills. In this article, we'll explore the basics of HTML, CSS, and JavaScript.</p>
+    
+    <h2>HTML Basics</h2>
+    <p>HTML (HyperText Markup Language) is the foundation of web development. Here's a simple example:</p>
+    
+    <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;My First Page&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Hello World!&lt;/h1&gt;
+    &lt;p&gt;This is my first webpage.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+    
+    <h2>CSS Styling</h2>
+    <p>CSS (Cascading Style Sheets) makes your HTML look beautiful:</p>
+    
+    <pre><code>body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 20px;
+}
+
+h1 {
+    color: #333;
+    text-align: center;
+}</code></pre>
+    
+    <h2>JavaScript Functionality</h2>
+    <p>JavaScript adds interactivity to your websites:</p>
+    
+    <pre><code>function greetUser() {
+    const name = prompt("What's your name?");
+    alert("Hello, " + name + "!");
+}</code></pre>
+    
+    <p>For more information, visit our <a href="https://example.com/tutorials">tutorials page</a>.</p>
+    
+    <img src="https://via.placeholder.com/400x200" alt="Web Development Illustration">
+</article>`
+            };
+            
+            const sampleHtml = samples[type];
+            if (sampleHtml) {
+                document.getElementById('htmlInput').value = sampleHtml;
+                if (htmlConverter) {
+                    htmlConverter.htmlCode = sampleHtml;
+                }
+            }
+        }
+        
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            htmlConverter = new HtmlToMarkdownConverter();
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QR Code Generator | Multi Utility Tools</title>
+  <meta name="description" content="Generate QR codes for URLs, text, and more. Fast, free, and easy QR code generator tool.">
+  <meta name="keywords" content="qr code generator, create qr code, online qr, qr tool, text to qr">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../assets/css/style.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <link rel="canonical" href="https://multiutilitytools.com/tools/qr-code-generator.html">
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+  <style>
+    .qr-input-section {
+      background: #f8f9fa;
+      border-radius: 0.5rem;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .qr-preview {
+      background: white;
+      border: 1px solid #dee2e6;
+      border-radius: 0.5rem;
+      padding: 2rem;
+      margin: 1rem 0;
+      text-align: center;
+      min-height: 300px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .qr-preview img {
+      max-width: 100%;
+      height: auto;
+    }
+    .qr-options {
+      background: #f8f9fa;
+      border-radius: 0.5rem;
+      padding: 1.5rem;
+      margin: 1rem 0;
+    }
+    .color-preview {
+      width: 30px;
+      height: 30px;
+      border: 2px solid #dee2e6;
+      border-radius: 0.25rem;
+      display: inline-block;
+      margin-left: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <div id="site-header"></div>
+  <div class="container-fluid my-4">
+    <div class="row">
+      <!-- Main Tool Card -->
+      <main class="col-lg-8 mb-4 mb-lg-0">
+        <div class="card card-tool shadow-sm p-4">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="d-flex align-items-center">
+              <i class="bi bi-qr-code-scan display-5 me-3"></i>
+              <div>
+                <h1 class="h3 mb-1">QR Code Generator</h1>
+                <p class="text-muted mb-0">Generate QR codes for URLs, text, and more.</p>
+              </div>
+            </div>
+            <a href="../index.html" class="btn btn-outline-primary btn-lg d-flex align-items-center" style="white-space:nowrap;"><i class="bi bi-house-door me-2"></i>Home</a>
+          </div>
+          <hr>
+          <!-- TOOL UI START -->
+          <div id="tool-ui">
+            <!-- Input Section -->
+            <div class="qr-input-section">
+              <h5>QR Code Content</h5>
+              <div class="mb-3">
+                <label for="qrInput" class="form-label">Enter text or URL</label>
+                <textarea class="form-control" id="qrInput" rows="3" placeholder="Type your text, URL, email, phone number, or any other content here..."></textarea>
+              </div>
+              
+              <!-- Quick Templates -->
+              <div class="mb-3">
+                <label class="form-label">Quick Templates</label>
+                <div class="d-flex flex-wrap gap-2">
+                  <button type="button" class="btn btn-outline-secondary btn-sm" onclick="setTemplate('url', 'https://example.com')">URL</button>
+                  <button type="button" class="btn btn-outline-secondary btn-sm" onclick="setTemplate('email', 'mailto:example@email.com')">Email</button>
+                  <button type="button" class="btn btn-outline-secondary btn-sm" onclick="setTemplate('phone', 'tel:+1234567890')">Phone</button>
+                  <button type="button" class="btn btn-outline-secondary btn-sm" onclick="setTemplate('wifi', 'WIFI:S:NetworkName;T:WPA;P:Password;;')">WiFi</button>
+                  <button type="button" class="btn btn-outline-secondary btn-sm" onclick="setTemplate('text', 'Hello World!')">Text</button>
+                </div>
+              </div>
+              
+              <button class="btn btn-primary" id="generateBtn">
+                <i class="bi bi-qr-code"></i> Generate QR Code
+              </button>
+            </div>
+            
+            <!-- QR Code Options -->
+            <div class="qr-options" id="qrOptions" style="display: none;">
+              <h5>Customization Options</h5>
+              <div class="row">
+                <div class="col-md-6">
+                  <label for="qrSize" class="form-label">Size: <span id="sizeValue">256px</span></label>
+                  <input type="range" class="form-range" id="qrSize" min="128" max="512" value="256" step="32">
+                </div>
+                <div class="col-md-6">
+                  <label for="qrErrorLevel" class="form-label">Error Correction</label>
+                  <select class="form-select" id="qrErrorLevel">
+                    <option value="L">Low (7%)</option>
+                    <option value="M" selected>Medium (15%)</option>
+                    <option value="Q">Quartile (25%)</option>
+                    <option value="H">High (30%)</option>
+                  </select>
+                </div>
+              </div>
+              <div class="row mt-3">
+                <div class="col-md-6">
+                  <label for="qrForeground" class="form-label">Foreground Color</label>
+                  <div class="d-flex align-items-center">
+                    <input type="color" class="form-control form-control-color" id="qrForeground" value="#000000">
+                    <span class="color-preview" id="fgPreview" style="background: #000000;"></span>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label for="qrBackground" class="form-label">Background Color</label>
+                  <div class="d-flex align-items-center">
+                    <input type="color" class="form-control form-control-color" id="qrBackground" value="#ffffff">
+                    <span class="color-preview" id="bgPreview" style="background: #ffffff;"></span>
+                  </div>
+                </div>
+              </div>
+              <div class="row mt-3">
+                <div class="col-md-6">
+                  <label for="qrMargin" class="form-label">Margin: <span id="marginValue">4</span></label>
+                  <input type="range" class="form-range" id="qrMargin" min="0" max="10" value="4">
+                </div>
+                <div class="col-md-6">
+                  <label for="qrFormat" class="form-label">Output Format</label>
+                  <select class="form-select" id="qrFormat">
+                    <option value="png">PNG</option>
+                    <option value="svg">SVG</option>
+                    <option value="canvas">Canvas</option>
+                  </select>
+                </div>
+              </div>
+              <button class="btn btn-success mt-3" id="updateBtn">
+                <i class="bi bi-arrow-clockwise"></i> Update QR Code
+              </button>
+            </div>
+            
+            <!-- QR Code Preview -->
+            <div class="qr-preview" id="qrPreview">
+              <div class="text-muted">
+                <i class="bi bi-qr-code display-4"></i>
+                <p class="mt-2">Your QR code will appear here</p>
+              </div>
+            </div>
+            
+            <!-- Download Section -->
+            <div id="downloadSection" style="display: none;">
+              <h5>Download QR Code</h5>
+              <div class="d-flex gap-2 flex-wrap">
+                <button class="btn btn-success" id="downloadPngBtn">
+                  <i class="bi bi-download"></i> Download PNG
+                </button>
+                <button class="btn btn-success" id="downloadSvgBtn">
+                  <i class="bi bi-download"></i> Download SVG
+                </button>
+                <button class="btn btn-primary" id="copyBtn">
+                  <i class="bi bi-clipboard"></i> Copy to Clipboard
+                </button>
+              </div>
+            </div>
+            
+            <div id="feedback" class="mt-3"></div>
+          </div>
+          <!-- TOOL UI END -->
+        </div>
+      </main>
+      <!-- Sidebar Ad Section -->
+      <aside class="col-lg-4">
+        <div class="ad-placeholder mb-4">
+          <span class="text-muted">Sponsored</span><br>Ad Space
+        </div>
+      </aside>
+    </div>
+  </div>
+  <div id="site-footer"></div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/js/header-footer.js"></script>
+  <script>
+    // QR Code Generator functionality
+    const qrInput = document.getElementById('qrInput');
+    const generateBtn = document.getElementById('generateBtn');
+    const updateBtn = document.getElementById('updateBtn');
+    const qrOptions = document.getElementById('qrOptions');
+    const qrPreview = document.getElementById('qrPreview');
+    const downloadSection = document.getElementById('downloadSection');
+    const feedback = document.getElementById('feedback');
+    
+    // Options elements
+    const qrSize = document.getElementById('qrSize');
+    const sizeValue = document.getElementById('sizeValue');
+    const qrErrorLevel = document.getElementById('qrErrorLevel');
+    const qrForeground = document.getElementById('qrForeground');
+    const qrBackground = document.getElementById('qrBackground');
+    const fgPreview = document.getElementById('fgPreview');
+    const bgPreview = document.getElementById('bgPreview');
+    const qrMargin = document.getElementById('qrMargin');
+    const marginValue = document.getElementById('marginValue');
+    const qrFormat = document.getElementById('qrFormat');
+    
+    // Download buttons
+    const downloadPngBtn = document.getElementById('downloadPngBtn');
+    const downloadSvgBtn = document.getElementById('downloadSvgBtn');
+    const copyBtn = document.getElementById('copyBtn');
+    
+    let currentQRData = null;
+
+    // Event listeners
+    generateBtn.addEventListener('click', generateQR);
+    updateBtn.addEventListener('click', updateQR);
+    downloadPngBtn.addEventListener('click', () => downloadQR('png'));
+    downloadSvgBtn.addEventListener('click', () => downloadQR('svg'));
+    copyBtn.addEventListener('click', copyQR);
+    
+    // Option change listeners
+    qrSize.addEventListener('input', () => {
+      sizeValue.textContent = qrSize.value + 'px';
+    });
+    
+    qrForeground.addEventListener('input', () => {
+      fgPreview.style.background = qrForeground.value;
+    });
+    
+    qrBackground.addEventListener('input', () => {
+      bgPreview.style.background = qrBackground.value;
+    });
+    
+    qrMargin.addEventListener('input', () => {
+      marginValue.textContent = qrMargin.value;
+    });
+
+    function setTemplate(type, content) {
+      qrInput.value = content;
+      qrInput.focus();
+    }
+
+    function generateQR() {
+      const text = qrInput.value.trim();
+      
+      if (!text) {
+        showFeedback('Please enter some text or URL to generate a QR code.', 'warning');
+        return;
+      }
+      
+      currentQRData = text;
+      qrOptions.style.display = 'block';
+      generateQRCode(text);
+    }
+
+    function updateQR() {
+      if (currentQRData) {
+        generateQRCode(currentQRData);
+      }
+    }
+
+    function generateQRCode(text) {
+      const options = {
+        width: parseInt(qrSize.value),
+        margin: parseInt(qrMargin.value),
+        color: {
+          dark: qrForeground.value,
+          light: qrBackground.value
+        },
+        errorCorrectionLevel: qrErrorLevel.value
+      };
+      
+      const format = qrFormat.value;
+      
+      if (format === 'svg') {
+        QRCode.toDataURL(text, options, (err, url) => {
+          if (err) {
+            showFeedback('Error generating QR code: ' + err.message, 'error');
+            return;
+          }
+          displayQRCode(url, format);
+        });
+      } else {
+        QRCode.toCanvas(text, options, (err, canvas) => {
+          if (err) {
+            showFeedback('Error generating QR code: ' + err.message, 'error');
+            return;
+          }
+          displayQRCode(canvas, format);
+        });
+      }
+    }
+
+    function displayQRCode(data, format) {
+      qrPreview.innerHTML = '';
+      
+      if (format === 'svg') {
+        const img = document.createElement('img');
+        img.src = data;
+        img.alt = 'Generated QR Code';
+        qrPreview.appendChild(img);
+      } else {
+        qrPreview.appendChild(data);
+      }
+      
+      downloadSection.style.display = 'block';
+      showFeedback('QR code generated successfully!', 'success');
+    }
+
+    function downloadQR(format) {
+      if (!currentQRData) {
+        showFeedback('Please generate a QR code first.', 'warning');
+        return;
+      }
+      
+      const options = {
+        width: parseInt(qrSize.value),
+        margin: parseInt(qrMargin.value),
+        color: {
+          dark: qrForeground.value,
+          light: qrBackground.value
+        },
+        errorCorrectionLevel: qrErrorLevel.value
+      };
+      
+      const filename = `qrcode-${Date.now()}.${format}`;
+      
+      if (format === 'svg') {
+        QRCode.toDataURL(currentQRData, options, (err, url) => {
+          if (err) {
+            showFeedback('Error downloading QR code: ' + err.message, 'error');
+            return;
+          }
+          downloadFile(url, filename);
+        });
+      } else {
+        QRCode.toCanvas(currentQRData, options, (err, canvas) => {
+          if (err) {
+            showFeedback('Error downloading QR code: ' + err.message, 'error');
+            return;
+          }
+          canvas.toBlob(blob => {
+            const url = URL.createObjectURL(blob);
+            downloadFile(url, filename);
+          });
+        });
+      }
+    }
+
+    function downloadFile(url, filename) {
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showFeedback('QR code downloaded successfully!', 'success');
+    }
+
+    function copyQR() {
+      if (!currentQRData) {
+        showFeedback('Please generate a QR code first.', 'warning');
+        return;
+      }
+      
+      const canvas = qrPreview.querySelector('canvas');
+      if (canvas) {
+        canvas.toBlob(blob => {
+          const item = new ClipboardItem({ 'image/png': blob });
+          navigator.clipboard.write([item]).then(() => {
+            showFeedback('QR code copied to clipboard!', 'success');
+          }).catch(() => {
+            showFeedback('Failed to copy QR code to clipboard.', 'error');
+          });
+        });
+      } else {
+        showFeedback('No QR code to copy.', 'warning');
+      }
+    }
+
+    function showFeedback(message, type) {
+      feedback.innerHTML = `
+        <div class="alert alert-${type === 'error' ? 'danger' : type === 'warning' ? 'warning' : 'success'} alert-dismissible fade show">
+          <i class="bi bi-${type === 'error' ? 'exclamation-triangle' : type === 'warning' ? 'exclamation-circle' : 'check-circle'}"></i>
+          ${message}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      `;
+      
+      // Auto-dismiss after 5 seconds
+      setTimeout(() => {
+        const alert = feedback.querySelector('.alert');
+        if (alert) {
+          alert.remove();
+        }
+      }, 5000);
+    }
+
+    // Auto-generate on Enter key
+    qrInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        generateQR();
+      }
+    });
+  </script>
+</body>
+</html> 

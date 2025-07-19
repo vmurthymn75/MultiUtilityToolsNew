@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Robots.txt Generator - Multi Utility Tools</title>
+  <meta name="description" content="Generate robots.txt files for your website with customizable rules and validation.">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="../assets/css/style.css" rel="stylesheet">
+  <style>
+    .rules-editor {
+      background: #1e1e1e;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin: 1rem 0;
+      font-family: 'Courier New', monospace;
+      color: #d4d4d4;
+      position: relative;
+    }
+    .rules-textarea {
+      background: transparent;
+      border: none;
+      color: #d4d4d4;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      line-height: 1.5;
+      width: 100%;
+      min-height: 300px;
+      resize: vertical;
+      outline: none;
+    }
+    .rules-textarea::placeholder {
+      color: #6c757d;
+    }
+    .templates-panel {
+      background: #f8f9fa;
+      border-radius: 0.5rem;
+      padding: 1.5rem;
+      margin: 1rem 0;
+    }
+    .template-card {
+      background: white;
+      border: 1px solid #dee2e6;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin: 0.5rem 0;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .template-card:hover {
+      border-color: #0d6efd;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .template-card.selected {
+      border-color: #0d6efd;
+      background-color: #f8f9ff;
+    }
+    .validation-panel {
+      background: #e9ecef;
+      border-radius: 0.5rem;
+      padding: 1.5rem;
+      margin: 1rem 0;
+    }
+    .validation-result {
+      background: white;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin: 1rem 0;
+    }
+    .error-line {
+      background: #f8d7da;
+      border-left: 4px solid #dc3545;
+      padding: 0.5rem;
+      margin: 0.5rem 0;
+    }
+    .warning-line {
+      background: #fff3cd;
+      border-left: 4px solid #ffc107;
+      padding: 0.5rem;
+      margin: 0.5rem 0;
+    }
+    .success-line {
+      background: #d1edff;
+      border-left: 4px solid #0d6efd;
+      padding: 0.5rem;
+      margin: 0.5rem 0;
+    }
+    .preview-panel {
+      background: #f8f9fa;
+      border-radius: 0.5rem;
+      padding: 1.5rem;
+      margin: 1rem 0;
+    }
+    .rule-builder {
+      background: #e9ecef;
+      border-radius: 0.5rem;
+      padding: 1.5rem;
+      margin: 1rem 0;
+    }
+    .rule-item {
+      background: white;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin: 0.5rem 0;
+      border: 1px solid #dee2e6;
+    }
+    .rule-item:hover {
+      border-color: #0d6efd;
+    }
+  </style>
+</head>
+<body>
+  <div id="site-header"></div>
+  <div class="container-fluid my-4">
+    <div class="row">
+      <!-- Main Tool Card -->
+      <main class="col-lg-8 mb-4 mb-lg-0">
+        <div class="card card-tool shadow-sm p-4">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="d-flex align-items-center">
+              <i class="bi bi-robot display-5 me-3"></i>
+              <div>
+                <h1 class="h3 mb-1">Robots.txt Generator</h1>
+                <p class="text-muted mb-0">Generate robots.txt files for your website with customizable rules and validation.</p>
+              </div>
+            </div>
+            <a href="../index.html" class="btn btn-outline-primary btn-lg d-flex align-items-center" style="white-space:nowrap;"><i class="bi bi-house-door me-2"></i>Home</a>
+          </div>
+          <hr>
+          <!-- TOOL UI START -->
+          <div id="tool-ui">
+            <!-- Templates Panel -->
+            <div class="templates-panel">
+              <h4 class="mb-3"><i class="bi bi-collection me-2"></i>Quick Templates</h4>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="template-card" data-template="basic">
+                    <h6><i class="bi bi-check-circle me-2"></i>Basic Template</h6>
+                    <p class="text-muted mb-0">Standard robots.txt with common rules</p>
+                  </div>
+                  <div class="template-card" data-template="ecommerce">
+                    <h6><i class="bi bi-shop me-2"></i>E-commerce Template</h6>
+                    <p class="text-muted mb-0">Optimized for online stores</p>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="template-card" data-template="blog">
+                    <h6><i class="bi bi-journal-text me-2"></i>Blog Template</h6>
+                    <p class="text-muted mb-0">Perfect for content websites</p>
+                  </div>
+                  <div class="template-card" data-template="restrictive">
+                    <h6><i class="bi bi-shield-lock me-2"></i>Restrictive Template</h6>
+                    <p class="text-muted mb-0">Maximum privacy and control</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Rule Builder -->
+            <div class="rule-builder">
+              <h4 class="mb-3"><i class="bi bi-gear me-2"></i>Rule Builder</h4>
+              <div class="mb-3">
+                <button type="button" class="btn btn-primary" id="addUserAgentBtn">
+                  <i class="bi bi-plus-circle me-2"></i>Add User-Agent Rule
+                </button>
+                <button type="button" class="btn btn-secondary" id="addSitemapBtn">
+                  <i class="bi bi-plus-circle me-2"></i>Add Sitemap
+                </button>
+                <button type="button" class="btn btn-info" id="addCrawlDelayBtn">
+                  <i class="bi bi-plus-circle me-2"></i>Add Crawl-Delay
+                </button>
+              </div>
+              <div id="rulesContainer">
+                <!-- Rules will be added here -->
+              </div>
+            </div>
+
+            <!-- Rules Editor -->
+            <div class="mb-4">
+              <label for="robotsInput" class="form-label">Robots.txt Content</label>
+              <div class="rules-editor">
+                <textarea class="rules-textarea" id="robotsInput" placeholder="User-agent: *&#10;Disallow: /private&#10;Allow: /public&#10;Sitemap: https://yourwebsite.com/sitemap.xml"></textarea>
+              </div>
+              <div class="mt-3 d-flex flex-wrap gap-2">
+                <button type="button" class="btn btn-primary" id="validateBtn"><i class="bi bi-check-circle me-2"></i>Validate</button>
+                <button type="button" class="btn btn-secondary" id="formatBtn"><i class="bi bi-arrow-clockwise me-2"></i>Format</button>
+                <button type="button" class="btn btn-success" id="copyBtn"><i class="bi bi-clipboard me-2"></i>Copy</button>
+                <button type="button" class="btn btn-danger" id="clearBtn"><i class="bi bi-trash me-2"></i>Clear</button>
+              </div>
+            </div>
+
+            <!-- Validation Results -->
+            <div class="validation-panel" id="validationPanel" style="display: none;">
+              <h4 class="mb-3"><i class="bi bi-shield-check me-2"></i>Validation Results</h4>
+              <div id="validationContent"></div>
+            </div>
+
+            <!-- Preview Panel -->
+            <div class="preview-panel">
+              <h4 class="mb-3"><i class="bi bi-eye me-2"></i>Preview</h4>
+              <div class="bg-dark text-light p-3 rounded">
+                <pre id="previewContent" class="mb-0">User-agent: *
+Disallow: /private
+Allow: /public
+Sitemap: https://yourwebsite.com/sitemap.xml</pre>
+              </div>
+            </div>
+
+            <!-- Download Section -->
+            <div class="mt-4">
+              <h4><i class="bi bi-download me-2"></i>Download Options</h4>
+              <div class="d-flex flex-wrap gap-2">
+                <button type="button" class="btn btn-primary" id="downloadRobots">
+                  <i class="bi bi-file-earmark-arrow-down me-2"></i>Download robots.txt
+                </button>
+                <button type="button" class="btn btn-secondary" id="downloadTxt">
+                  <i class="bi bi-file-earmark-text me-2"></i>Download as TXT
+                </button>
+                <button type="button" class="btn btn-info" id="downloadInstructions">
+                  <i class="bi bi-file-earmark-text me-2"></i>Download Instructions
+                </button>
+              </div>
+            </div>
+
+            <!-- Instructions -->
+            <div class="alert alert-info mt-4">
+              <h5><i class="bi bi-info-circle me-2"></i>How to use:</h5>
+              <ul class="mb-0">
+                <li>Choose a template or build custom rules using the Rule Builder</li>
+                <li>Edit the robots.txt content directly in the text area</li>
+                <li>Validate your robots.txt for syntax errors</li>
+                <li>Preview how it will look when deployed</li>
+                <li>Download the robots.txt file and upload it to your website root</li>
+                <li>Test your robots.txt using Google Search Console</li>
+              </ul>
+            </div>
+          </div>
+          <!-- TOOL UI END -->
+        </div>
+      </main>
+      <!-- Sidebar Ad Section -->
+      <aside class="col-lg-4">
+        <div class="ad-placeholder mb-4">
+          <span class="text-muted">Sponsored</span><br>Ad Space
+        </div>
+      </aside>
+    </div>
+  </div>
+  <div id="site-footer"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/js/header-footer.js"></script>
+  <script>
+    // Robots.txt Generator Tool Logic
+    class RobotsTxtGenerator {
+      constructor() {
+        this.robotsInput = document.getElementById('robotsInput');
+        this.rulesContainer = document.getElementById('rulesContainer');
+        this.previewContent = document.getElementById('previewContent');
+        this.validationPanel = document.getElementById('validationPanel');
+        this.validationContent = document.getElementById('validationContent');
+        
+        this.templates = {
+          basic: `User-agent: *
+Disallow: /admin/
+Disallow: /private/
+Disallow: /temp/
+Allow: /
+Sitemap: https://yourwebsite.com/sitemap.xml`,
+
+          ecommerce: `User-agent: *
+Disallow: /admin/
+Disallow: /checkout/
+Disallow: /cart/
+Disallow: /account/
+Disallow: /search?
+Allow: /
+Sitemap: https://yourwebsite.com/sitemap.xml
+Crawl-delay: 1`,
+
+          blog: `User-agent: *
+Disallow: /admin/
+Disallow: /draft/
+Disallow: /private/
+Allow: /
+Sitemap: https://yourwebsite.com/sitemap.xml
+Crawl-delay: 2`,
+
+          restrictive: `User-agent: *
+Disallow: /
+User-agent: Googlebot
+Allow: /
+Disallow: /admin/
+Disallow: /private/
+Sitemap: https://yourwebsite.com/sitemap.xml`
+        };
+        
+        this.initializeEventListeners();
+        this.updatePreview();
+      }
+
+      initializeEventListeners() {
+        // Template selection
+        document.querySelectorAll('.template-card').forEach(card => {
+          card.addEventListener('click', () => this.loadTemplate(card.dataset.template));
+        });
+
+        // Buttons
+        document.getElementById('validateBtn').addEventListener('click', () => this.validateRobotsTxt());
+        document.getElementById('formatBtn').addEventListener('click', () => this.formatRobotsTxt());
+        document.getElementById('copyBtn').addEventListener('click', () => this.copyRobotsTxt());
+        document.getElementById('clearBtn').addEventListener('click', () => this.clearRobotsTxt());
+        
+        // Download buttons
+        document.getElementById('downloadRobots').addEventListener('click', () => this.downloadRobotsTxt());
+        document.getElementById('downloadTxt').addEventListener('click', () => this.downloadAsTxt());
+        document.getElementById('downloadInstructions').addEventListener('click', () => this.downloadInstructions());
+        
+        // Rule builder buttons
+        document.getElementById('addUserAgentBtn').addEventListener('click', () => this.addUserAgentRule());
+        document.getElementById('addSitemapBtn').addEventListener('click', () => this.addSitemapRule());
+        document.getElementById('addCrawlDelayBtn').addEventListener('click', () => this.addCrawlDelayRule());
+        
+        // Input change
+        this.robotsInput.addEventListener('input', () => this.updatePreview());
+      }
+
+      loadTemplate(templateName) {
+        // Remove selection from all cards
+        document.querySelectorAll('.template-card').forEach(card => {
+          card.classList.remove('selected');
+        });
+        
+        // Add selection to clicked card
+        document.querySelector(`[data-template="${templateName}"]`).classList.add('selected');
+        
+        // Load template content
+        this.robotsInput.value = this.templates[templateName];
+        this.updatePreview();
+        this.showNotification(`Loaded ${templateName} template`, 'success');
+      }
+
+      addUserAgentRule() {
+        const ruleId = 'rule_' + Date.now();
+        const ruleHtml = `
+          <div class="rule-item" id="${ruleId}">
+            <div class="row">
+              <div class="col-md-4">
+                <label class="form-label">User-Agent</label>
+                <input type="text" class="form-control" value="*" onchange="robotsGenerator.updateFromRules()">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Disallow</label>
+                <input type="text" class="form-control" placeholder="/admin/" onchange="robotsGenerator.updateFromRules()">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Allow</label>
+                <input type="text" class="form-control" placeholder="/" onchange="robotsGenerator.updateFromRules()">
+              </div>
+            </div>
+            <button type="button" class="btn btn-sm btn-danger mt-2" onclick="robotsGenerator.removeRule('${ruleId}')">
+              <i class="bi bi-trash"></i> Remove
+            </button>
+          </div>
+        `;
+        
+        this.rulesContainer.insertAdjacentHTML('beforeend', ruleHtml);
+      }
+
+      addSitemapRule() {
+        const ruleId = 'rule_' + Date.now();
+        const ruleHtml = `
+          <div class="rule-item" id="${ruleId}">
+            <div class="row">
+              <div class="col-md-8">
+                <label class="form-label">Sitemap URL</label>
+                <input type="url" class="form-control" placeholder="https://yourwebsite.com/sitemap.xml" onchange="robotsGenerator.updateFromRules()">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">&nbsp;</label>
+                <button type="button" class="btn btn-sm btn-danger d-block" onclick="robotsGenerator.removeRule('${ruleId}')">
+                  <i class="bi bi-trash"></i> Remove
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+        
+        this.rulesContainer.insertAdjacentHTML('beforeend', ruleHtml);
+      }
+
+      addCrawlDelayRule() {
+        const ruleId = 'rule_' + Date.now();
+        const ruleHtml = `
+          <div class="rule-item" id="${ruleId}">
+            <div class="row">
+              <div class="col-md-4">
+                <label class="form-label">User-Agent</label>
+                <input type="text" class="form-control" value="*" onchange="robotsGenerator.updateFromRules()">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Crawl-Delay (seconds)</label>
+                <input type="number" class="form-control" value="1" min="0" max="30" onchange="robotsGenerator.updateFromRules()">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">&nbsp;</label>
+                <button type="button" class="btn btn-sm btn-danger d-block" onclick="robotsGenerator.removeRule('${ruleId}')">
+                  <i class="bi bi-trash"></i> Remove
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+        
+        this.rulesContainer.insertAdjacentHTML('beforeend', ruleHtml);
+      }
+
+      removeRule(ruleId) {
+        document.getElementById(ruleId).remove();
+        this.updateFromRules();
+      }
+
+      updateFromRules() {
+        let robotsTxt = '';
+        const rules = this.rulesContainer.querySelectorAll('.rule-item');
+        
+        rules.forEach(rule => {
+          const inputs = rule.querySelectorAll('input');
+          if (inputs.length === 3) {
+            // User-Agent rule
+            const userAgent = inputs[0].value || '*';
+            const disallow = inputs[1].value;
+            const allow = inputs[2].value;
+            
+            robotsTxt += `User-agent: ${userAgent}\n`;
+            if (disallow) robotsTxt += `Disallow: ${disallow}\n`;
+            if (allow) robotsTxt += `Allow: ${allow}\n`;
+            robotsTxt += '\n';
+          } else if (inputs.length === 1 && inputs[0].type === 'url') {
+            // Sitemap rule
+            const sitemap = inputs[0].value;
+            if (sitemap) robotsTxt += `Sitemap: ${sitemap}\n`;
+          } else if (inputs.length === 2) {
+            // Crawl-Delay rule
+            const userAgent = inputs[0].value || '*';
+            const crawlDelay = inputs[1].value;
+            if (crawlDelay) {
+              robotsTxt += `User-agent: ${userAgent}\n`;
+              robotsTxt += `Crawl-delay: ${crawlDelay}\n\n`;
+            }
+          }
+        });
+        
+        this.robotsInput.value = robotsTxt.trim();
+        this.updatePreview();
+      }
+
+      validateRobotsTxt() {
+        const content = this.robotsInput.value;
+        const errors = [];
+        const warnings = [];
+        
+        // Basic syntax validation
+        const lines = content.split('\n');
+        let hasUserAgent = false;
+        let hasSitemap = false;
+        
+        lines.forEach((line, index) => {
+          const trimmedLine = line.trim();
+          if (!trimmedLine || trimmedLine.startsWith('#')) return;
+          
+          if (trimmedLine.toLowerCase().startsWith('user-agent:')) {
+            hasUserAgent = true;
+            const userAgent = trimmedLine.substring(11).trim();
+            if (!userAgent) {
+              errors.push(`Line ${index + 1}: User-agent directive is empty`);
+            }
+          } else if (trimmedLine.toLowerCase().startsWith('disallow:')) {
+            if (!hasUserAgent) {
+              errors.push(`Line ${index + 1}: Disallow directive without User-agent`);
+            }
+            const path = trimmedLine.substring(9).trim();
+            if (!path) {
+              warnings.push(`Line ${index + 1}: Disallow directive is empty (disallows everything)`);
+            }
+          } else if (trimmedLine.toLowerCase().startsWith('allow:')) {
+            if (!hasUserAgent) {
+              errors.push(`Line ${index + 1}: Allow directive without User-agent`);
+            }
+          } else if (trimmedLine.toLowerCase().startsWith('sitemap:')) {
+            hasSitemap = true;
+            const sitemap = trimmedLine.substring(8).trim();
+            if (!sitemap) {
+              errors.push(`Line ${index + 1}: Sitemap URL is empty`);
+            } else if (!this.isValidUrl(sitemap)) {
+              errors.push(`Line ${index + 1}: Invalid Sitemap URL`);
+            }
+          } else if (trimmedLine.toLowerCase().startsWith('crawl-delay:')) {
+            if (!hasUserAgent) {
+              errors.push(`Line ${index + 1}: Crawl-delay directive without User-agent`);
+            }
+            const delay = trimmedLine.substring(12).trim();
+            if (isNaN(delay) || delay < 0) {
+              errors.push(`Line ${index + 1}: Invalid Crawl-delay value`);
+            }
+          } else {
+            warnings.push(`Line ${index + 1}: Unknown directive: ${trimmedLine}`);
+          }
+        });
+        
+        // Display validation results
+        this.validationPanel.style.display = 'block';
+        let validationHtml = '';
+        
+        if (errors.length === 0 && warnings.length === 0) {
+          validationHtml = '<div class="success-line"><i class="bi bi-check-circle me-2"></i>Robots.txt is valid!</div>';
+        } else {
+          if (errors.length > 0) {
+            validationHtml += '<h6 class="text-danger">Errors:</h6>';
+            errors.forEach(error => {
+              validationHtml += `<div class="error-line"><i class="bi bi-exclamation-triangle me-2"></i>${error}</div>`;
+            });
+          }
+          
+          if (warnings.length > 0) {
+            validationHtml += '<h6 class="text-warning">Warnings:</h6>';
+            warnings.forEach(warning => {
+              validationHtml += `<div class="warning-line"><i class="bi bi-exclamation-circle me-2"></i>${warning}</div>`;
+            });
+          }
+        }
+        
+        this.validationContent.innerHTML = validationHtml;
+        
+        const message = errors.length === 0 ? 
+          `Validation complete: ${warnings.length} warnings` : 
+          `Validation failed: ${errors.length} errors, ${warnings.length} warnings`;
+        
+        this.showNotification(message, errors.length === 0 ? 'success' : 'error');
+      }
+
+      formatRobotsTxt() {
+        let content = this.robotsInput.value;
+        
+        // Split into lines and clean up
+        const lines = content.split('\n').map(line => line.trim()).filter(line => line);
+        
+        // Group by user-agent
+        const formatted = [];
+        let currentUserAgent = null;
+        
+        lines.forEach(line => {
+          if (line.toLowerCase().startsWith('user-agent:')) {
+            if (currentUserAgent) formatted.push(''); // Add blank line between groups
+            currentUserAgent = line;
+            formatted.push(line);
+          } else if (line.toLowerCase().startsWith('sitemap:')) {
+            if (currentUserAgent) formatted.push(''); // Add blank line before sitemap
+            currentUserAgent = null;
+            formatted.push(line);
+          } else {
+            formatted.push(line);
+          }
+        });
+        
+        this.robotsInput.value = formatted.join('\n');
+        this.updatePreview();
+        this.showNotification('Robots.txt formatted successfully!', 'success');
+      }
+
+      updatePreview() {
+        this.previewContent.textContent = this.robotsInput.value || 'User-agent: *\nDisallow: /private\nAllow: /public\nSitemap: https://yourwebsite.com/sitemap.xml';
+      }
+
+      async copyRobotsTxt() {
+        const content = this.robotsInput.value;
+        if (!content.trim()) {
+          this.showNotification('No content to copy', 'warning');
+          return;
+        }
+
+        try {
+          await navigator.clipboard.writeText(content);
+          this.showNotification('Robots.txt copied to clipboard!', 'success');
+        } catch (err) {
+          this.showNotification('Failed to copy robots.txt', 'error');
+        }
+      }
+
+      clearRobotsTxt() {
+        this.robotsInput.value = '';
+        this.rulesContainer.innerHTML = '';
+        this.validationPanel.style.display = 'none';
+        this.updatePreview();
+        this.showNotification('Robots.txt cleared', 'success');
+      }
+
+      downloadRobotsTxt() {
+        const content = this.robotsInput.value;
+        if (!content.trim()) {
+          this.showNotification('No content to download', 'warning');
+          return;
+        }
+
+        const blob = new Blob([content], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'robots.txt';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        this.showNotification('Robots.txt downloaded!', 'success');
+      }
+
+      downloadAsTxt() {
+        const content = this.robotsInput.value;
+        if (!content.trim()) {
+          this.showNotification('No content to download', 'warning');
+          return;
+        }
+
+        const blob = new Blob([content], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'robots.txt';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        this.showNotification('File downloaded as TXT!', 'success');
+      }
+
+      downloadInstructions() {
+        const instructions = `Robots.txt Deployment Instructions
+
+1. Download the robots.txt file from this tool
+2. Upload the file to your website's root directory (e.g., https://yourwebsite.com/robots.txt)
+3. Verify the file is accessible by visiting the URL in your browser
+4. Test your robots.txt using Google Search Console:
+   - Go to Google Search Console
+   - Select your property
+   - Go to "URL Inspection" tool
+   - Enter your robots.txt URL
+   - Check for any errors or warnings
+
+Common Issues:
+- File not in root directory
+- Incorrect file permissions
+- Syntax errors in robots.txt
+- Server configuration blocking access
+
+Best Practices:
+- Keep robots.txt under 500KB
+- Use relative paths for Disallow/Allow directives
+- Include your sitemap URL
+- Test with different user agents
+- Monitor crawl statistics in Search Console
+
+For more information, visit:
+https://developers.google.com/search/docs/advanced/robots/intro`;
+
+        const blob = new Blob([instructions], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'robots-txt-instructions.txt';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        this.showNotification('Instructions downloaded!', 'success');
+      }
+
+      isValidUrl(string) {
+        try {
+          new URL(string);
+          return true;
+        } catch (_) {
+          return false;
+        }
+      }
+
+      showNotification(message, type) {
+        const alertClass = type === 'success' ? 'alert-success' : 
+                          type === 'warning' ? 'alert-warning' : 'alert-danger';
+        
+        const alert = document.createElement('div');
+        alert.className = `alert ${alertClass} alert-dismissible fade show position-fixed`;
+        alert.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+        alert.innerHTML = `
+          ${message}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        
+        document.body.appendChild(alert);
+        
+        setTimeout(() => {
+          if (alert.parentNode) {
+            alert.remove();
+          }
+        }, 5000);
+      }
+    }
+
+    // Initialize the tool when the page loads
+    let robotsGenerator;
+    document.addEventListener('DOMContentLoaded', () => {
+      robotsGenerator = new RobotsTxtGenerator();
+    });
+  </script>
+</body>
+</html> 

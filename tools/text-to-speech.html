@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Text-to-Speech - Multi Utility Tools</title>
+  <meta name="description" content="Convert written text into spoken audio with customizable voice, speed, and pitch settings.">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="../assets/css/style.css" rel="stylesheet">
+  <style>
+    .voice-controls {
+      background: #f8f9fa;
+      border-radius: 0.5rem;
+      padding: 1.5rem;
+      margin: 1rem 0;
+    }
+    .control-group {
+      margin-bottom: 1rem;
+    }
+    .playback-controls {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-radius: 1rem;
+      padding: 1.5rem;
+      margin: 1rem 0;
+    }
+    .control-btn {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      border: none;
+      font-size: 1.5rem;
+      margin: 0 0.5rem;
+      transition: all 0.3s ease;
+    }
+    .control-btn:hover {
+      transform: scale(1.1);
+    }
+    .control-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .progress-container {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin: 1rem 0;
+    }
+    .progress-bar {
+      height: 8px;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.3);
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: #fff;
+      width: 0%;
+      transition: width 0.1s ease;
+    }
+    .voice-preview {
+      background: #e9ecef;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin: 1rem 0;
+      text-align: center;
+    }
+    .status-indicator {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #dc3545;
+      margin-right: 0.5rem;
+    }
+    .status-indicator.speaking {
+      background: #28a745;
+      animation: pulse 1s infinite;
+    }
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.5; }
+      100% { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <div id="site-header"></div>
+  <div class="container-fluid my-4">
+    <div class="row">
+      <!-- Main Tool Card -->
+      <main class="col-lg-8 mb-4 mb-lg-0">
+        <div class="card card-tool shadow-sm p-4">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="d-flex align-items-center">
+              <i class="bi bi-volume-up-fill display-5 me-3"></i>
+              <div>
+                <h1 class="h3 mb-1">Text-to-Speech</h1>
+                <p class="text-muted mb-0">Convert written text into spoken audio with customizable voice settings.</p>
+              </div>
+            </div>
+            <a href="../index.html" class="btn btn-outline-primary btn-lg d-flex align-items-center" style="white-space:nowrap;"><i class="bi bi-house-door me-2"></i>Home</a>
+          </div>
+          <hr>
+          <!-- TOOL UI START -->
+          <div id="tool-ui">
+            <div class="mb-4">
+              <label for="textInput" class="form-label">Enter your text</label>
+              <textarea class="form-control form-control-lg" id="textInput" rows="8" placeholder="Type or paste your text here to convert it to speech..."></textarea>
+              <div class="mt-3 d-flex flex-wrap gap-2">
+                <button type="button" class="btn btn-secondary" id="clearBtn"><i class="bi bi-trash me-2"></i>Clear Text</button>
+                <button type="button" class="btn btn-info" id="sampleBtn"><i class="bi bi-file-text me-2"></i>Load Sample</button>
+                <button type="button" class="btn btn-success" id="copyBtn"><i class="bi bi-clipboard me-2"></i>Copy Text</button>
+              </div>
+            </div>
+
+            <!-- Voice Controls -->
+            <div class="voice-controls">
+              <h4 class="mb-3"><i class="bi bi-gear me-2"></i>Voice Settings</h4>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="control-group">
+                    <label for="voiceSelect" class="form-label">Voice</label>
+                    <select class="form-select" id="voiceSelect">
+                      <option value="">Loading voices...</option>
+                    </select>
+                  </div>
+                  <div class="control-group">
+                    <label for="speedRange" class="form-label">Speed: <span id="speedValue">1</span>x</label>
+                    <input type="range" class="form-range" id="speedRange" min="0.5" max="2" step="0.1" value="1">
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="control-group">
+                    <label for="pitchRange" class="form-label">Pitch: <span id="pitchValue">1</span></label>
+                    <input type="range" class="form-range" id="pitchRange" min="0.5" max="2" step="0.1" value="1">
+                  </div>
+                  <div class="control-group">
+                    <label for="volumeRange" class="form-label">Volume: <span id="volumeValue">1</span></label>
+                    <input type="range" class="form-range" id="volumeRange" min="0" max="1" step="0.1" value="1">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Playback Controls -->
+            <div class="playback-controls">
+              <h4 class="mb-3"><i class="bi bi-play-circle me-2"></i>Playback Controls</h4>
+              <div class="text-center mb-3">
+                <button type="button" class="btn btn-light control-btn" id="playBtn" title="Play">
+                  <i class="bi bi-play-fill"></i>
+                </button>
+                <button type="button" class="btn btn-light control-btn" id="pauseBtn" title="Pause" disabled>
+                  <i class="bi bi-pause-fill"></i>
+                </button>
+                <button type="button" class="btn btn-light control-btn" id="stopBtn" title="Stop" disabled>
+                  <i class="bi bi-stop-fill"></i>
+                </button>
+                <button type="button" class="btn btn-light control-btn" id="downloadBtn" title="Download Audio">
+                  <i class="bi bi-download"></i>
+                </button>
+              </div>
+              
+              <div class="progress-container">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <span id="currentTime">0:00</span>
+                  <span id="totalTime">0:00</span>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-fill" id="progressFill"></div>
+                </div>
+              </div>
+              
+              <div class="text-center">
+                <span class="status-indicator" id="statusIndicator"></span>
+                <span id="statusText">Ready to speak</span>
+              </div>
+            </div>
+
+            <!-- Voice Preview -->
+            <div class="voice-preview">
+              <h5><i class="bi bi-info-circle me-2"></i>Voice Information</h5>
+              <div id="voiceInfo">
+                <p class="text-muted">Select a voice to see details</p>
+              </div>
+            </div>
+          </div>
+          <!-- TOOL UI END -->
+        </div>
+      </main>
+      <!-- Sidebar Ad Section -->
+      <aside class="col-lg-4">
+        <div class="ad-placeholder mb-4">
+          <span class="text-muted">Sponsored</span><br>Ad Space
+        </div>
+      </aside>
+    </div>
+  </div>
+  <div id="site-footer"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/js/header-footer.js"></script>
+  <script>
+    // Text-to-Speech Tool Logic
+    class TextToSpeech {
+      constructor() {
+        this.synthesis = window.speechSynthesis;
+        this.utterance = null;
+        this.voices = [];
+        this.isPlaying = false;
+        this.startTime = 0;
+        this.progressInterval = null;
+        
+        this.initializeElements();
+        this.initializeEventListeners();
+        this.loadVoices();
+      }
+
+      initializeElements() {
+        this.textInput = document.getElementById('textInput');
+        this.voiceSelect = document.getElementById('voiceSelect');
+        this.speedRange = document.getElementById('speedRange');
+        this.pitchRange = document.getElementById('pitchRange');
+        this.volumeRange = document.getElementById('volumeRange');
+        this.playBtn = document.getElementById('playBtn');
+        this.pauseBtn = document.getElementById('pauseBtn');
+        this.stopBtn = document.getElementById('stopBtn');
+        this.downloadBtn = document.getElementById('downloadBtn');
+        this.clearBtn = document.getElementById('clearBtn');
+        this.sampleBtn = document.getElementById('sampleBtn');
+        this.copyBtn = document.getElementById('copyBtn');
+        this.progressFill = document.getElementById('progressFill');
+        this.currentTimeEl = document.getElementById('currentTime');
+        this.totalTimeEl = document.getElementById('totalTime');
+        this.statusIndicator = document.getElementById('statusIndicator');
+        this.statusText = document.getElementById('statusText');
+        this.voiceInfo = document.getElementById('voiceInfo');
+        
+        // Range value displays
+        this.speedValue = document.getElementById('speedValue');
+        this.pitchValue = document.getElementById('pitchValue');
+        this.volumeValue = document.getElementById('volumeValue');
+      }
+
+      initializeEventListeners() {
+        this.playBtn.addEventListener('click', () => this.play());
+        this.pauseBtn.addEventListener('click', () => this.pause());
+        this.stopBtn.addEventListener('click', () => this.stop());
+        this.downloadBtn.addEventListener('click', () => this.downloadAudio());
+        this.clearBtn.addEventListener('click', () => this.clearText());
+        this.sampleBtn.addEventListener('click', () => this.loadSampleText());
+        this.copyBtn.addEventListener('click', () => this.copyText());
+        
+        this.speedRange.addEventListener('input', (e) => {
+          this.speedValue.textContent = e.target.value;
+        });
+        this.pitchRange.addEventListener('input', (e) => {
+          this.pitchValue.textContent = e.target.value;
+        });
+        this.volumeRange.addEventListener('input', (e) => {
+          this.volumeValue.textContent = e.target.value;
+        });
+        
+        this.voiceSelect.addEventListener('change', () => this.updateVoiceInfo());
+      }
+
+      loadVoices() {
+        // Load voices when they become available
+        const loadVoices = () => {
+          this.voices = this.synthesis.getVoices();
+          this.populateVoiceSelect();
+        };
+
+        if (this.synthesis.getVoices().length > 0) {
+          loadVoices();
+        } else {
+          this.synthesis.addEventListener('voiceschanged', loadVoices);
+        }
+      }
+
+      populateVoiceSelect() {
+        this.voiceSelect.innerHTML = '';
+        
+        // Group voices by language
+        const voiceGroups = {};
+        this.voices.forEach(voice => {
+          const lang = voice.lang.split('-')[0];
+          if (!voiceGroups[lang]) {
+            voiceGroups[lang] = [];
+          }
+          voiceGroups[lang].push(voice);
+        });
+
+        // Create options for each language group
+        Object.keys(voiceGroups).sort().forEach(lang => {
+          const optgroup = document.createElement('optgroup');
+          optgroup.label = this.getLanguageName(lang);
+          
+          voiceGroups[lang].forEach(voice => {
+            const option = document.createElement('option');
+            option.value = voice.name;
+            option.textContent = `${voice.name} (${voice.lang})`;
+            optgroup.appendChild(option);
+          });
+          
+          this.voiceSelect.appendChild(optgroup);
+        });
+
+        // Select default voice (preferably English)
+        const defaultVoice = this.voices.find(v => v.lang.startsWith('en')) || this.voices[0];
+        if (defaultVoice) {
+          this.voiceSelect.value = defaultVoice.name;
+          this.updateVoiceInfo();
+        }
+      }
+
+      getLanguageName(code) {
+        const languages = {
+          'en': 'English',
+          'es': 'Spanish',
+          'fr': 'French',
+          'de': 'German',
+          'it': 'Italian',
+          'pt': 'Portuguese',
+          'ru': 'Russian',
+          'ja': 'Japanese',
+          'ko': 'Korean',
+          'zh': 'Chinese',
+          'ar': 'Arabic',
+          'hi': 'Hindi'
+        };
+        return languages[code] || code;
+      }
+
+      play() {
+        const text = this.textInput.value.trim();
+        if (!text) {
+          this.showNotification('Please enter some text to speak', 'warning');
+          return;
+        }
+
+        // Stop any current speech
+        this.stop();
+
+        // Create new utterance
+        this.utterance = new SpeechSynthesisUtterance(text);
+        
+        // Set voice
+        const selectedVoice = this.voices.find(v => v.name === this.voiceSelect.value);
+        if (selectedVoice) {
+          this.utterance.voice = selectedVoice;
+        }
+
+        // Set properties
+        this.utterance.rate = parseFloat(this.speedRange.value);
+        this.utterance.pitch = parseFloat(this.pitchRange.value);
+        this.utterance.volume = parseFloat(this.volumeRange.value);
+
+        // Event listeners
+        this.utterance.onstart = () => {
+          this.isPlaying = true;
+          this.updatePlaybackControls();
+          this.startProgress();
+          this.updateStatus('Speaking...', true);
+        };
+
+        this.utterance.onend = () => {
+          this.isPlaying = false;
+          this.updatePlaybackControls();
+          this.stopProgress();
+          this.updateStatus('Finished speaking', false);
+        };
+
+        this.utterance.onerror = (event) => {
+          this.isPlaying = false;
+          this.updatePlaybackControls();
+          this.stopProgress();
+          this.updateStatus('Error occurred', false);
+          this.showNotification('Speech synthesis error: ' + event.error, 'error');
+        };
+
+        // Start speaking
+        this.synthesis.speak(this.utterance);
+      }
+
+      pause() {
+        if (this.isPlaying) {
+          this.synthesis.pause();
+          this.updateStatus('Paused', false);
+        }
+      }
+
+      stop() {
+        this.synthesis.cancel();
+        this.isPlaying = false;
+        this.updatePlaybackControls();
+        this.stopProgress();
+        this.updateStatus('Stopped', false);
+      }
+
+      updatePlaybackControls() {
+        this.playBtn.disabled = this.isPlaying;
+        this.pauseBtn.disabled = !this.isPlaying;
+        this.stopBtn.disabled = !this.isPlaying;
+      }
+
+      startProgress() {
+        this.startTime = Date.now();
+        this.progressInterval = setInterval(() => {
+          this.updateProgress();
+        }, 100);
+      }
+
+      stopProgress() {
+        if (this.progressInterval) {
+          clearInterval(this.progressInterval);
+          this.progressInterval = null;
+        }
+        this.progressFill.style.width = '0%';
+        this.currentTimeEl.textContent = '0:00';
+        this.totalTimeEl.textContent = '0:00';
+      }
+
+      updateProgress() {
+        if (!this.utterance) return;
+        
+        const elapsed = (Date.now() - this.startTime) / 1000;
+        const total = this.utterance.text.length / (this.utterance.rate * 10); // Rough estimate
+        const progress = Math.min((elapsed / total) * 100, 100);
+        
+        this.progressFill.style.width = progress + '%';
+        this.currentTimeEl.textContent = this.formatTime(elapsed);
+        this.totalTimeEl.textContent = this.formatTime(total);
+      }
+
+      formatTime(seconds) {
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return `${mins}:${secs.toString().padStart(2, '0')}`;
+      }
+
+      updateStatus(text, speaking) {
+        this.statusText.textContent = text;
+        this.statusIndicator.className = 'status-indicator' + (speaking ? ' speaking' : '');
+      }
+
+      updateVoiceInfo() {
+        const selectedVoice = this.voices.find(v => v.name === this.voiceSelect.value);
+        if (selectedVoice) {
+          this.voiceInfo.innerHTML = `
+            <p><strong>Name:</strong> ${selectedVoice.name}</p>
+            <p><strong>Language:</strong> ${selectedVoice.lang}</p>
+            <p><strong>Default:</strong> ${selectedVoice.default ? 'Yes' : 'No'}</p>
+            <p><strong>Local Service:</strong> ${selectedVoice.localService ? 'Yes' : 'No'}</p>
+          `;
+        } else {
+          this.voiceInfo.innerHTML = '<p class="text-muted">No voice selected</p>';
+        }
+      }
+
+      async downloadAudio() {
+        const text = this.textInput.value.trim();
+        if (!text) {
+          this.showNotification('Please enter some text to convert', 'warning');
+          return;
+        }
+
+        this.showNotification('Audio download feature requires server-side processing. This is a client-side demo.', 'info');
+      }
+
+      clearText() {
+        this.textInput.value = '';
+        this.textInput.focus();
+      }
+
+      loadSampleText() {
+        const sampleText = `Hello! This is a sample text for the Text-to-Speech converter. 
+
+You can adjust the voice, speed, pitch, and volume settings to customize how your text sounds when converted to speech.
+
+This tool supports multiple languages and voices, making it perfect for creating audio content, accessibility features, or just having fun with text-to-speech technology.`;
+
+        this.textInput.value = sampleText;
+      }
+
+      async copyText() {
+        try {
+          await navigator.clipboard.writeText(this.textInput.value);
+          this.showNotification('Text copied to clipboard!', 'success');
+        } catch (err) {
+          this.showNotification('Failed to copy text', 'error');
+        }
+      }
+
+      showNotification(message, type) {
+        const alertClass = type === 'success' ? 'alert-success' : 
+                          type === 'warning' ? 'alert-warning' : 
+                          type === 'info' ? 'alert-info' : 'alert-danger';
+        
+        const alert = document.createElement('div');
+        alert.className = `alert ${alertClass} alert-dismissible fade show position-fixed`;
+        alert.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+        alert.innerHTML = `
+          ${message}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        
+        document.body.appendChild(alert);
+        
+        setTimeout(() => {
+          if (alert.parentNode) {
+            alert.remove();
+          }
+        }, 5000);
+      }
+    }
+
+    // Initialize the tool when the page loads
+    document.addEventListener('DOMContentLoaded', () => {
+      new TextToSpeech();
+    });
+  </script>
+</body>
+</html> 

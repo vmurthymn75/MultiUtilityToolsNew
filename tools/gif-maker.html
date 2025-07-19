@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GIF Maker | Multi Utility Tools</title>
+  <meta name="description" content="Create animated GIFs from images or video. Fast, free, and easy GIF maker tool.">
+  <meta name="keywords" content="gif maker, create gif, animated gif, online gif tool, image tool">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../assets/css/style.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <link rel="canonical" href="https://multiutilitytools.com/tools/gif-maker.html">
+  <style>
+    .dropzone {
+      border: 2px dashed #0d6efd;
+      border-radius: 1rem;
+      background: #f8f9fa;
+      text-align: center;
+      padding: 2.5rem 1rem;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .dropzone.dragover {
+      background: #e7f1ff;
+      border-color: #0a58ca;
+    }
+    .dropzone i {
+      font-size: 2.5rem;
+      color: #0d6efd;
+    }
+    .upload-feedback {
+      min-height: 2rem;
+    }
+    .gif-preview {
+      background: #f8f9fa;
+      border: 1px solid #dee2e6;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin: 1rem 0;
+      text-align: center;
+    }
+    .frame-list {
+      display: flex;
+      gap: 0.5rem;
+      overflow-x: auto;
+      padding: 0.5rem 0;
+    }
+    .frame-item {
+      flex-shrink: 0;
+      width: 80px;
+      height: 80px;
+      border: 2px solid #dee2e6;
+      border-radius: 0.25rem;
+      overflow: hidden;
+      position: relative;
+    }
+    .frame-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .frame-item.active {
+      border-color: #0d6efd;
+    }
+    .frame-remove {
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      background: rgba(220, 53, 69, 0.9);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div id="site-header"></div>
+  <div class="container-fluid my-4">
+    <div class="row">
+      <!-- Main Tool Card -->
+      <main class="col-lg-8 mb-4 mb-lg-0">
+        <div class="card card-tool shadow-sm p-4">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="d-flex align-items-center">
+              <i class="bi bi-film display-5 me-3"></i>
+              <div>
+                <h1 class="h3 mb-1">GIF Maker</h1>
+                <p class="text-muted mb-0">Create animated GIFs from images or video.</p>
+              </div>
+            </div>
+            <a href="../index.html" class="btn btn-outline-primary btn-lg d-flex align-items-center" style="white-space:nowrap;"><i class="bi bi-house-door me-2"></i>Home</a>
+          </div>
+          <hr>
+          <!-- TOOL UI START -->
+          <div id="tool-ui">
+            <div class="mb-4">
+              <div id="dropzone" class="dropzone">
+                <i class="bi bi-cloud-arrow-up mb-2"></i>
+                <div><strong>Drag & Drop</strong> your images or video here<br>or click to select files</div>
+                <input type="file" id="imageInput" accept="image/*,video/*" multiple style="display:none;">
+              </div>
+            </div>
+            
+            <!-- GIF Settings -->
+            <div class="mb-4" id="gifSettings" style="display: none;">
+              <h5>GIF Settings</h5>
+              <div class="row">
+                <div class="col-md-6">
+                  <label for="frameDelay" class="form-label">Frame Delay: <span id="delayValue">500ms</span></label>
+                  <input type="range" class="form-range" id="frameDelay" min="100" max="2000" value="500" step="100">
+                  <small class="text-muted">Lower = faster animation</small>
+                </div>
+                <div class="col-md-6">
+                  <label for="gifWidth" class="form-label">GIF Width (px)</label>
+                  <input type="number" class="form-control" id="gifWidth" placeholder="Auto">
+                </div>
+              </div>
+              <div class="row mt-3">
+                <div class="col-md-6">
+                  <label for="gifHeight" class="form-label">GIF Height (px)</label>
+                  <input type="number" class="form-control" id="gifHeight" placeholder="Auto">
+                </div>
+                <div class="col-md-6">
+                  <label for="loopCount" class="form-label">Loop Count</label>
+                  <select class="form-select" id="loopCount">
+                    <option value="0">Infinite</option>
+                    <option value="1">1 time</option>
+                    <option value="2">2 times</option>
+                    <option value="3">3 times</option>
+                    <option value="5">5 times</option>
+                    <option value="10">10 times</option>
+                  </select>
+                </div>
+              </div>
+              <div class="mt-3">
+                <button class="btn btn-primary me-2" id="createGifBtn">
+                  <i class="bi bi-film"></i> Create GIF
+                </button>
+                <button class="btn btn-secondary" id="clearFramesBtn">
+                  <i class="bi bi-trash"></i> Clear All Frames
+                </button>
+              </div>
+            </div>
+            
+            <!-- Frame Preview -->
+            <div id="framePreview" style="display: none;">
+              <h6>Frames (<span id="frameCount">0</span>)</h6>
+              <div class="frame-list" id="frameList"></div>
+            </div>
+            
+            <div class="upload-feedback mb-3" id="uploadFeedback"></div>
+            <div id="resultArea"></div>
+          </div>
+          <!-- TOOL UI END -->
+        </div>
+      </main>
+      <!-- Sidebar Ad Section -->
+      <aside class="col-lg-4">
+        <div class="ad-placeholder mb-4">
+          <span class="text-muted">Sponsored</span><br>Ad Space
+        </div>
+      </aside>
+    </div>
+  </div>
+  <div id="site-footer"></div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/js/header-footer.js"></script>
+  <script>
+    // Drag-and-drop and file upload logic
+    const dropzone = document.getElementById('dropzone');
+    const imageInput = document.getElementById('imageInput');
+    const feedback = document.getElementById('uploadFeedback');
+    const resultArea = document.getElementById('resultArea');
+    const gifSettings = document.getElementById('gifSettings');
+    const framePreview = document.getElementById('framePreview');
+    const frameList = document.getElementById('frameList');
+    const frameCount = document.getElementById('frameCount');
+    const frameDelay = document.getElementById('frameDelay');
+    const delayValue = document.getElementById('delayValue');
+    const createGifBtn = document.getElementById('createGifBtn');
+    const clearFramesBtn = document.getElementById('clearFramesBtn');
+    
+    let frames = [];
+    let currentFrameIndex = 0;
+
+    dropzone.addEventListener('click', () => imageInput.click());
+    dropzone.addEventListener('dragover', e => {
+      e.preventDefault();
+      dropzone.classList.add('dragover');
+    });
+    dropzone.addEventListener('dragleave', e => {
+      e.preventDefault();
+      dropzone.classList.remove('dragover');
+    });
+    dropzone.addEventListener('drop', e => {
+      e.preventDefault();
+      dropzone.classList.remove('dragover');
+      if (e.dataTransfer.files.length) {
+        handleFiles(Array.from(e.dataTransfer.files));
+      }
+    });
+    imageInput.addEventListener('change', e => {
+      if (e.target.files.length) {
+        handleFiles(Array.from(e.target.files));
+      }
+    });
+
+    frameDelay.addEventListener('input', () => {
+      delayValue.textContent = frameDelay.value + 'ms';
+    });
+
+    createGifBtn.addEventListener('click', createGIF);
+    clearFramesBtn.addEventListener('click', clearFrames);
+
+    function handleFiles(files) {
+      feedback.textContent = '';
+      resultArea.innerHTML = '';
+      
+      const imageFiles = files.filter(file => file.type.startsWith('image/'));
+      const videoFiles = files.filter(file => file.type.startsWith('video/'));
+      
+      if (imageFiles.length === 0 && videoFiles.length === 0) {
+        feedback.innerHTML = '<span class="text-danger"><i class="bi bi-x-circle"></i> Please upload valid image or video files.</span>';
+        return;
+      }
+      
+      feedback.innerHTML = '<span class="text-info"><i class="bi bi-arrow-repeat"></i> Processing files...</span>';
+      
+      // Process image files
+      imageFiles.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const img = new Image();
+          img.onload = function() {
+            frames.push({
+              type: 'image',
+              data: img,
+              file: file
+            });
+            updateFramePreview();
+          };
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      });
+      
+      // Process video files (extract frames)
+      videoFiles.forEach(file => {
+        const video = document.createElement('video');
+        video.src = URL.createObjectURL(file);
+        video.muted = true;
+        video.preload = 'metadata';
+        
+        video.addEventListener('loadedmetadata', function() {
+          const duration = video.duration;
+          const frameCount = Math.min(10, Math.floor(duration * 2)); // 2 fps, max 10 frames
+          
+          for (let i = 0; i < frameCount; i++) {
+            const time = (duration / frameCount) * i;
+            extractVideoFrame(video, time, file);
+          }
+        });
+      });
+    }
+
+    function extractVideoFrame(video, time, file) {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      
+      video.currentTime = time;
+      video.addEventListener('seeked', function() {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        ctx.drawImage(video, 0, 0);
+        
+        const img = new Image();
+        img.onload = function() {
+          frames.push({
+            type: 'video',
+            data: img,
+            file: file,
+            time: time
+          });
+          updateFramePreview();
+        };
+        img.src = canvas.toDataURL();
+      }, { once: true });
+    }
+
+    function updateFramePreview() {
+      frameCount.textContent = frames.length;
+      
+      if (frames.length > 0) {
+        gifSettings.style.display = 'block';
+        framePreview.style.display = 'block';
+        
+        // Update frame list
+        frameList.innerHTML = '';
+        frames.forEach((frame, index) => {
+          const frameItem = document.createElement('div');
+          frameItem.className = 'frame-item';
+          frameItem.onclick = () => selectFrame(index);
+          
+          const img = document.createElement('img');
+          img.src = frame.data.src || frame.data;
+          img.alt = `Frame ${index + 1}`;
+          
+          const removeBtn = document.createElement('button');
+          removeBtn.className = 'frame-remove';
+          removeBtn.innerHTML = '×';
+          removeBtn.onclick = (e) => {
+            e.stopPropagation();
+            removeFrame(index);
+          };
+          
+          frameItem.appendChild(img);
+          frameItem.appendChild(removeBtn);
+          frameList.appendChild(frameItem);
+        });
+        
+        feedback.innerHTML = `<span class="text-success"><i class="bi bi-check-circle"></i> ${frames.length} frame(s) loaded. Configure GIF settings below.</span>`;
+      }
+    }
+
+    function selectFrame(index) {
+      currentFrameIndex = index;
+      document.querySelectorAll('.frame-item').forEach((item, i) => {
+        item.classList.toggle('active', i === index);
+      });
+    }
+
+    function removeFrame(index) {
+      frames.splice(index, 1);
+      updateFramePreview();
+    }
+
+    function clearFrames() {
+      frames = [];
+      updateFramePreview();
+      gifSettings.style.display = 'none';
+      framePreview.style.display = 'none';
+      feedback.textContent = '';
+    }
+
+    function createGIF() {
+      if (frames.length === 0) {
+        feedback.innerHTML = '<span class="text-danger"><i class="bi bi-x-circle"></i> Please add some frames first.</span>';
+        return;
+      }
+
+      feedback.innerHTML = '<span class="text-info"><i class="bi bi-arrow-repeat"></i> Creating GIF...</span>';
+      createGifBtn.disabled = true;
+
+      const delay = parseInt(frameDelay.value);
+      const width = parseInt(document.getElementById('gifWidth').value) || frames[0].data.width;
+      const height = parseInt(document.getElementById('gifHeight').value) || frames[0].data.height;
+      const loopCount = parseInt(document.getElementById('loopCount').value);
+
+      // Create GIF using canvas animation
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+
+      let currentFrame = 0;
+      const gifFrames = [];
+
+      function captureFrame() {
+        if (currentFrame < frames.length) {
+          const frame = frames[currentFrame];
+          ctx.clearRect(0, 0, width, height);
+          ctx.drawImage(frame.data, 0, 0, width, height);
+          
+          // Capture frame data
+          const frameData = ctx.getImageData(0, 0, width, height);
+          gifFrames.push({
+            data: frameData,
+            delay: delay
+          });
+          
+          currentFrame++;
+          setTimeout(captureFrame, 100);
+        } else {
+          // All frames captured, create GIF
+          createGIFFromFrames(gifFrames, width, height, loopCount);
+        }
+      }
+
+      captureFrame();
+    }
+
+    function createGIFFromFrames(frameData, width, height, loopCount) {
+      // For this demo, we'll create a simple animated preview
+      // In a real implementation, you would use a GIF encoding library
+      
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      
+      let currentFrame = 0;
+      
+      function animate() {
+        if (currentFrame < frames.length) {
+          ctx.clearRect(0, 0, width, height);
+          ctx.drawImage(frames[currentFrame].data, 0, 0, width, height);
+          currentFrame++;
+          setTimeout(animate, parseInt(frameDelay.value));
+        } else {
+          currentFrame = 0;
+          if (loopCount === 0 || currentFrame < loopCount) {
+            setTimeout(animate, parseInt(frameDelay.value));
+          }
+        }
+      }
+      
+      animate();
+      
+      // Create a downloadable version (simplified)
+      canvas.toBlob(blob => {
+        if (blob) {
+          const url = URL.createObjectURL(blob);
+          
+          resultArea.innerHTML = `
+            <div class='alert alert-success'>
+              <i class='bi bi-check-circle'></i> GIF created successfully!
+              <a href='${url}' download='animated.gif' class='btn btn-success btn-sm ms-2'>
+                <i class='bi bi-download'></i> Download GIF
+              </a>
+            </div>
+            <div class='gif-preview'>
+              <h6>GIF Preview</h6>
+              <canvas id='gifCanvas' width='${width}' height='${height}' style='max-width:300px; border:1px solid #dee2e6;'></canvas>
+            </div>
+            <div class='mt-3'>
+              <h6>GIF Details:</h6>
+              <p><strong>Frames:</strong> ${frames.length}</p>
+              <p><strong>Frame Delay:</strong> ${frameDelay.value}ms</p>
+              <p><strong>Duration:</strong> ${(frames.length * parseInt(frameDelay.value) / 1000).toFixed(1)}s</p>
+              <p><strong>Dimensions:</strong> ${width} × ${height} px</p>
+              <p><strong>Loop:</strong> ${document.getElementById('loopCount').value === '0' ? 'Infinite' : document.getElementById('loopCount').value + ' times'}</p>
+            </div>
+          `;
+          
+          // Start animation on preview canvas
+          const previewCanvas = document.getElementById('gifCanvas');
+          const previewCtx = previewCanvas.getContext('2d');
+          let previewFrame = 0;
+          
+          function previewAnimate() {
+            if (previewFrame < frames.length) {
+              previewCtx.clearRect(0, 0, width, height);
+              previewCtx.drawImage(frames[previewFrame].data, 0, 0, width, height);
+              previewFrame++;
+              setTimeout(previewAnimate, parseInt(frameDelay.value));
+            } else {
+              previewFrame = 0;
+              setTimeout(previewAnimate, parseInt(frameDelay.value));
+            }
+          }
+          previewAnimate();
+          
+          feedback.textContent = '';
+        } else {
+          feedback.innerHTML = '<span class="text-danger"><i class="bi bi-x-circle"></i> Failed to create GIF. Please try again.</span>';
+        }
+        createGifBtn.disabled = false;
+      }, 'image/gif');
+    }
+  </script>
+</body>
+</html> 

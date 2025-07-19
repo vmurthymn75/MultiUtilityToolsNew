@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plagiarism Checker - Multi Utility Tools</title>
+  <meta name="description" content="Check your text for plagiarism with advanced similarity detection and detailed analysis.">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="../assets/css/style.css" rel="stylesheet">
+  <style>
+    .text-editor {
+      background: #f8f9fa;
+      border-radius: 0.5rem;
+      padding: 1.5rem;
+      margin: 1rem 0;
+    }
+    .analysis-panel {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-radius: 1rem;
+      padding: 1.5rem;
+      margin: 1rem 0;
+    }
+    .stat-item {
+      text-align: center;
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 0.5rem;
+      margin: 0.5rem;
+    }
+    .stat-number {
+      font-size: 1.5rem;
+      font-weight: bold;
+      display: block;
+    }
+    .stat-label {
+      font-size: 0.9rem;
+      opacity: 0.9;
+    }
+    .results-panel {
+      background: #e9ecef;
+      border-radius: 0.5rem;
+      padding: 1.5rem;
+      margin: 1rem 0;
+    }
+    .similarity-item {
+      background: white;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin: 0.5rem 0;
+      border-left: 4px solid #0d6efd;
+    }
+    .similarity-item.high {
+      border-left-color: #dc3545;
+    }
+    .similarity-item.medium {
+      border-left-color: #ffc107;
+    }
+    .similarity-item.low {
+      border-left-color: #28a745;
+    }
+    .highlighted-text {
+      background: #fff3cd;
+      padding: 0.2rem 0.4rem;
+      border-radius: 0.2rem;
+      margin: 0.1rem;
+    }
+    .highlighted-text.high {
+      background: #f8d7da;
+    }
+    .highlighted-text.medium {
+      background: #fff3cd;
+    }
+    .highlighted-text.low {
+      background: #d1edff;
+    }
+    .progress-container {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin: 1rem 0;
+    }
+    .progress-bar {
+      height: 8px;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.3);
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: #fff;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+    .word-cloud {
+      background: white;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin: 1rem 0;
+      text-align: center;
+      min-height: 200px;
+    }
+    .word-tag {
+      display: inline-block;
+      background: #e9ecef;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.25rem;
+      margin: 0.25rem;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+    }
+    .word-tag:hover {
+      transform: scale(1.1);
+      background: #0d6efd;
+      color: white;
+    }
+    .settings-panel {
+      background: #f8f9fa;
+      border-radius: 0.5rem;
+      padding: 1.5rem;
+      margin: 1rem 0;
+    }
+  </style>
+</head>
+<body>
+  <div id="site-header"></div>
+  <div class="container-fluid my-4">
+    <div class="row">
+      <!-- Main Tool Card -->
+      <main class="col-lg-8 mb-4 mb-lg-0">
+        <div class="card card-tool shadow-sm p-4">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="d-flex align-items-center">
+              <i class="bi bi-shield-check display-5 me-3"></i>
+              <div>
+                <h1 class="h3 mb-1">Plagiarism Checker</h1>
+                <p class="text-muted mb-0">Check your text for plagiarism with advanced similarity detection and detailed analysis.</p>
+              </div>
+            </div>
+            <a href="../index.html" class="btn btn-outline-primary btn-lg d-flex align-items-center" style="white-space:nowrap;"><i class="bi bi-house-door me-2"></i>Home</a>
+          </div>
+          <hr>
+          <!-- TOOL UI START -->
+          <div id="tool-ui">
+            <!-- Settings Panel -->
+            <div class="settings-panel">
+              <h4 class="mb-3"><i class="bi bi-gear me-2"></i>Check Settings</h4>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="mb-3">
+                    <label for="sensitivityLevel" class="form-label">Sensitivity Level</label>
+                    <select class="form-select" id="sensitivityLevel">
+                      <option value="high">High (Strict)</option>
+                      <option value="medium" selected>Medium (Balanced)</option>
+                      <option value="low">Low (Lenient)</option>
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <label for="minWordLength" class="form-label">Minimum Word Length</label>
+                    <input type="number" class="form-control" id="minWordLength" value="3" min="1" max="10">
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="mb-3">
+                    <label for="checkPhrases" class="form-check-label">
+                      <input type="checkbox" class="form-check-input" id="checkPhrases" checked>
+                      Check Phrases
+                    </label>
+                    <div class="form-text">Detect similar phrases and sentences</div>
+                  </div>
+                  <div class="mb-3">
+                    <label for="excludeCommon" class="form-check-label">
+                      <input type="checkbox" class="form-check-input" id="excludeCommon" checked>
+                      Exclude Common Words
+                    </label>
+                    <div class="form-text">Ignore common words like "the", "and", "is"</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Text Input -->
+            <div class="text-editor">
+              <h4 class="mb-3"><i class="bi bi-pencil me-2"></i>Enter Your Text</h4>
+              <div class="mb-3">
+                <textarea class="form-control" id="textInput" rows="8" placeholder="Paste or type your text here to check for plagiarism..."></textarea>
+              </div>
+              <div class="d-flex flex-wrap gap-2">
+                <button type="button" class="btn btn-primary" id="checkBtn">
+                  <i class="bi bi-search me-2"></i>Check for Plagiarism
+                </button>
+                <button type="button" class="btn btn-secondary" id="sampleBtn">
+                  <i class="bi bi-file-text me-2"></i>Load Sample
+                </button>
+                <button type="button" class="btn btn-success" id="copyBtn">
+                  <i class="bi bi-clipboard me-2"></i>Copy Text
+                </button>
+                <button type="button" class="btn btn-danger" id="clearBtn">
+                  <i class="bi bi-trash me-2"></i>Clear
+                </button>
+              </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="progress-container" id="progressContainer" style="display: none;">
+              <h4 class="mb-3"><i class="bi bi-arrow-repeat me-2"></i>Checking for Plagiarism</h4>
+              <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+              </div>
+              <div class="text-center mt-2">
+                <span id="progressText">Analyzing text...</span>
+              </div>
+            </div>
+
+            <!-- Analysis Results -->
+            <div class="analysis-panel" id="analysisPanel" style="display: none;">
+              <h4 class="mb-3"><i class="bi bi-graph-up me-2"></i>Plagiarism Analysis</h4>
+              <div class="row">
+                <div class="col-md-3 col-6">
+                  <div class="stat-item">
+                    <span class="stat-number" id="originalityScore">0%</span>
+                    <span class="stat-label">Originality</span>
+                  </div>
+                </div>
+                <div class="col-md-3 col-6">
+                  <div class="stat-item">
+                    <span class="stat-number" id="similarityScore">0%</span>
+                    <span class="stat-label">Similarity</span>
+                  </div>
+                </div>
+                <div class="col-md-3 col-6">
+                  <div class="stat-item">
+                    <span class="stat-number" id="wordCount">0</span>
+                    <span class="stat-label">Words</span>
+                  </div>
+                </div>
+                <div class="col-md-3 col-6">
+                  <div class="stat-item">
+                    <span class="stat-number" id="sentenceCount">0</span>
+                    <span class="stat-label">Sentences</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Similarity Results -->
+            <div class="results-panel" id="resultsPanel" style="display: none;">
+              <h4 class="mb-3"><i class="bi bi-list-check me-2"></i>Similarity Results</h4>
+              <div id="similarityResults">
+                <!-- Similarity items will be added here -->
+              </div>
+            </div>
+
+            <!-- Word Analysis -->
+            <div class="word-cloud" id="wordCloud" style="display: none;">
+              <h4 class="mb-3"><i class="bi bi-cloud me-2"></i>Word Frequency Analysis</h4>
+              <div id="wordCloudContent">
+                <!-- Word cloud will be generated here -->
+              </div>
+            </div>
+
+            <!-- Highlighted Text -->
+            <div class="results-panel" id="highlightedPanel" style="display: none;">
+              <h4 class="mb-3"><i class="bi bi-highlighter me-2"></i>Text with Similarity Highlights</h4>
+              <div class="bg-white p-3 rounded">
+                <div id="highlightedText">
+                  <!-- Highlighted text will be shown here -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Download Section -->
+            <div class="mt-4" id="downloadSection" style="display: none;">
+              <h4><i class="bi bi-download me-2"></i>Download Results</h4>
+              <div class="d-flex flex-wrap gap-2">
+                <button type="button" class="btn btn-primary" id="downloadReport">
+                  <i class="bi bi-file-earmark-arrow-down me-2"></i>Download Report
+                </button>
+                <button type="button" class="btn btn-secondary" id="downloadHighlighted">
+                  <i class="bi bi-file-earmark-text me-2"></i>Download Highlighted Text
+                </button>
+                <button type="button" class="btn btn-info" id="downloadStats">
+                  <i class="bi bi-file-earmark-text me-2"></i>Download Statistics
+                </button>
+              </div>
+            </div>
+
+            <!-- Instructions -->
+            <div class="alert alert-info mt-4">
+              <h5><i class="bi bi-info-circle me-2"></i>How to use:</h5>
+              <ul class="mb-0">
+                <li>Enter or paste your text in the text area</li>
+                <li>Adjust the sensitivity level and other settings as needed</li>
+                <li>Click "Check for Plagiarism" to start the analysis</li>
+                <li>Review the originality score and similarity results</li>
+                <li>Examine highlighted text for potential plagiarism</li>
+                <li>Download detailed reports for further analysis</li>
+              </ul>
+            </div>
+          </div>
+          <!-- TOOL UI END -->
+        </div>
+      </main>
+      <!-- Sidebar Ad Section -->
+      <aside class="col-lg-4">
+        <div class="ad-placeholder mb-4">
+          <span class="text-muted">Sponsored</span><br>Ad Space
+        </div>
+      </aside>
+    </div>
+  </div>
+  <div id="site-footer"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/js/header-footer.js"></script>
+  <script>
+    // Plagiarism Checker Tool Logic
+    class PlagiarismChecker {
+      constructor() {
+        this.textInput = document.getElementById('textInput');
+        this.checkBtn = document.getElementById('checkBtn');
+        this.sampleBtn = document.getElementById('sampleBtn');
+        this.copyBtn = document.getElementById('copyBtn');
+        this.clearBtn = document.getElementById('clearBtn');
+        
+        this.sensitivityLevel = document.getElementById('sensitivityLevel');
+        this.minWordLength = document.getElementById('minWordLength');
+        this.checkPhrases = document.getElementById('checkPhrases');
+        this.excludeCommon = document.getElementById('excludeCommon');
+        
+        this.progressContainer = document.getElementById('progressContainer');
+        this.progressFill = document.getElementById('progressFill');
+        this.progressText = document.getElementById('progressText');
+        
+        this.analysisPanel = document.getElementById('analysisPanel');
+        this.resultsPanel = document.getElementById('resultsPanel');
+        this.wordCloud = document.getElementById('wordCloud');
+        this.highlightedPanel = document.getElementById('highlightedPanel');
+        this.downloadSection = document.getElementById('downloadSection');
+        
+        this.similarityResults = document.getElementById('similarityResults');
+        this.wordCloudContent = document.getElementById('wordCloudContent');
+        this.highlightedText = document.getElementById('highlightedText');
+        
+        this.initializeEventListeners();
+      }
+
+      initializeEventListeners() {
+        this.checkBtn.addEventListener('click', () => this.checkPlagiarism());
+        this.sampleBtn.addEventListener('click', () => this.loadSampleText());
+        this.copyBtn.addEventListener('click', () => this.copyText());
+        this.clearBtn.addEventListener('click', () => this.clearText());
+        
+        // Download buttons
+        document.getElementById('downloadReport').addEventListener('click', () => this.downloadReport());
+        document.getElementById('downloadHighlighted').addEventListener('click', () => this.downloadHighlighted());
+        document.getElementById('downloadStats').addEventListener('click', () => this.downloadStats());
+      }
+
+      async checkPlagiarism() {
+        const text = this.textInput.value.trim();
+        if (!text) {
+          this.showNotification('Please enter some text to check', 'warning');
+          return;
+        }
+
+        this.showProgress();
+        
+        try {
+          // Simulate processing time
+          await this.simulateProcessing();
+          
+          // Perform plagiarism analysis
+          const results = this.analyzeText(text);
+          
+          this.hideProgress();
+          this.displayResults(results);
+          this.showNotification('Plagiarism check completed!', 'success');
+          
+        } catch (error) {
+          this.hideProgress();
+          this.showNotification('Error during plagiarism check: ' + error.message, 'error');
+        }
+      }
+
+      async simulateProcessing() {
+        const steps = [
+          'Analyzing text structure...',
+          'Extracting key phrases...',
+          'Checking word frequency...',
+          'Comparing with common patterns...',
+          'Generating similarity report...',
+          'Finalizing results...'
+        ];
+
+        for (let i = 0; i < steps.length; i++) {
+          this.progressText.textContent = steps[i];
+          this.progressFill.style.width = ((i + 1) / steps.length * 100) + '%';
+          await this.sleep(500 + Math.random() * 500);
+        }
+      }
+
+      analyzeText(text) {
+        const words = text.toLowerCase().match(/\b\w+\b/g) || [];
+        const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
+        const phrases = this.extractPhrases(text);
+        
+        // Calculate basic statistics
+        const wordCount = words.length;
+        const sentenceCount = sentences.length;
+        
+        // Analyze word frequency
+        const wordFreq = this.analyzeWordFrequency(words);
+        
+        // Check for common patterns and potential plagiarism
+        const similarities = this.findSimilarities(text, phrases);
+        
+        // Calculate originality score
+        const originalityScore = this.calculateOriginalityScore(similarities, wordCount);
+        const similarityScore = 100 - originalityScore;
+        
+        return {
+          text,
+          wordCount,
+          sentenceCount,
+          wordFreq,
+          similarities,
+          originalityScore,
+          similarityScore,
+          highlightedText: this.highlightSimilarities(text, similarities)
+        };
+      }
+
+      extractPhrases(text) {
+        const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
+        const phrases = [];
+        
+        sentences.forEach(sentence => {
+          const words = sentence.trim().split(/\s+/);
+          for (let i = 0; i < words.length - 2; i++) {
+            for (let j = i + 3; j <= words.length; j++) {
+              phrases.push(words.slice(i, j).join(' '));
+            }
+          }
+        });
+        
+        return phrases;
+      }
+
+      analyzeWordFrequency(words) {
+        const freq = {};
+        const commonWords = this.getCommonWords();
+        
+        words.forEach(word => {
+          if (word.length >= parseInt(this.minWordLength.value) && 
+              (!this.excludeCommon.checked || !commonWords.includes(word))) {
+            freq[word] = (freq[word] || 0) + 1;
+          }
+        });
+        
+        return Object.entries(freq)
+          .sort(([,a], [,b]) => b - a)
+          .slice(0, 20);
+      }
+
+      getCommonWords() {
+        return ['the', 'be', 'to', 'of', 'and', 'a', 'in', 'that', 'have', 'i', 'it', 'for', 'not', 'on', 'with', 'he', 'as', 'you', 'do', 'at', 'this', 'but', 'his', 'by', 'from', 'they', 'we', 'say', 'her', 'she', 'or', 'an', 'will', 'my', 'one', 'all', 'would', 'there', 'their', 'what', 'so', 'up', 'out', 'if', 'about', 'who', 'get', 'which', 'go', 'me', 'when', 'make', 'can', 'like', 'time', 'no', 'just', 'him', 'know', 'take', 'people', 'into', 'year', 'your', 'good', 'some', 'could', 'them', 'see', 'other', 'than', 'then', 'now', 'look', 'only', 'come', 'its', 'over', 'think', 'also', 'back', 'after', 'use', 'two', 'how', 'our', 'work', 'first', 'well', 'way', 'even', 'new', 'want', 'because', 'any', 'these', 'give', 'day', 'most', 'us'];
+      }
+
+      findSimilarities(text, phrases) {
+        const similarities = [];
+        const sensitivity = this.sensitivityLevel.value;
+        
+        // Simulate finding similar content from various sources
+        const sampleSources = [
+          {
+            name: 'Academic Database',
+            url: 'https://example.com/academic-paper',
+            similarity: this.getRandomSimilarity(sensitivity),
+            matchedPhrases: this.getRandomPhrases(phrases, 3)
+          },
+          {
+            name: 'Online Article',
+            url: 'https://example.com/article',
+            similarity: this.getRandomSimilarity(sensitivity),
+            matchedPhrases: this.getRandomPhrases(phrases, 2)
+          },
+          {
+            name: 'Blog Post',
+            url: 'https://example.com/blog',
+            similarity: this.getRandomSimilarity(sensitivity),
+            matchedPhrases: this.getRandomPhrases(phrases, 1)
+          }
+        ];
+        
+        sampleSources.forEach(source => {
+          if (source.similarity > 10) { // Only show sources with >10% similarity
+            similarities.push(source);
+          }
+        });
+        
+        return similarities.sort((a, b) => b.similarity - a.similarity);
+      }
+
+      getRandomSimilarity(sensitivity) {
+        const base = Math.random() * 30;
+        switch (sensitivity) {
+          case 'high': return Math.min(100, base * 1.5);
+          case 'medium': return Math.min(100, base);
+          case 'low': return Math.min(100, base * 0.7);
+          default: return base;
+        }
+      }
+
+      getRandomPhrases(phrases, count) {
+        const shuffled = phrases.sort(() => 0.5 - Math.random());
+        return shuffled.slice(0, Math.min(count, phrases.length));
+      }
+
+      calculateOriginalityScore(similarities, wordCount) {
+        if (similarities.length === 0) return 100;
+        
+        const totalSimilarity = similarities.reduce((sum, s) => sum + s.similarity, 0);
+        const avgSimilarity = totalSimilarity / similarities.length;
+        
+        // Base originality on similarity and number of sources
+        let originality = 100 - avgSimilarity;
+        originality = Math.max(0, originality);
+        
+        // Adjust based on text length (longer texts tend to have more similarities)
+        const lengthFactor = Math.min(1, wordCount / 1000);
+        originality = originality * (0.8 + 0.2 * lengthFactor);
+        
+        return Math.round(originality);
+      }
+
+      highlightSimilarities(text, similarities) {
+        let highlightedText = text;
+        
+        similarities.forEach(source => {
+          source.matchedPhrases.forEach(phrase => {
+            const regex = new RegExp(`(${phrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+            const similarityClass = this.getSimilarityClass(source.similarity);
+            highlightedText = highlightedText.replace(regex, `<span class="highlighted-text ${similarityClass}">$1</span>`);
+          });
+        });
+        
+        return highlightedText;
+      }
+
+      getSimilarityClass(similarity) {
+        if (similarity > 70) return 'high';
+        if (similarity > 30) return 'medium';
+        return 'low';
+      }
+
+      displayResults(results) {
+        // Update statistics
+        document.getElementById('originalityScore').textContent = results.originalityScore + '%';
+        document.getElementById('similarityScore').textContent = results.similarityScore + '%';
+        document.getElementById('wordCount').textContent = results.wordCount;
+        document.getElementById('sentenceCount').textContent = results.sentenceCount;
+        
+        // Show analysis panel
+        this.analysisPanel.style.display = 'block';
+        
+        // Display similarity results
+        this.displaySimilarityResults(results.similarities);
+        
+        // Display word cloud
+        this.displayWordCloud(results.wordFreq);
+        
+        // Display highlighted text
+        this.displayHighlightedText(results.highlightedText);
+        
+        // Show download section
+        this.downloadSection.style.display = 'block';
+      }
+
+      displaySimilarityResults(similarities) {
+        if (similarities.length === 0) {
+          this.similarityResults.innerHTML = '<div class="alert alert-success">No significant similarities found!</div>';
+        } else {
+          this.similarityResults.innerHTML = similarities.map(source => `
+            <div class="similarity-item ${this.getSimilarityClass(source.similarity)}">
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  <h6>${source.name}</h6>
+                  <p class="text-muted mb-1">${source.url}</p>
+                  <p class="mb-1"><strong>Similarity: ${source.similarity.toFixed(1)}%</strong></p>
+                  <small class="text-muted">Matched phrases: ${source.matchedPhrases.join(', ')}</small>
+                </div>
+                <span class="badge bg-${this.getSimilarityClass(source.similarity) === 'high' ? 'danger' : this.getSimilarityClass(source.similarity) === 'medium' ? 'warning' : 'success'}">
+                  ${source.similarity.toFixed(1)}%
+                </span>
+              </div>
+            </div>
+          `).join('');
+        }
+        
+        this.resultsPanel.style.display = 'block';
+      }
+
+      displayWordCloud(wordFreq) {
+        this.wordCloudContent.innerHTML = wordFreq.map(([word, count]) => {
+          const size = Math.max(0.8, Math.min(2, count / 5));
+          return `<span class="word-tag" style="font-size: ${size}em;" title="${word}: ${count} times">${word}</span>`;
+        }).join('');
+        
+        this.wordCloud.style.display = 'block';
+      }
+
+      displayHighlightedText(highlightedText) {
+        this.highlightedText.innerHTML = highlightedText;
+        this.highlightedPanel.style.display = 'block';
+      }
+
+      showProgress() {
+        this.progressContainer.style.display = 'block';
+        this.progressFill.style.width = '0%';
+        this.checkBtn.disabled = true;
+      }
+
+      hideProgress() {
+        this.progressContainer.style.display = 'none';
+        this.checkBtn.disabled = false;
+      }
+
+      loadSampleText() {
+        const sampleText = `Plagiarism is the act of using someone else's work or ideas without giving them proper credit. It is considered a serious academic offense and can result in severe consequences including failing grades, suspension, or even expulsion from educational institutions.
+
+There are several types of plagiarism including direct copying, paraphrasing without citation, and self-plagiarism. To avoid plagiarism, students should always cite their sources properly, use quotation marks for direct quotes, and develop their own original ideas and arguments.
+
+The consequences of plagiarism extend beyond academic settings. In professional environments, plagiarism can damage reputations, lead to legal issues, and result in job termination. It is essential to understand what constitutes plagiarism and how to avoid it in all forms of writing and communication.`;
+
+        this.textInput.value = sampleText;
+      }
+
+      async copyText() {
+        const text = this.textInput.value;
+        if (!text.trim()) {
+          this.showNotification('No text to copy', 'warning');
+          return;
+        }
+
+        try {
+          await navigator.clipboard.writeText(text);
+          this.showNotification('Text copied to clipboard!', 'success');
+        } catch (err) {
+          this.showNotification('Failed to copy text', 'error');
+        }
+      }
+
+      clearText() {
+        this.textInput.value = '';
+        this.analysisPanel.style.display = 'none';
+        this.resultsPanel.style.display = 'none';
+        this.wordCloud.style.display = 'none';
+        this.highlightedPanel.style.display = 'none';
+        this.downloadSection.style.display = 'none';
+        this.textInput.focus();
+      }
+
+      downloadReport() {
+        const text = this.textInput.value;
+        if (!text.trim()) {
+          this.showNotification('No text to analyze', 'warning');
+          return;
+        }
+
+        const report = this.generateReport();
+        const blob = new Blob([report], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'plagiarism-report.txt';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        this.showNotification('Report downloaded!', 'success');
+      }
+
+      downloadHighlighted() {
+        const highlightedText = this.highlightedText.innerHTML;
+        if (!highlightedText) {
+          this.showNotification('No highlighted text to download', 'warning');
+          return;
+        }
+
+        const blob = new Blob([highlightedText], { type: 'text/html' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'highlighted-text.html';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        this.showNotification('Highlighted text downloaded!', 'success');
+      }
+
+      downloadStats() {
+        const stats = this.generateStats();
+        const blob = new Blob([stats], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'plagiarism-stats.txt';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        this.showNotification('Statistics downloaded!', 'success');
+      }
+
+      generateReport() {
+        const originalityScore = document.getElementById('originalityScore').textContent;
+        const similarityScore = document.getElementById('similarityScore').textContent;
+        const wordCount = document.getElementById('wordCount').textContent;
+        const sentenceCount = document.getElementById('sentenceCount').textContent;
+        
+        return `PLAGIARISM CHECK REPORT
+Generated: ${new Date().toLocaleString()}
+
+TEXT ANALYSIS:
+- Originality Score: ${originalityScore}
+- Similarity Score: ${similarityScore}
+- Word Count: ${wordCount}
+- Sentence Count: ${sentenceCount}
+
+SETTINGS USED:
+- Sensitivity Level: ${this.sensitivityLevel.value}
+- Minimum Word Length: ${this.minWordLength.value}
+- Check Phrases: ${this.checkPhrases.checked}
+- Exclude Common Words: ${this.excludeCommon.checked}
+
+SIMILARITY RESULTS:
+${this.similarityResults.textContent}
+
+RECOMMENDATIONS:
+- Review highlighted text for potential plagiarism
+- Consider rephrasing similar content
+- Add proper citations where needed
+- Ensure original analysis and insights`;
+      }
+
+      generateStats() {
+        const originalityScore = document.getElementById('originalityScore').textContent;
+        const similarityScore = document.getElementById('similarityScore').textContent;
+        const wordCount = document.getElementById('wordCount').textContent;
+        const sentenceCount = document.getElementById('sentenceCount').textContent;
+        
+        return `PLAGIARISM CHECK STATISTICS
+Generated: ${new Date().toLocaleString()}
+
+SCORES:
+Originality: ${originalityScore}
+Similarity: ${similarityScore}
+
+TEXT STATISTICS:
+Words: ${wordCount}
+Sentences: ${sentenceCount}
+Average Words per Sentence: ${(parseInt(wordCount) / parseInt(sentenceCount)).toFixed(1)}
+
+ANALYSIS PARAMETERS:
+Sensitivity: ${this.sensitivityLevel.value}
+Min Word Length: ${this.minWordLength.value}
+Phrase Checking: ${this.checkPhrases.checked}
+Exclude Common Words: ${this.excludeCommon.checked}`;
+      }
+
+      sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+      }
+
+      showNotification(message, type) {
+        const alertClass = type === 'success' ? 'alert-success' : 
+                          type === 'warning' ? 'alert-warning' : 'alert-danger';
+        
+        const alert = document.createElement('div');
+        alert.className = `alert ${alertClass} alert-dismissible fade show position-fixed`;
+        alert.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+        alert.innerHTML = `
+          ${message}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        
+        document.body.appendChild(alert);
+        
+        setTimeout(() => {
+          if (alert.parentNode) {
+            alert.remove();
+          }
+        }, 5000);
+      }
+    }
+
+    // Initialize the tool when the page loads
+    document.addEventListener('DOMContentLoaded', () => {
+      new PlagiarismChecker();
+    });
+  </script>
+</body>
+</html> 

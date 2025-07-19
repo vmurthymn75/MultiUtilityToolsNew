@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JSON Formatter | Multi Utility Tools</title>
+  <meta name="description" content="Format and beautify your JSON data. Free and easy JSON formatter tool.">
+  <meta name="keywords" content="json formatter, json beautifier, format json, json validator, json tool">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../assets/css/style.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <link rel="canonical" href="https://multiutilitytools.com/tools/json-formatter.html">
+  <style>
+    .json-input {
+      font-family: 'Courier New', monospace;
+      font-size: 0.875rem;
+      min-height: 300px;
+      resize: vertical;
+    }
+    .json-output {
+      font-family: 'Courier New', monospace;
+      font-size: 0.875rem;
+      background: #f8f9fa;
+      border: 1px solid #dee2e6;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      min-height: 300px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+    .error-message {
+      color: #dc3545;
+      font-family: 'Courier New', monospace;
+      background: #f8d7da;
+      border: 1px solid #f5c6cb;
+      border-radius: 0.25rem;
+      padding: 0.5rem;
+      margin: 0.5rem 0;
+    }
+    .stats-card {
+      background: #f8f9fa;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin: 1rem 0;
+    }
+  </style>
+</head>
+<body>
+  <div id="site-header"></div>
+  <div class="container-fluid my-4">
+    <div class="row">
+      <!-- Main Tool Card -->
+      <main class="col-lg-8 mb-4 mb-lg-0">
+        <div class="card card-tool shadow-sm p-4">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="d-flex align-items-center">
+              <i class="bi bi-braces display-5 me-3"></i>
+              <div>
+                <h1 class="h3 mb-1">JSON Formatter</h1>
+                <p class="text-muted mb-0">Format and beautify your JSON data.</p>
+              </div>
+            </div>
+            <a href="../index.html" class="btn btn-outline-primary btn-lg d-flex align-items-center" style="white-space:nowrap;"><i class="bi bi-house-door me-2"></i>Home</a>
+          </div>
+          <hr>
+          <!-- TOOL UI START -->
+          <div id="tool-ui">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="jsonInput" class="form-label">Input JSON</label>
+                  <textarea class="form-control json-input" id="jsonInput" placeholder='{"name": "John", "age": 30, "city": "New York"}'></textarea>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="mb-3">
+                  <button class="btn btn-primary me-2" id="formatBtn">
+                    <i class="bi bi-arrow-down"></i> Format JSON
+                  </button>
+                  <button class="btn btn-secondary me-2" id="minifyBtn">
+                    <i class="bi bi-arrow-up"></i> Minify JSON
+                  </button>
+                  <button class="btn btn-outline-secondary me-2" id="clearBtn">
+                    <i class="bi bi-trash"></i> Clear
+                  </button>
+                  <button class="btn btn-outline-primary" id="sampleBtn">
+                    <i class="bi bi-file-text"></i> Load Sample
+                  </button>
+                </div>
+                
+                <!-- Formatting Options -->
+                <div class="mb-3">
+                  <label for="indentSize" class="form-label">Indent Size: <span id="indentValue">2</span></label>
+                  <input type="range" class="form-range" id="indentSize" min="1" max="8" value="2">
+                </div>
+              </div>
+              
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="jsonOutput" class="form-label">Formatted Output</label>
+                  <div class="json-output" id="jsonOutput" contenteditable="true" placeholder="Formatted JSON will appear here..."></div>
+                </div>
+                
+                <div class="mb-3">
+                  <button class="btn btn-success me-2" id="copyBtn">
+                    <i class="bi bi-clipboard"></i> Copy Formatted
+                  </button>
+                  <button class="btn btn-outline-success" id="downloadBtn">
+                    <i class="bi bi-download"></i> Download JSON
+                  </button>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Error Messages -->
+            <div id="errorArea"></div>
+            
+            <!-- Statistics -->
+            <div class="stats-card" id="statsCard" style="display: none;">
+              <h6>JSON Statistics</h6>
+              <div class="row">
+                <div class="col-md-3">
+                  <strong>Size:</strong> <span id="jsonSize">0</span> bytes
+                </div>
+                <div class="col-md-3">
+                  <strong>Objects:</strong> <span id="objectCount">0</span>
+                </div>
+                <div class="col-md-3">
+                  <strong>Arrays:</strong> <span id="arrayCount">0</span>
+                </div>
+                <div class="col-md-3">
+                  <strong>Properties:</strong> <span id="propertyCount">0</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- TOOL UI END -->
+        </div>
+      </main>
+      <!-- Sidebar Ad Section -->
+      <aside class="col-lg-4">
+        <div class="ad-placeholder mb-4">
+          <span class="text-muted">Sponsored</span><br>Ad Space
+        </div>
+      </aside>
+    </div>
+  </div>
+  <div id="site-footer"></div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/js/header-footer.js"></script>
+  <script>
+    // JSON Formatter functionality
+    const jsonInput = document.getElementById('jsonInput');
+    const jsonOutput = document.getElementById('jsonOutput');
+    const formatBtn = document.getElementById('formatBtn');
+    const minifyBtn = document.getElementById('minifyBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const sampleBtn = document.getElementById('sampleBtn');
+    const copyBtn = document.getElementById('copyBtn');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const indentSize = document.getElementById('indentSize');
+    const indentValue = document.getElementById('indentValue');
+    const errorArea = document.getElementById('errorArea');
+    const statsCard = document.getElementById('statsCard');
+
+    // Event listeners
+    formatBtn.addEventListener('click', formatJSON);
+    minifyBtn.addEventListener('click', minifyJSON);
+    clearBtn.addEventListener('click', clearAll);
+    sampleBtn.addEventListener('click', loadSample);
+    copyBtn.addEventListener('click', copyFormatted);
+    downloadBtn.addEventListener('click', downloadJSON);
+    indentSize.addEventListener('input', () => {
+      indentValue.textContent = indentSize.value;
+    });
+
+    function formatJSON() {
+      const input = jsonInput.value.trim();
+      if (!input) {
+        showError('Please enter some JSON data');
+        return;
+      }
+
+      try {
+        const parsed = JSON.parse(input);
+        const indent = ' '.repeat(parseInt(indentSize.value));
+        const formatted = JSON.stringify(parsed, null, indent);
+        
+        jsonOutput.textContent = formatted;
+        showStats(parsed, formatted);
+        hideError();
+        
+      } catch (error) {
+        showError(`Invalid JSON: ${error.message}`);
+        statsCard.style.display = 'none';
+      }
+    }
+
+    function minifyJSON() {
+      const input = jsonInput.value.trim();
+      if (!input) {
+        showError('Please enter some JSON data');
+        return;
+      }
+
+      try {
+        const parsed = JSON.parse(input);
+        const minified = JSON.stringify(parsed);
+        
+        jsonOutput.textContent = minified;
+        showStats(parsed, minified);
+        hideError();
+        
+      } catch (error) {
+        showError(`Invalid JSON: ${error.message}`);
+        statsCard.style.display = 'none';
+      }
+    }
+
+    function showStats(parsed, output) {
+      const size = new Blob([output]).size;
+      const objectCount = countObjects(parsed);
+      const arrayCount = countArrays(parsed);
+      const propertyCount = countProperties(parsed);
+
+      document.getElementById('jsonSize').textContent = size;
+      document.getElementById('objectCount').textContent = objectCount;
+      document.getElementById('arrayCount').textContent = arrayCount;
+      document.getElementById('propertyCount').textContent = propertyCount;
+      
+      statsCard.style.display = 'block';
+    }
+
+    function countObjects(obj) {
+      let count = 0;
+      if (typeof obj === 'object' && obj !== null && !Array.isArray(obj)) {
+        count = 1;
+        for (const key in obj) {
+          count += countObjects(obj[key]);
+        }
+      }
+      return count;
+    }
+
+    function countArrays(obj) {
+      let count = 0;
+      if (Array.isArray(obj)) {
+        count = 1;
+        obj.forEach(item => {
+          count += countArrays(item);
+        });
+      } else if (typeof obj === 'object' && obj !== null) {
+        for (const key in obj) {
+          count += countArrays(obj[key]);
+        }
+      }
+      return count;
+    }
+
+    function countProperties(obj) {
+      let count = 0;
+      if (typeof obj === 'object' && obj !== null) {
+        if (Array.isArray(obj)) {
+          obj.forEach(item => {
+            count += countProperties(item);
+          });
+        } else {
+          count = Object.keys(obj).length;
+          for (const key in obj) {
+            count += countProperties(obj[key]);
+          }
+        }
+      }
+      return count;
+    }
+
+    function showError(message) {
+      errorArea.innerHTML = `<div class="error-message">${message}</div>`;
+    }
+
+    function hideError() {
+      errorArea.innerHTML = '';
+    }
+
+    function clearAll() {
+      jsonInput.value = '';
+      jsonOutput.textContent = '';
+      hideError();
+      statsCard.style.display = 'none';
+      jsonInput.focus();
+    }
+
+    function loadSample() {
+      const sampleJSON = {
+        "name": "John Doe",
+        "age": 30,
+        "email": "john.doe@example.com",
+        "address": {
+          "street": "123 Main St",
+          "city": "New York",
+          "state": "NY",
+          "zipCode": "10001"
+        },
+        "phoneNumbers": [
+          {
+            "type": "home",
+            "number": "212-555-1234"
+          },
+          {
+            "type": "work",
+            "number": "212-555-5678"
+          }
+        ],
+        "isActive": true,
+        "tags": ["developer", "designer", "manager"]
+      };
+      
+      jsonInput.value = JSON.stringify(sampleJSON);
+      formatJSON();
+    }
+
+    function copyFormatted() {
+      const output = jsonOutput.textContent;
+      if (output.trim()) {
+        navigator.clipboard.writeText(output).then(() => {
+          // Show success message
+          const originalText = copyBtn.innerHTML;
+          copyBtn.innerHTML = '<i class="bi bi-check"></i> Copied!';
+          copyBtn.classList.remove('btn-success');
+          copyBtn.classList.add('btn-primary');
+          
+          setTimeout(() => {
+            copyBtn.innerHTML = originalText;
+            copyBtn.classList.remove('btn-primary');
+            copyBtn.classList.add('btn-success');
+          }, 2000);
+        }).catch(() => {
+          alert('Failed to copy to clipboard');
+        });
+      }
+    }
+
+    function downloadJSON() {
+      const output = jsonOutput.textContent;
+      if (output.trim()) {
+        const blob = new Blob([output], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'formatted.json';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      }
+    }
+
+    // Auto-focus input
+    jsonInput.focus();
+  </script>
+</body>
+</html> 

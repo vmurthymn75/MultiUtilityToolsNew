@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Number Generator - Multi Utility Tools</title>
+    <meta name="description" content="Generate random numbers with customizable ranges. Free online random number generator.">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../assets/css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <style>
+        .generator-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 20px 0;
+            color: white;
+            text-align: center;
+        }
+        
+        .number-input {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            color: white;
+            padding: 15px;
+            font-size: 18px;
+            text-align: center;
+            margin: 10px 0;
+        }
+        
+        .number-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .number-input:focus {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+            color: white;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+        }
+        
+        .generate-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin: 15px 0;
+        }
+        
+        .generate-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        
+        .result-display {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .random-number {
+            font-size: 3em;
+            font-weight: bold;
+            color: #ffd700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            font-family: 'Courier New', monospace;
+        }
+        
+        .options-section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 15px 0;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .option-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .option-item:last-child {
+            border-bottom: none;
+        }
+        
+        .copy-btn {
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+        
+        .copy-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-1px);
+            color: white;
+        }
+        
+        .history-section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 15px 0;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .history-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 10px;
+            margin: 5px 0;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header will be loaded here -->
+    <div id="site-header"></div>
+
+    <div class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="text-center mb-4">
+                    <h1 class="display-4 fw-bold text-primary">
+                        <i class="bi bi-shuffle"></i> Random Number Generator
+                    </h1>
+                    <p class="lead text-muted">Generate random numbers with customizable ranges and options</p>
+                </div>
+
+                <div class="generator-section">
+                    <h3 class="mb-4">Generate Random Numbers</h3>
+                    
+                    <div class="options-section">
+                        <div class="option-item">
+                            <label class="form-label">Minimum Value:</label>
+                            <input type="number" id="min-value" class="form-control number-input" value="1" style="width: 150px;">
+                        </div>
+                        <div class="option-item">
+                            <label class="form-label">Maximum Value:</label>
+                            <input type="number" id="max-value" class="form-control number-input" value="100" style="width: 150px;">
+                        </div>
+                        <div class="option-item">
+                            <label class="form-label">Number of Results:</label>
+                            <input type="number" id="count" class="form-control number-input" value="1" min="1" max="100" style="width: 150px;">
+                        </div>
+                        <div class="option-item">
+                            <label class="form-check-label">Allow Duplicates:</label>
+                            <input type="checkbox" class="form-check-input" id="allow-duplicates" checked>
+                        </div>
+                        <div class="option-item">
+                            <label class="form-check-label">Include Decimals:</label>
+                            <input type="checkbox" class="form-check-input" id="include-decimals">
+                        </div>
+                        <div class="option-item">
+                            <label class="form-label">Decimal Places:</label>
+                            <input type="number" id="decimal-places" class="form-control number-input" value="0" min="0" max="10" style="width: 150px;">
+                        </div>
+                    </div>
+                    
+                    <button class="generate-btn" onclick="generateRandomNumbers()">
+                        <i class="bi bi-shuffle"></i> Generate Random Numbers
+                    </button>
+
+                    <div id="result-display" class="result-display" style="display: none;">
+                        <h4 class="mb-3">Generated Numbers</h4>
+                        <div id="numbers-container"></div>
+                        <button class="copy-btn" onclick="copyNumbers()">
+                            <i class="bi bi-clipboard"></i> Copy All
+                        </button>
+                    </div>
+
+                    <div id="history-section" class="history-section" style="display: none;">
+                        <h5 class="mb-3">Generation History</h5>
+                        <div id="history-container"></div>
+                        <button class="copy-btn" onclick="clearHistory()">
+                            <i class="bi bi-trash"></i> Clear History
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="bi bi-info-circle"></i> How to Use</h5>
+                        <ul class="list-unstyled">
+                            <li><strong>Set the range:</strong> Choose minimum and maximum values</li>
+                            <li><strong>Choose quantity:</strong> Generate one or multiple numbers</li>
+                            <li><strong>Configure options:</strong> Allow duplicates, include decimals</li>
+                            <li><strong>Generate:</strong> Click to create random numbers</li>
+                            <li><strong>Copy results:</strong> Use the copy button to save numbers</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer will be loaded here -->
+    <div id="site-footer"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets/js/header-footer.js"></script>
+    <script src="../assets/js/tools.js"></script>
+    
+    <script>
+        let generationHistory = [];
+
+        function generateRandomNumbers() {
+            const min = parseFloat(document.getElementById('min-value').value);
+            const max = parseFloat(document.getElementById('max-value').value);
+            const count = parseInt(document.getElementById('count').value);
+            const allowDuplicates = document.getElementById('allow-duplicates').checked;
+            const includeDecimals = document.getElementById('include-decimals').checked;
+            const decimalPlaces = parseInt(document.getElementById('decimal-places').value);
+            
+            if (isNaN(min) || isNaN(max) || isNaN(count)) {
+                alert('Please enter valid numbers');
+                return;
+            }
+            
+            if (min >= max) {
+                alert('Minimum value must be less than maximum value');
+                return;
+            }
+            
+            if (count < 1 || count > 100) {
+                alert('Count must be between 1 and 100');
+                return;
+            }
+            
+            const numbers = [];
+            const usedNumbers = new Set();
+            
+            for (let i = 0; i < count; i++) {
+                let randomNum;
+                let attempts = 0;
+                
+                do {
+                    if (includeDecimals) {
+                        randomNum = Math.random() * (max - min) + min;
+                        randomNum = parseFloat(randomNum.toFixed(decimalPlaces));
+                    } else {
+                        randomNum = Math.floor(Math.random() * (max - min + 1)) + min;
+                    }
+                    attempts++;
+                    
+                    if (attempts > 1000) {
+                        alert('Unable to generate unique numbers. Try increasing the range or allowing duplicates.');
+                        return;
+                    }
+                } while (!allowDuplicates && usedNumbers.has(randomNum));
+                
+                if (!allowDuplicates) {
+                    usedNumbers.add(randomNum);
+                }
+                
+                numbers.push(randomNum);
+            }
+            
+            displayNumbers(numbers);
+            addToHistory(numbers, min, max, count);
+        }
+
+        function displayNumbers(numbers) {
+            const container = document.getElementById('numbers-container');
+            container.innerHTML = '';
+            
+            if (numbers.length === 1) {
+                container.innerHTML = `<div class="random-number">${numbers[0]}</div>`;
+            } else {
+                numbers.forEach((num, index) => {
+                    const numDiv = document.createElement('div');
+                    numDiv.className = 'history-item';
+                    numDiv.textContent = `${index + 1}. ${num}`;
+                    container.appendChild(numDiv);
+                });
+            }
+            
+            document.getElementById('result-display').style.display = 'block';
+        }
+
+        function addToHistory(numbers, min, max, count) {
+            const timestamp = new Date().toLocaleTimeString();
+            const historyItem = {
+                timestamp,
+                numbers,
+                range: `${min} - ${max}`,
+                count
+            };
+            
+            generationHistory.unshift(historyItem);
+            if (generationHistory.length > 10) {
+                generationHistory.pop();
+            }
+            
+            updateHistoryDisplay();
+        }
+
+        function updateHistoryDisplay() {
+            const container = document.getElementById('history-container');
+            container.innerHTML = '';
+            
+            generationHistory.forEach((item, index) => {
+                const historyDiv = document.createElement('div');
+                historyDiv.className = 'history-item';
+                historyDiv.innerHTML = `
+                    <strong>${item.timestamp}</strong> - Range: ${item.range}, Count: ${item.count}<br>
+                    Numbers: ${item.numbers.join(', ')}
+                `;
+                container.appendChild(historyDiv);
+            });
+            
+            if (generationHistory.length > 0) {
+                document.getElementById('history-section').style.display = 'block';
+            }
+        }
+
+        function copyNumbers() {
+            const numbers = Array.from(document.querySelectorAll('#numbers-container .history-item'))
+                .map(item => item.textContent.split('. ')[1])
+                .filter(Boolean);
+            
+            if (numbers.length === 0) {
+                const singleNumber = document.querySelector('.random-number');
+                if (singleNumber) {
+                    numbers.push(singleNumber.textContent);
+                }
+            }
+            
+            if (numbers.length > 0) {
+                navigator.clipboard.writeText(numbers.join(', ')).then(() => {
+                    const btn = document.querySelector('.copy-btn');
+                    const originalText = btn.innerHTML;
+                    btn.innerHTML = '<i class="bi bi-check"></i> Copied!';
+                    setTimeout(() => {
+                        btn.innerHTML = originalText;
+                    }, 2000);
+                });
+            }
+        }
+
+        function clearHistory() {
+            generationHistory = [];
+            updateHistoryDisplay();
+            document.getElementById('history-section').style.display = 'none';
+        }
+
+        // Auto-generate on Enter key
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                generateRandomNumbers();
+            }
+        });
+
+        // Update decimal places input visibility
+        document.getElementById('include-decimals').addEventListener('change', function() {
+            const decimalInput = document.getElementById('decimal-places');
+            decimalInput.disabled = !this.checked;
+            if (!this.checked) {
+                decimalInput.value = 0;
+            }
+        });
+    </script>
+</body>
+</html> 

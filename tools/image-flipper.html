@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Flipper - Flip Images Online | Multi Utility Tools</title>
+  <meta name="description" content="Free online image flipper tool. Flip images horizontally or vertically with ease. Perfect for correcting mirror images and creating symmetrical designs.">
+  <meta name="keywords" content="image flipper, flip image, mirror image, horizontal flip, vertical flip, image mirror tool, online image flipper">
+  <meta name="author" content="Multi Utility Tools">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://yourdomain.com/tools/image-flipper.html">
+  
+  <!-- Open Graph Meta Tags -->
+  <meta property="og:title" content="Image Flipper - Flip Images Online">
+  <meta property="og:description" content="Free online image flipper tool. Flip images horizontally or vertically with ease. Perfect for correcting mirror images.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://yourdomain.com/tools/image-flipper.html">
+  
+  <!-- Twitter Card Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Image Flipper - Flip Images Online">
+  <meta name="twitter:description" content="Free online image flipper tool. Flip images horizontally or vertically with ease. Perfect for correcting mirror images.">
+  
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="../assets/css/tools.css">
+  <link rel="icon" href="../assets/images/favicon.ico">
+</head>
+<body>
+  <!-- Header -->
+  <div id="header"></div>
+  
+  <!-- Main Content -->
+  <main class="tool-main container" tabindex="-1">
+    <!-- Breadcrumb Navigation -->
+    <nav aria-label="Breadcrumb" class="breadcrumb-nav">
+      <a href="../index.html" class="back-link" aria-label="Back to Home">
+        <i class="bi bi-arrow-left"></i> Back to Home
+      </a>
+    </nav>
+    
+    <!-- Tool Header -->
+    <header class="tool-header">
+      <h1><i class="bi bi-arrow-left-right"></i> Image Flipper</h1>
+      <p class="tool-desc">Flip images horizontally or vertically with ease. Perfect for correcting mirror images, creating symmetrical designs, and adjusting photo orientation.</p>
+    </header>
+    
+    <!-- Tool UI -->
+    <section class="tool-ui" aria-labelledby="flipper-form-label">
+      <!-- Upload Form -->
+      <div class="tool-form">
+        <h2 id="flipper-form-label" class="h4 mb-4">Upload & Flip</h2>
+        
+        <form id="flipper-form" class="flipper-form" autocomplete="off">
+          <!-- File Upload Area -->
+          <div class="form-group">
+            <label for="image-upload" class="form-label">Upload Image</label>
+            <div class="upload-area" tabindex="0" role="button" aria-label="Upload image by clicking or dragging and dropping">
+              <i class="bi bi-cloud-upload upload-icon"></i>
+              <div class="upload-text">Click to upload or drag and drop</div>
+              <div class="upload-hint">Supports JPG, PNG, GIF, WebP (Max 10MB)</div>
+              <input type="file" id="image-upload" name="image-upload" class="file-input" accept="image/*" required aria-required="true">
+            </div>
+          </div>
+          
+          <!-- Progress Bar -->
+          <div class="progress-container" style="display: none;">
+            <div class="progress-bar">
+              <div class="progress-fill"></div>
+            </div>
+          </div>
+          
+          <!-- Flip Direction -->
+          <div class="form-group">
+            <label class="form-label">Flip Direction</label>
+            <div class="btn-group w-100" role="group" aria-label="Flip direction selection">
+              <input type="radio" class="btn-check" name="flip-direction" id="horizontal-flip" value="horizontal" checked>
+              <label class="btn btn-outline-primary" for="horizontal-flip">
+                <i class="bi bi-arrow-left-right"></i> Horizontal
+              </label>
+              
+              <input type="radio" class="btn-check" name="flip-direction" id="vertical-flip" value="vertical">
+              <label class="btn btn-outline-primary" for="vertical-flip">
+                <i class="bi bi-arrow-up-down"></i> Vertical
+              </label>
+              
+              <input type="radio" class="btn-check" name="flip-direction" id="both-flip" value="both">
+              <label class="btn btn-outline-primary" for="both-flip">
+                <i class="bi bi-arrow-clockwise"></i> Both
+              </label>
+            </div>
+          </div>
+          
+          <!-- Quick Flip Buttons -->
+          <div class="form-group">
+            <label class="form-label">Quick Actions</label>
+            <div class="d-flex flex-wrap gap-2">
+              <button type="button" class="btn btn-outline-secondary" data-direction="horizontal">
+                <i class="bi bi-arrow-left-right"></i> Flip Horizontal
+              </button>
+              <button type="button" class="btn btn-outline-secondary" data-direction="vertical">
+                <i class="bi bi-arrow-up-down"></i> Flip Vertical
+              </button>
+              <button type="button" class="btn btn-outline-secondary" data-direction="both">
+                <i class="bi bi-arrow-clockwise"></i> Flip Both
+              </button>
+              <button type="button" class="btn btn-outline-secondary" data-direction="reset">
+                <i class="bi bi-arrow-clockwise"></i> Reset
+              </button>
+            </div>
+          </div>
+          
+          <!-- Flip Options -->
+          <div class="form-group">
+            <label class="form-label">Flip Options</label>
+            <div class="options-grid">
+              <div class="form-check">
+                <input type="checkbox" id="preserve-metadata" name="preserve-metadata" class="form-check-input" checked>
+                <label for="preserve-metadata" class="form-check-label">Preserve metadata</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" id="maintain-quality" name="maintain-quality" class="form-check-input" checked>
+                <label for="maintain-quality" class="form-check-label">Maintain quality</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" id="preview-before-save" name="preview-before-save" class="form-check-input" checked>
+                <label for="preview-before-save" class="form-check-label">Preview before save</label>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Output Format -->
+          <div class="form-group">
+            <label for="output-format" class="form-label">Output Format</label>
+            <select id="output-format" name="output-format" class="form-input">
+              <option value="original" selected>Keep Original Format</option>
+              <option value="png">PNG</option>
+              <option value="jpg">JPG</option>
+              <option value="webp">WebP</option>
+            </select>
+          </div>
+          
+          <!-- Action Buttons -->
+          <div class="d-flex gap-2 flex-wrap">
+            <button type="submit" class="btn btn-primary" data-original-text="Flip Image">
+              <i class="bi bi-arrow-left-right"></i> Flip Image
+            </button>
+            <button type="button" class="btn btn-secondary btn-reset">
+              <i class="bi bi-arrow-clockwise"></i> Reset
+            </button>
+          </div>
+        </form>
+      </div>
+      
+      <!-- Result Area -->
+      <div class="result-area">
+        <div class="result-placeholder">
+          <i class="bi bi-arrow-left-right"></i>
+          <p>Flipped image will appear here</p>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Tips Section -->
+    <section class="mt-4">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0"><i class="bi bi-lightbulb"></i> When to Use Each Flip Type</h5>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-4">
+              <h6><i class="bi bi-arrow-left-right"></i> Horizontal Flip</h6>
+              <ul class="mb-0">
+                <li>Correct mirror images</li>
+                <li>Fix selfie orientation</li>
+                <li>Create symmetrical designs</li>
+                <li>Adjust text direction</li>
+              </ul>
+            </div>
+            <div class="col-md-4">
+              <h6><i class="bi bi-arrow-up-down"></i> Vertical Flip</h6>
+              <ul class="mb-0">
+                <li>Correct upside-down photos</li>
+                <li>Adjust logo orientation</li>
+                <li>Create inverted effects</li>
+                <li>Fix camera orientation</li>
+              </ul>
+            </div>
+            <div class="col-md-4">
+              <h6><i class="bi bi-arrow-clockwise"></i> Both Directions</h6>
+              <ul class="mb-0">
+                <li>Complete image rotation</li>
+                <li>Create unique effects</li>
+                <li>Experimental photography</li>
+                <li>Artistic transformations</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Ad Section -->
+    <aside class="ad-placeholder" aria-label="Advertisement">
+      <div class="ad-box">Ad space</div>
+    </aside>
+  </main>
+  
+  <!-- Footer -->
+  <div id="footer"></div>
+  
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/js/header-footer.js" defer></script>
+  <script src="../assets/js/tools.js" defer></script>
+  <script>
+    // Tool-specific functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      let currentDirection = 'horizontal';
+      
+      // Quick flip buttons
+      const quickButtons = document.querySelectorAll('[data-direction]');
+      quickButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          const direction = this.dataset.direction;
+          
+          if (direction === 'reset') {
+            // Reset form
+            document.getElementById('flipper-form').reset();
+            currentDirection = 'horizontal';
+            
+            // Update radio buttons
+            document.getElementById('horizontal-flip').checked = true;
+            
+            // Clear button highlights
+            quickButtons.forEach(btn => btn.classList.remove('btn-primary', 'btn-outline-secondary'));
+            quickButtons.forEach(btn => btn.classList.add('btn-outline-secondary'));
+          } else {
+            currentDirection = direction;
+            
+            // Update radio buttons
+            document.getElementById(`${direction}-flip`).checked = true;
+            
+            // Highlight selected button
+            quickButtons.forEach(btn => btn.classList.remove('btn-primary', 'btn-outline-secondary'));
+            quickButtons.forEach(btn => btn.classList.add('btn-outline-secondary'));
+            this.classList.remove('btn-outline-secondary');
+            this.classList.add('btn-primary');
+          }
+        });
+      });
+      
+      // Radio button change handlers
+      const radioButtons = document.querySelectorAll('input[name="flip-direction"]');
+      radioButtons.forEach(radio => {
+        radio.addEventListener('change', function() {
+          currentDirection = this.value;
+          
+          // Update quick buttons
+          quickButtons.forEach(btn => {
+            if (btn.dataset.direction === currentDirection) {
+              btn.classList.remove('btn-outline-secondary');
+              btn.classList.add('btn-primary');
+            } else {
+              btn.classList.remove('btn-primary');
+              btn.classList.add('btn-outline-secondary');
+            }
+          });
+        });
+      });
+      
+      // Enhanced processing for flipper
+      const originalProcessFile = window.ToolManager.prototype.processFile;
+      
+      window.ToolManager.prototype.processFile = async function(toolType, formData) {
+        if (toolType === 'image-flipper') {
+          return this.processImageFlipperEnhanced(formData);
+        }
+        return originalProcessFile.call(this, toolType, formData);
+      };
+      
+      window.ToolManager.prototype.processImageFlipperEnhanced = async function(formData) {
+        const file = this.currentFile;
+        
+        // Get flip direction
+        const direction = formData.get('flip-direction') || 'horizontal';
+        const preserveMetadata = formData.get('preserve-metadata') === 'on';
+        const maintainQuality = formData.get('maintain-quality') === 'on';
+        
+        return new Promise((resolve) => {
+          const img = new Image();
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = img.width;
+            canvas.height = img.height;
+            
+            // Set up context for quality
+            if (maintainQuality) {
+              ctx.imageSmoothingEnabled = true;
+              ctx.imageSmoothingQuality = 'high';
+            }
+            
+            // Apply flip transformations
+            if (direction === 'horizontal' || direction === 'both') {
+              ctx.scale(-1, 1);
+              ctx.translate(-img.width, 0);
+            }
+            
+            if (direction === 'vertical' || direction === 'both') {
+              if (direction === 'both') {
+                ctx.scale(1, -1);
+                ctx.translate(0, -img.height);
+              } else {
+                ctx.scale(1, -1);
+                ctx.translate(0, -img.height);
+              }
+            }
+            
+            // Draw the image
+            ctx.drawImage(img, 0, 0);
+            
+            // Get output format
+            const outputFormat = formData.get('output-format') || 'original';
+            let mimeType = 'image/png';
+            
+            if (outputFormat === 'original') {
+              mimeType = file.type;
+            } else if (outputFormat === 'jpg') {
+              mimeType = 'image/jpeg';
+            } else if (outputFormat === 'webp') {
+              mimeType = 'image/webp';
+            }
+            
+            // Generate filename
+            let filename = file.name;
+            if (direction === 'horizontal') {
+              filename = `flipped_h_${filename}`;
+            } else if (direction === 'vertical') {
+              filename = `flipped_v_${filename}`;
+            } else if (direction === 'both') {
+              filename = `flipped_both_${filename}`;
+            }
+            
+            resolve({
+              dataUrl: canvas.toDataURL(mimeType),
+              filename: filename,
+              message: `Image flipped ${direction} successfully`,
+              flipInfo: {
+                direction: direction,
+                preserveMetadata: preserveMetadata,
+                maintainQuality: maintainQuality
+              }
+            });
+          };
+          img.src = URL.createObjectURL(file);
+        });
+      };
+    });
+  </script>
+</body>
+</html> 
